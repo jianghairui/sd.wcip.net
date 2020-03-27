@@ -62,13 +62,13 @@ class Req extends Base {
             $where[] = ['r.title|r.org','like',"%{$param['search']}%"];
         }
         try {
-            $count = Db::table('mp_req')->alias('r')
+            $count = Db::table('mp_activity')->alias('r')
                 ->join('mp_user_role ro','r.uid=ro.uid','left')
                 ->where($where)->count();
             $page['count'] = $count;
             $page['curr'] = $curr_page;
             $page['totalPage'] = ceil($count/$perpage);
-            $list = Db::table('mp_req')->alias('r')
+            $list = Db::table('mp_activity')->alias('r')
                 ->join('mp_user_role ro','r.uid=ro.uid','left')
                 ->field('r.*,ro.org')
                 ->where($where)
@@ -87,7 +87,7 @@ class Req extends Base {
     public function reqDetail() {
         $id = input('param.id');
         try {
-            $info = Db::table('mp_req')
+            $info = Db::table('mp_activity')
                 ->where('id','=',$id)
                 ->find();
         }catch (\Exception $e) {
@@ -168,7 +168,7 @@ class Req extends Base {
                         return ajax($qiniu_move['msg'],-2);
                     }
                 }
-                Db::table('mp_req')->insert($val);
+                Db::table('mp_activity')->insert($val);
                 Db::table('mp_user')->where('id','=',$val['uid'])->setInc('req_num',1);
             } catch (\Exception $e) {
                 $this->rs_delete($val['cover']);
@@ -232,7 +232,7 @@ class Req extends Base {
                 $where = [
                     ['id','=',$val['id']]
                 ];
-                $req_exist = Db::table('mp_req')->where($where)->find();
+                $req_exist = Db::table('mp_activity')->where($where)->find();
                 if(!$req_exist) {
                     return ajax('非法操作',-1);
                 }
@@ -258,7 +258,7 @@ class Req extends Base {
                         return ajax($qiniu_move['msg'],-2);
                     }
                 }
-                Db::table('mp_req')->update($val);
+                Db::table('mp_activity')->update($val);
             } catch (\Exception $e) {
                 if($val['cover'] != $req_exist['cover']) {
                     $this->rs_delete($val['cover']);
@@ -288,11 +288,11 @@ class Req extends Base {
             ['id','=',input('post.id',0)]
         ];
         try {
-            $exist = Db::table('mp_req')->where($map)->find();
+            $exist = Db::table('mp_activity')->where($map)->find();
             if(!$exist) {
                 return ajax('非法操作',-1);
             }
-            Db::table('mp_req')->where($map)->update(['status'=>1]);
+            Db::table('mp_activity')->where($map)->update(['status'=>1]);
             //todo  奖励用户积分
         }catch (\Exception $e) {
             return ajax($e->getMessage(),-1);
@@ -307,11 +307,11 @@ class Req extends Base {
         ];
         $reason = input('post.reason','');
         try {
-            $exist = Db::table('mp_req')->where($map)->find();
+            $exist = Db::table('mp_activity')->where($map)->find();
             if(!$exist) {
                 return ajax('非法操作',-1);
             }
-            Db::table('mp_req')->where($map)->update(['status'=>2,'reason'=>$reason]);
+            Db::table('mp_activity')->where($map)->update(['status'=>2,'reason'=>$reason]);
         }catch (\Exception $e) {
             return ajax($e->getMessage(),-1);
         }
@@ -323,11 +323,11 @@ class Req extends Base {
             ['id','=',input('post.id',0)]
         ];
         try {
-            $exist = Db::table('mp_req')->where($map)->find();
+            $exist = Db::table('mp_activity')->where($map)->find();
             if(!$exist) {
                 return ajax('非法操作',-1);
             }
-            Db::table('mp_req')->where($map)->update(['del'=>1]);
+            Db::table('mp_activity')->where($map)->update(['del'=>1]);
         }catch (\Exception $e) {
             return ajax($e->getMessage(),-1);
         }
@@ -337,7 +337,7 @@ class Req extends Base {
     public function reqShow() {
         $map[] = ['id','=',input('post.id',0)];
         try {
-            Db::table('mp_req')->where($map)->update(['show'=>1]);
+            Db::table('mp_activity')->where($map)->update(['show'=>1]);
         }catch (\Exception $e) {
             return ajax($e->getMessage(),-1);
         }
@@ -347,7 +347,7 @@ class Req extends Base {
     public function reqHide() {
         $map[] = ['id','=',input('post.id',0)];
         try {
-            Db::table('mp_req')->where($map)->update(['show'=>0]);
+            Db::table('mp_activity')->where($map)->update(['show'=>0]);
         }catch (\Exception $e) {
             return ajax($e->getMessage(),-1);
         }
@@ -361,15 +361,15 @@ class Req extends Base {
             $where = [
                 ['id','=',$val['id']]
             ];
-            $exist = Db::table('mp_req')->where($where)->find();
+            $exist = Db::table('mp_activity')->where($where)->find();
             if(!$exist) {
                 return ajax('非法操作',-1);
             }
             if($exist['recommend'] == 1) {
-                Db::table('mp_req')->where($where)->update(['recommend'=>0]);
+                Db::table('mp_activity')->where($where)->update(['recommend'=>0]);
                 return ajax(0);
             }else {
-                Db::table('mp_req')->where($where)->update(['recommend'=>1]);
+                Db::table('mp_activity')->where($where)->update(['recommend'=>1]);
                 return ajax(1);
             }
         } catch (\Exception $e) {
@@ -412,20 +412,20 @@ class Req extends Base {
         }
 
         try {
-            $count = Db::table('mp_req_idea')->alias('i')
-                ->join('mp_req r','i.req_id=r.id','left')
+            $count = Db::table('mp_activity_idea')->alias('i')
+                ->join('mp_activity r','i.req_id=r.id','left')
                 ->where($where)->count();
             $page['count'] = $count;
             $page['curr'] = $curr_page;
             $page['totalPage'] = ceil($count/$perpage);
-            $list = Db::table('mp_req_idea')->alias('i')
-                ->join('mp_req r','i.req_id=r.id','left')
+            $list = Db::table('mp_activity_idea')->alias('i')
+                ->join('mp_activity r','i.req_id=r.id','left')
                 ->field('i.*,r.title AS req_title,r.org')->where($where)
                 ->order($order)->limit(($curr_page - 1)*$perpage,$perpage)->select();
             $whereReq = [
                 ['del','=',0]
             ];
-            $reqlist = Db::table('mp_req')->where($whereReq)->field('id,title')->select();
+            $reqlist = Db::table('mp_activity')->where($whereReq)->field('id,title')->select();
         }catch (\Exception $e) {
             die($e->getMessage());
         }
@@ -443,8 +443,8 @@ class Req extends Base {
             $where = [
                 ['i.id','=',$param['id']]
             ];
-            $info = Db::table('mp_req_idea')->alias('i')
-                ->join('mp_req r','i.req_id=r.id','left')
+            $info = Db::table('mp_activity_idea')->alias('i')
+                ->join('mp_activity r','i.req_id=r.id','left')
                 ->join('mp_user u','i.uid=u.id','left')
                 ->field('i.*,r.title AS req_title,r.org,u.nickname,u.avatar')
                 ->where($where)
@@ -467,11 +467,11 @@ class Req extends Base {
         checkInput($val);
         try {
             $whereIdea = [['id','=',$val['id']]];
-            $idea_exist = Db::table('mp_req_idea')->where($whereIdea)->find();
+            $idea_exist = Db::table('mp_activity_idea')->where($whereIdea)->find();
             if(!$idea_exist) {
                 return ajax('非法操作',-1);
             }
-            Db::table('mp_req_idea')->where($whereIdea)->update($val);
+            Db::table('mp_activity_idea')->where($whereIdea)->update($val);
         } catch (\Exception $e) {
             return ajax($e->getMessage(), -1);
         }
@@ -484,11 +484,11 @@ class Req extends Base {
             ['id','=',input('post.id',0)]
         ];
         try {
-            $exist = Db::table('mp_req_idea')->where($map)->find();
+            $exist = Db::table('mp_activity_idea')->where($map)->find();
             if(!$exist) {
                 return ajax('非法操作',-1);
             }
-            Db::table('mp_req_idea')->where($map)->update(['status'=>1]);
+            Db::table('mp_activity_idea')->where($map)->update(['status'=>1]);
             //todo  奖励用户积分
         }catch (\Exception $e) {
             return ajax($e->getMessage(),-1);
@@ -505,11 +505,11 @@ class Req extends Base {
             ['id','=',$val['id']]
         ];
         try {
-            $exist = Db::table('mp_req_idea')->where($map)->find();
+            $exist = Db::table('mp_activity_idea')->where($map)->find();
             if(!$exist) {
                 return ajax('非法操作',-1);
             }
-            Db::table('mp_req_idea')->where($map)->update(['status'=>2,'reason'=>$val['reason']]);
+            Db::table('mp_activity_idea')->where($map)->update(['status'=>2,'reason'=>$val['reason']]);
         }catch (\Exception $e) {
             return ajax($e->getMessage(),-1);
         }
@@ -524,12 +524,12 @@ class Req extends Base {
             ['del','=',0]
         ];
         try {
-            $exist = Db::table('mp_req_idea')->where($map)->find();
+            $exist = Db::table('mp_activity_idea')->where($map)->find();
             if(!$exist) {
                 return ajax('非法操作',-1);
             }
-            Db::table('mp_req_idea')->where($map)->update(['del'=>1]);
-            Db::table('mp_req')->where('id','=',$exist['req_id'])->setDec('idea_num',1);
+            Db::table('mp_activity_idea')->where($map)->update(['del'=>1]);
+            Db::table('mp_activity')->where('id','=',$exist['req_id'])->setDec('idea_num',1);
         }catch (\Exception $e) {
             return ajax($e->getMessage(),-1);
         }
@@ -568,23 +568,23 @@ class Req extends Base {
             default:$order = ['w.id'=>'DESC'];
         }
         try {
-            $count = Db::table('mp_req_works')->alias('w')
-                ->join('mp_req r','w.req_id=r.id','left')
-                ->join('mp_req_idea i','w.idea_id=i.id','left')
+            $count = Db::table('mp_activity_works')->alias('w')
+                ->join('mp_activity r','w.req_id=r.id','left')
+                ->join('mp_activity_idea i','w.idea_id=i.id','left')
                 ->where($where)->count();
             $page['count'] = $count;
             $page['curr'] = $curr_page;
             $page['totalPage'] = ceil($count/$perpage);
-            $list = Db::table('mp_req_works')->alias('w')
-                ->join('mp_req r','w.req_id=r.id','left')
-                ->join('mp_req_idea i','w.idea_id=i.id','left')
+            $list = Db::table('mp_activity_works')->alias('w')
+                ->join('mp_activity r','w.req_id=r.id','left')
+                ->join('mp_activity_idea i','w.idea_id=i.id','left')
                 ->field('w.*,r.title AS req_title,r.org,i.title AS idea_title')
                 ->where($where)
                 ->order($order)->limit(($curr_page - 1)*$perpage,$perpage)->select();
             $whereReq = [
                 ['del','=',0]
             ];
-            $reqlist = Db::table('mp_req')->where($whereReq)->field('id,title')->select();
+            $reqlist = Db::table('mp_activity')->where($whereReq)->field('id,title')->select();
         }catch (\Exception $e) {
             die($e->getMessage());
         }
@@ -602,9 +602,9 @@ class Req extends Base {
             $where = [
                 ['w.id','=',$param['id']]
             ];
-            $info = Db::table('mp_req_works')->alias('w')
-                ->join('mp_req r','w.req_id=r.id','left')
-                ->join('mp_req_idea i','w.idea_id=i.id','left')
+            $info = Db::table('mp_activity_works')->alias('w')
+                ->join('mp_activity r','w.req_id=r.id','left')
+                ->join('mp_activity_idea i','w.idea_id=i.id','left')
                 ->join('mp_user u','w.uid=u.id','left')
                 ->field('w.*,r.title AS req_title,r.org,u.nickname,u.avatar,i.title AS idea_title,i.content AS idea_content')
                 ->where($where)
@@ -627,11 +627,11 @@ class Req extends Base {
         checkInput($val);
         try {
             $whereIdea = [['id','=',$val['id']]];
-            $idea_exist = Db::table('mp_req_works')->where($whereIdea)->find();
+            $idea_exist = Db::table('mp_activity_works')->where($whereIdea)->find();
             if(!$idea_exist) {
                 return ajax('非法操作',-1);
             }
-            Db::table('mp_req_works')->where($whereIdea)->update($val);
+            Db::table('mp_activity_works')->where($whereIdea)->update($val);
         } catch (\Exception $e) {
             return ajax($e->getMessage(), -1);
         }
@@ -644,7 +644,7 @@ class Req extends Base {
             ['id','=',input('post.id',0)]
         ];
         try {
-            $exist = Db::table('mp_req_works')->where($whereWorks)->find();
+            $exist = Db::table('mp_activity_works')->where($whereWorks)->find();
             if(!$exist) {
                 return ajax('非法操作',-1);
             }
@@ -652,14 +652,14 @@ class Req extends Base {
                 ['id','=',$exist['req_id']]
             ];
 
-            Db::table('mp_req_works')->where($whereWorks)->update(['status'=>1]);
-            Db::table('mp_req')->where($whereReq)->setInc('works_num',1);
+            Db::table('mp_activity_works')->where($whereWorks)->update(['status'=>1]);
+            Db::table('mp_activity')->where($whereReq)->setInc('works_num',1);
 
             if($exist['idea_id']) {
                 $whereIdea = [
                     ['id','=',$exist['idea_id']]
                 ];
-                Db::table('mp_req_idea')->where($whereIdea)->setInc('works_num',1);
+                Db::table('mp_activity_idea')->where($whereIdea)->setInc('works_num',1);
             }
             Db::table('mp_user')->where('id','=',$exist['uid'])->setInc('works_num',1);
         }catch (\Exception $e) {
@@ -675,11 +675,11 @@ class Req extends Base {
         ];
         $reason = input('post.reason','');
         try {
-            $exist = Db::table('mp_req_works')->where($map)->find();
+            $exist = Db::table('mp_activity_works')->where($map)->find();
             if(!$exist) {
                 return ajax('非法操作',-1);
             }
-            Db::table('mp_req_works')->where($map)->update(['status'=>2,'reason'=>$reason]);
+            Db::table('mp_activity_works')->where($map)->update(['status'=>2,'reason'=>$reason]);
         }catch (\Exception $e) {
             return ajax($e->getMessage(),-1);
         }
@@ -689,7 +689,7 @@ class Req extends Base {
     public function workShow() {
         $map[] = ['id','=',input('post.id',0)];
         try {
-            Db::table('mp_req_works')->where($map)->update(['show'=>1]);
+            Db::table('mp_activity_works')->where($map)->update(['show'=>1]);
         }catch (\Exception $e) {
             return ajax($e->getMessage(),-1);
         }
@@ -699,33 +699,32 @@ class Req extends Base {
     public function workHide() {
         $map[] = ['id','=',input('post.id',0)];
         try {
-            Db::table('mp_req_works')->where($map)->update(['show'=>0]);
+            Db::table('mp_activity_works')->where($map)->update(['show'=>0]);
         }catch (\Exception $e) {
             return ajax($e->getMessage(),-1);
         }
         return ajax([],1);
     }
-
     //作品删除-拒绝
     public function workDel() {
         $map = [
             ['id','=',input('post.id',0)]
         ];
         try {
-            $exist = Db::table('mp_req_works')->where($map)->find();
+            $exist = Db::table('mp_activity_works')->where($map)->find();
             if(!$exist) {
                 return ajax('非法操作',-1);
             }
             $whereReq = [
                 ['id','=',$exist['req_id']]
             ];
-            Db::table('mp_req_works')->where($map)->update(['del'=>1]);
-            Db::table('mp_req')->where($whereReq)->setDec('works_num',1);
+            Db::table('mp_activity_works')->where($map)->update(['del'=>1]);
+            Db::table('mp_activity')->where($whereReq)->setDec('works_num',1);
             if($exist['idea_id']) {
                 $whereIdea = [
                     ['id','=',$exist['idea_id']]
                 ];
-                Db::table('mp_req_idea')->where($whereIdea)->setDec('works_num',1);
+                Db::table('mp_activity_idea')->where($whereIdea)->setDec('works_num',1);
             }
             Db::table('mp_user')->where('id','=',$exist['uid'])->setDec('works_num',1);
         }catch (\Exception $e) {

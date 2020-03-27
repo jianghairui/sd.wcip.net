@@ -14,7 +14,7 @@ $resp = array('ret' => 'success');
 echo json_encode($resp);
 
 function qiniuLog($cmd,$str) {
-    $file= ROOT_PATH . '/qiniu_error.log';
+    $file= ROOT_PATH . '/log/qiniu.log';
     $text='[Time ' . date('Y-m-d H:i:s') ."]\ncmd:" .$cmd. "\n" .$str. "\n---END---" . "\n";
     if(false !== fopen($file,'a+')){
         file_put_contents($file,$text,FILE_APPEND);

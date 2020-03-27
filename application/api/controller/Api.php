@@ -11,7 +11,7 @@ use my\Sendsms;
 use think\Db;
 use think\Exception;
 
-class Api extends Common
+class Api extends Base
 {
     //获取轮播图列表
     public function slideList() {

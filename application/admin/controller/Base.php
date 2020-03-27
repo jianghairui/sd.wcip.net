@@ -45,7 +45,7 @@ class Base extends Controller {
 
         if(!$this->needSession()) {
             if(request()->isPost()) {
-                throw new HttpResponseException(ajax([],-2));
+                throw new HttpResponseException(ajax('session 无效',-5));
             }else {
                 $this->error('请登录后操作',url('Login/index'));
             }
@@ -65,17 +65,17 @@ class Base extends Controller {
             return true;
         }else {
             if(session('username') && session('mploginstatus') && session('mploginstatus') == md5(session('username') . config('login_key'))) {
-//                if(session('username') !== config('superman')) {
-//                    $auth = new Auth();
-//                    $bool = $auth->check($this->cmd,session('admin_id'));
-//                    if(!$bool) {
-//                        if(request()->isPost()) {
-//                            throw new HttpResponseException(ajax('没有权限',-1));
-//                        }else {
-//                            exit($this->fetch('public/noAuth'));
-//                        }
-//                    }
-//                }
+                if(session('username') !== config('superman')) {
+                    $auth = new Auth();
+                    $bool = $auth->check($this->cmd,session('admin_id'));
+                    if(!$bool) {
+                        if(request()->isPost()) {
+                            throw new HttpResponseException(ajax('没有权限',-1));
+                        }else {
+                            exit($this->fetch('public/noAuth'));
+                        }
+                    }
+                }
                 return true;
             }else {
                 return false;
@@ -99,8 +99,8 @@ class Base extends Controller {
         return $ip;
     }
 
-    protected function log($detail = '', $type = 0) {
-        $insert['detail'] = $detail;
+    protected function log($log_detail = '', $type = 0) {
+        $insert['detail'] = $log_detail;
         $insert['admin_id'] = session('admin_id');
         $insert['create_time'] = time();
         $insert['ip'] = $this->getip();
@@ -123,7 +123,7 @@ class Base extends Controller {
         return true;
     }
 
-    //七牛云移动文件
+    //七牛云文件转移
     protected function moveFile($srcKey,$destpath='upload/public/') {
         $auth = new \Qiniu\Auth(config('qiniu_ak'), config('qiniu_sk'));
         $config = new Config();
@@ -155,7 +155,7 @@ class Base extends Controller {
 
     }
 
-    //七牛云删除文件
+    //七牛云文件删除
     protected function rs_delete($key) {
         $auth = new \Qiniu\Auth(config('qiniu_ak'), config('qiniu_sk'));
         $config = new Config();
@@ -163,8 +163,10 @@ class Base extends Controller {
         $bucketManager->delete(config('qiniu_bucket'), $key);
     }
 
+    //七牛云日志
     public function qiniuLog($cmd,$str) {
-        $file= ROOT_PATH . '/log/qiniu_error.log';
+        $file= LOG_PATH . '/qiniu_error.log';
+        create_dir($file);
         $text='[Time ' . date('Y-m-d H:i:s') ."]\ncmd:" .$cmd. "\n" .$str. "\n---END---" . "\n";
         if(false !== fopen($file,'a+')){
             file_put_contents($file,$text,FILE_APPEND);
@@ -175,7 +177,8 @@ class Base extends Controller {
 
     //Exception日志
     protected function refundLog($cmd,$str) {
-        $file= ROOT_PATH . '/log/order_refund.log';
+        $file= LOG_PATH . '/order_refund.log';
+        create_dir($file);
         $text='[Time ' . date('Y-m-d H:i:s') ."]\ncmd:" .$cmd. "\n" .$str. "\n---END---" . "\n";
         if(false !== fopen($file,'a+')){
             file_put_contents($file,$text,FILE_APPEND);
@@ -186,7 +189,8 @@ class Base extends Controller {
 
     //模板消息日志
     protected function msglog($cmd,$str) {
-        $file= ROOT_PATH . '/log/message.log';
+        $file= LOG_PATH . '/message.log';
+        create_dir($file);
         $text='[Time ' . date('Y-m-d H:i:s') ."]\ncmd:" .$cmd. "\n" .$str. "\n---END---" . "\n";
         if(false !== fopen($file,'a+')){
             file_put_contents($file,$text,FILE_APPEND);

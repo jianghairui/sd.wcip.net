@@ -8,218 +8,29 @@
 namespace app\admin\controller;
 
 use think\Controller;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use PhpOffice\PhpSpreadsheet\Reader\Xls;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
-use PhpOffice\PhpSpreadsheet\Cell\DataType;
-use PhpOffice\PhpSpreadsheet\Style\Fill;
-use PhpOffice\PhpSpreadsheet\Style\Color;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use think\Db;
-use my\Sendsms;
 class Test extends Base {
 
     public function index() {
-        $ele = @$this->orderSms();
-        var_dump($ele);
-    }
 
-    //兑换成功发送手机通知短信
-//    public function orderSms() {
-//        $sms = new Sendsms();
-//        try {
-//            $card_no = "12251646";
-//            $sms_data['tel'] = '13102163019';
-//            $sms_data['param'] = [
-//                'work_title' => $card_no,
-//                'org' => '海雷丁商会'
-//            ];
-//            $res = $sms->send($sms_data,'SMS_174987199');
-//            if($res->Code === 'OK') {
-//                return 'OK';
-//            }else {
-//                return $res->Message;
-//            }
-//        }catch (\Exception $e) {
-//            return $e->getMessage();
-//        }
-//    }
+        $this->qiniuLog('Hello','World');
 
-    private function genLetter() {
-        $arr = [];
-        return $arr['a'];
-    }
-
-    public function genCode1000() {
-        //exit('hello world');
-
-        //生成1000张卡号密钥
-//        $arr = range(100000,999999);
-//        shuffle($arr);
-//        $card_no = array_slice($arr,0,1000);
-//        $no = [];
-//        foreach ($card_no as $v) {
-//            $data['card_no'] = mt_rand(10,99) . $v;
-//            $data['card_key'] = $this->randkeys(6);
-//            $no[] = $data;
-//        }
-//        try {
-//            $res = Db::table('mp_yu')->insertAll($no);
-//        } catch (\Exception $e) {
-//            die($e->getMessage());
-//        }
-//        halt($res);
-
-        //导出Excel
-//        try {
-//            $list = Db::table('mp_yu')->select();
-//        } catch (\Exception $e) {
-//            return ajax($e->getMessage(), -1);
-//        }
+//        $nicheng_tou = array('战国','春秋','秦','飘逸的','轻浮的','缥缈の','崛起の','汉初');
 //
-//        $spreadsheet = new Spreadsheet();
-//        $sheet = $spreadsheet->getActiveSheet();
-//        $sheet->setTitle('纸巾机统计');
+//        $nicheng_wei=array('嚓茶','凉面','便当','毛豆','花生','可乐','灯泡','哈密瓜','野狼','背包','眼神','缘分','雪碧','人生','牛排','蚂蚁','飞鸟','灰狼','斑马','汉堡','悟空','巨人','绿茶','自行车','保温杯','大碗','墨镜','魔镜','煎饼','月饼','月亮','星星','芝麻','啤酒','玫瑰','大叔','小伙','哈密瓜，数据线','太阳','树叶','芹菜','黄蜂','蜜粉','蜜蜂','信封','西装','外套','裙子','大象','猫咪','母鸡','路灯','蓝天','白云','星月','彩虹','微笑','摩托','板栗','高山','大地','大树','电灯胆','砖头','楼房','水池','鸡翅','蜻蜓','红牛','咖啡','机器猫','枕头','大船','诺言','钢笔','刺猬','天空','飞机','大炮','冬天','洋葱','春天','夏天','秋天','冬日','航空','毛衣','豌豆','黑米','玉米','眼睛','老鼠','白羊','帅哥','美女','季节','鲜花','服饰','裙子','白开水','秀发','大山','火车','汽车','歌曲','舞蹈','老师','导师','方盒','大米','麦片','水杯','水壶','手套','鞋子','自行车','鼠标','手机','电脑','书本','奇迹','身影','香烟','夕阳','台灯','宝贝','未来','皮带','钥匙','心锁','故事','花瓣','滑板','画笔','画板','学姐','店员','电源','饼干','宝马','过客','大白','时光','石头','钻石','河马','犀牛','西牛','绿草','抽屉','柜子','往事','寒风','路人','橘子','耳机','鸵鸟','朋友','苗条','铅笔','钢笔','硬币','热狗','大侠','御姐','萝莉','毛巾','期待','盼望','白昼','黑夜','大门','黑裤','钢铁侠','哑铃','板凳','枫叶','荷花','乌龟','仙人掌','衬衫','大神','草丛','早晨','心情','茉莉','流沙','蜗牛','战斗机','冥王星','猎豹','棒球','篮球','乐曲','电话','网络','世界','中心','鱼','鸡','狗','老虎','鸭子','雨','羽毛','翅膀','外套','火','丝袜','书包','钢笔','冷风','八宝粥','烤鸡','大雁','音响','招牌','胡萝卜','冰棍','帽子','菠萝','蛋挞','香水','泥猴桃','吐司','溪流','黄豆','樱桃','小鸽子','小蝴蝶','爆米花','花卷','小鸭子','小海豚','日记本','小熊猫','小懒猪','小懒虫','荔枝','镜子','曲奇','金针菇','小松鼠','小虾米','酒窝','紫菜','金鱼','柚子','果汁','百褶裙','项链','帆布鞋','火龙果','奇异果','煎蛋','唇彩','小土豆','高跟鞋','戒指','雪糕','睫毛','铃铛','手链','香氛','红酒','月光','酸奶','银耳汤','咖啡豆','小蜜蜂','小蚂蚁','蜡烛','棉花糖','向日葵','水蜜桃','小蝴蝶','小刺猬','小丸子','指甲油','康乃馨','糖豆','薯片','口红','超短裙','乌冬面','冰淇淋','棒棒糖','长颈鹿','豆芽','发箍','发卡','发夹','发带','铃铛','小馒头','小笼包','小甜瓜','冬瓜','香菇','小兔子','含羞草','短靴','睫毛膏','小蘑菇','跳跳糖','小白菜','草莓','柠檬','月饼','小百合','纸鹤','小天鹅','云朵','芒果','面包','海燕','小猫咪','龙猫','唇膏','大古董','羊','黑猫','白猫','万宝路','金毛','山水','音响');
 //
-//        $sheet->getColumnDimension('A')->setWidth(12);
-//        $sheet->getColumnDimension('B')->setWidth(12);
+//        $tou_num=rand(0,8);
 //
-//        $sheet->getStyle('A:B')->applyFromArray([
-//            'alignment' => [
-//                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-//                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-//            ],
-//        ]);
+//        $wei_num=rand(0,327);
 //
-//        $sheet->setCellValue('A1', '卡号');
-//        $sheet->setCellValue('B1', '密钥');
+//        $nicheng=$nicheng_tou[$tou_num].$nicheng_wei[$wei_num];
 //
-//        $index = 2;
-//        foreach ($list as $v) {
-//            $sheet->setCellValue('A'.$index, $v['card_no']);
-//            $sheet->setCellValue('B'.$index, $v['card_key']);
-//            $index++;
-//        }
+//        $this->assign('nickname',$nicheng);
 //
-//        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');//告诉浏览器输出07Excel文件
-////header(‘Content-Type:application/vnd.ms-excel‘);//告诉浏览器将要输出Excel03版本文件
-//        header('Content-Disposition: attachment;filename="card'.date('Ymd').'.xlsx"');//告诉浏览器输出浏览器名称
-//        header('Cache-Control: max-age=0');//禁止缓存
-//
-//        $writer = new Xlsx($spreadsheet);
-//        $writer->save('php://output');
+//        return $this->fetch();
 
     }
 
-
-    private function randkeys($length) {
-        $returnStr='';
-        $pattern = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        for($i = 0; $i < $length; $i ++) {
-            $returnStr .= $pattern {mt_rand ( 0, 25 )};
-        }
-        return $returnStr;
-    }
-
-    public function readexcel( $file = '',  $sheet = 0,  $columnCnt = 0, &$options = [])
-    {
-        die();
-        try {
-            /* 转码 */
-            $file = iconv("utf-8", "gb2312", $file);
-
-            if (empty($file) OR !file_exists($file)) {
-                throw new \Exception('文件不存在!');
-            }
-
-            /** @var Xlsx $objRead */
-            $objRead = IOFactory::createReader('Xlsx');
-
-            if (!$objRead->canRead($file)) {
-                /** @var Xls $objRead */
-                $objRead = IOFactory::createReader('Xls');
-
-                if (!$objRead->canRead($file)) {
-                    throw new \Exception('只支持导入Excel文件！');
-                }
-            }
-
-            /* 如果不需要获取特殊操作，则只读内容，可以大幅度提升读取Excel效率 */
-            empty($options) && $objRead->setReadDataOnly(true);
-            /* 建立excel对象 */
-            $obj = $objRead->load($file);
-            /* 获取指定的sheet表 */
-            $currSheet = $obj->getSheet($sheet);
-
-            if (isset($options['mergeCells'])) {
-                /* 读取合并行列 */
-                $options['mergeCells'] = $currSheet->getMergeCells();
-            }
-
-            if (0 == $columnCnt) {
-                /* 取得最大的列号 */
-                $columnH = $currSheet->getHighestColumn();
-                /* 兼容原逻辑，循环时使用的是小于等于 */
-                $columnCnt = Coordinate::columnIndexFromString($columnH);
-            }
-
-            /* 获取总行数 */
-            $rowCnt = $currSheet->getHighestRow();
-            $data   = [];
-
-            /* 读取内容 */
-            for ($_row = 1; $_row <= $rowCnt; $_row++) {
-                $isNull = true;
-
-                for ($_column = 1; $_column <= $columnCnt; $_column++) {
-                    $cellName = Coordinate::stringFromColumnIndex($_column);
-                    $cellId   = $cellName . $_row;
-                    $cell     = $currSheet->getCell($cellId);
-
-                    if (isset($options['format'])) {
-                        /* 获取格式 */
-                        $format = $cell->getStyle()->getNumberFormat()->getFormatCode();
-                        /* 记录格式 */
-                        $options['format'][$_row][$cellName] = $format;
-                    }
-
-                    if (isset($options['formula'])) {
-                        /* 获取公式，公式均为=号开头数据 */
-                        $formula = $currSheet->getCell($cellId)->getValue();
-
-                        if (0 === strpos($formula, '=')) {
-                            $options['formula'][$cellName . $_row] = $formula;
-                        }
-                    }
-
-                    if (isset($format) && 'm/d/yyyy' == $format) {
-                        /* 日期格式翻转处理 */
-                        $cell->getStyle()->getNumberFormat()->setFormatCode('yyyy/mm/dd');
-                    }
-
-                    $data[$_row][$cellName] = trim($currSheet->getCell($cellId)->getFormattedValue());
-
-                    if (!empty($data[$_row][$cellName])) {
-                        $isNull = false;
-                    }
-                }
-
-                /* 判断是否整行数据为空，是的话删除该行数据 */
-                if ($isNull) {
-                    unset($data[$_row]);
-                }
-            }
-
-            return $data;
-        } catch (\Exception $e) {
-            throw $e;
-        }
-    }
 
 
 }

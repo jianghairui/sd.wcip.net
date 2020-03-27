@@ -193,6 +193,15 @@ function randomkeys($length) {
     return $returnStr;
 }
 
+function randname($length) {
+    $returnStr='';
+    $pattern = 'abcdefghijklmnopqrstuvwxyz';
+    for($i = 0; $i < $length; $i ++) {
+        $returnStr .= $pattern {mt_rand ( 0, 25 )};
+    }
+    return $returnStr;
+}
+
 function gen_unique_number($letter = '')
 {
     $time = explode (" ", microtime ());
@@ -268,7 +277,25 @@ function curl_post_data($url, $curlPost,$userCert = false)
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
     $data = curl_exec($ch);
+    curl_close($ch);
     return $data;
+}
+
+function curl_get_data($url,$data = [])
+{
+    $ch = curl_init();
+    if($data){
+        $querystring = http_build_query($data);
+        $url = $url.'?'.$querystring;
+    }
+    curl_setopt($ch, CURLOPT_URL,$url);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);         // 执行后不直接打印出来
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); // 跳过证书检查
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE); // 不从证书中检查SSL加密算法是否存在
+    $output = curl_exec($ch); //执行并获取HTML文档内容
+    curl_close($ch); //释放curl句柄
+    return $output;
 }
 
 //生成签名
@@ -330,9 +357,10 @@ function arr2xml($data, $root = true){
 }
 
 //后台上传图片
-function upload($k,$base_path = 'upload/admin/') {
-    if(checkfile($k) !== true) {
-        return array('error'=>1,'msg'=>checkfile($k));
+function upload($k,$base_path = 'upload/admin/',$limitSize = 512) {
+    $checkResult = checkfile($k,$limitSize);
+    if($checkResult !== true) {
+        return array('error'=>1,'msg'=>$checkResult);
     }
     $filename_array = explode('.',$_FILES[$k]['name']);
     $ext = array_pop($filename_array);
@@ -345,9 +373,10 @@ function upload($k,$base_path = 'upload/admin/') {
     $filepath = $path . "/" . $newname;
 
     return array('error'=>0,'data'=>$filepath);
+
 }
 //检验格式大小
-function checkfile($file) {
+function checkfile($file,$limitSize = 512) {
     $allowType = array(
         "image/gif",
         "image/jpeg",
@@ -362,8 +391,8 @@ function checkfile($file) {
     if(!in_array($_FILES[$file]["type"],$allowType)) {
         return '图片格式无效';
     }
-    if($_FILES[$file]["size"] > 1024*512) {
-        return '图片大小不超过512Kb';
+    if($_FILES[$file]["size"] > 1024*$limitSize) {
+        return '图片大小不超过'.$limitSize.'Kb';
     }
     if ($_FILES[$file]["error"] > 0) {
         return "error: " . $_FILES[$file]["error"];
@@ -373,6 +402,7 @@ function checkfile($file) {
 }
 //接口上传图片
 function ajaxUpload($k,$maxsize=512) {
+
     $allowType = array(
         "image/gif",
         "image/jpeg",
@@ -382,13 +412,13 @@ function ajaxUpload($k,$maxsize=512) {
         "image/bmp"
     );
     if($_FILES[$k]["type"] == '') {
-        throw new HttpResponseException(ajax('图片存在中文名或超过2M',20));
+        throw new HttpResponseException(ajax('图片存在中文名或超过2M',27));
     }
     if(!in_array($_FILES[$k]["type"],$allowType)) {
-        throw new HttpResponseException(ajax('文件类型不符' . $_FILES[$k]["type"],21));
+        throw new HttpResponseException(ajax('文件类型不符' . $_FILES[$k]["type"],28));
     }
     if($_FILES[$k]["size"] > $maxsize*1024) {
-        throw new HttpResponseException(ajax('图片大小不超过'.$maxsize.'Kb',22));
+        throw new HttpResponseException(ajax('图片大小不超过'.$maxsize.'Kb',29));
     }
     if ($_FILES[$k]["error"] > 0) {
         throw new HttpResponseException(ajax("error: " . $_FILES[$k]["error"],-1));
@@ -404,9 +434,14 @@ function ajaxUpload($k,$maxsize=512) {
     move_uploaded_file($_FILES[$k]["tmp_name"], $path . $newname);
     $filepath = $path . $newname;
     return $filepath;
+
 }
 
 function rename_file($tmp,$path = '') {
+    $prefix = substr($tmp,0,strpos($tmp,'/'));
+    if($prefix != 'tmp') {
+        return $tmp;
+    }
     $filename = substr(strrchr($tmp,"/"),1);
     $path = $path ? $path : 'upload/api/';
     $path.= date('Y-m-d') . '/';
@@ -415,13 +450,24 @@ function rename_file($tmp,$path = '') {
     return $path . $filename;
 }
 
+function create_dir($file_path = '') {
+    $position =  strripos($file_path,'/');
+    $dirname = substr($file_path,0,$position);
+    if(!$dirname) {
+        exit(json_encode(['msg'=>'invalid directory']));
+    }
+    if(!is_dir($file_path)) {
+        @mkdir($dirname,0755,true);
+    }
+}
+
 function checkInput($postArray) {
     if(empty($postArray)) {
-        throw new HttpResponseException(ajax('数据不能为空',-3));
+        throw new HttpResponseException(ajax('数据不能为空',-2));
     }
     foreach ($postArray as $value) {
         if (is_null($value) || $value === '') {
-            throw new HttpResponseException(ajax('数据不能为空',-3));
+            throw new HttpResponseException(ajax('数据不能为空',-2));
         }
     }
     return true;

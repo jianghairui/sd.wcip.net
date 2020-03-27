@@ -9,7 +9,7 @@ namespace app\api\controller;
 use EasyWeChat\Factory;
 use think\Db;
 
-class Login extends Common {
+class Login extends Base {
 
     //小程序登录
     public function login()
@@ -26,14 +26,21 @@ class Login extends Common {
 
         try {
             $token = md5($ret['openid'] . time());
-            $exist = Db::table('mp_user')->where('openid',$ret['openid'])->find();
+            $whereOpenid = [
+                ['openid','=',$ret['openid']]
+            ];
+            $exist = Db::table('mp_user')->where($whereOpenid)->find();
             if($exist) {
-                Db::table('mp_user')->where('openid',$ret['openid'])->update([
+                Db::table('mp_user')->where($whereOpenid)->update([
                     'last_login_time'=>time(),
                     'token'=>$token,
                     'session_key'=>$ret['session_key']
                 ]);
-                $uid = $exist['id'];
+                if($exist['uid']) {
+                    $uid = $exist['uid'];
+                }else {
+                    $uid = '';
+                }
             }else {
                 $insert = [
                     'create_time' => time(),
@@ -42,7 +49,8 @@ class Login extends Common {
                     'session_key' => $ret['session_key'],
                     'token' => $token
                 ];
-                $uid = Db::table('mp_user')->insertGetId($insert);
+                Db::table('mp_user')->insertGetId($insert);
+                $uid = '';
             }
         }catch (\Exception $e) {
             return ajax($e->getMessage(),-1);
@@ -80,6 +88,7 @@ class Login extends Common {
                 $data['user_auth'] = 1;
             }
             Db::table('mp_user')->where('id','=',$this->myinfo['id'])->update($data);
+
         }catch (\Exception $e) {
             return ajax($e->getMessage(),-1);
         }
@@ -102,6 +111,8 @@ class Login extends Common {
         }
     }
 
+    //
+
     //保存手机号
     public function getPhoneNumber() {
         $iv = input('post.iv');
@@ -119,8 +130,6 @@ class Login extends Common {
         }catch (\Exception $e) {
             return ajax($e->getMessage(),-1);
         }
-
-        $inviter_id = input('post.inviter_id');
         try {
             $data['tel'] = $decryptedData['phoneNumber'];
             Db::table('mp_user')->where('openid','=',$this->myinfo['openid'])->update($data);
@@ -128,22 +137,7 @@ class Login extends Common {
             if($this->myinfo['tel']) {
                 return ajax($decryptedData);
             }
-            //是否有邀请人ID
-            if($inviter_id) {
-                $score = 50;
-                $data['inviter_id'] = $inviter_id;
-                $insert_data = [
-                    'inviter_id' => $inviter_id,
-                    'to_uid' => $this->myinfo['id'],
-                    'score' => $score,
-                    'create_time' => time()
-                ];
-                Db::table('mp_user')->where('id','=',$this->myinfo['id'])->update($data);
-                Db::table('mp_invite')->insert($insert_data);
-                Db::table('mp_user')->where('id','=',$inviter_id)->setInc('score',$score);
-            }else {
-                Db::table('mp_user')->where('id','=',$this->myinfo['id'])->update($data);
-            }
+            Db::table('mp_user')->where('id','=',$this->myinfo['id'])->update($data);
         }catch (\Exception $e) {
             return ajax($e->getMessage(),-1);
         }

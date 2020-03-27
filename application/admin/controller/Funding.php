@@ -41,16 +41,16 @@ class Funding extends Base {
         }
         try {
             $count = Db::table('mp_funding')->alias('f')
-                ->join('mp_req r','f.req_id=r.id','left')
-                ->join('mp_req_works w','f.work_id=w.id','left')
+                ->join('mp_activity r','f.req_id=r.id','left')
+                ->join('mp_activity_works w','f.work_id=w.id','left')
                 ->where($where)->count();
             $page['count'] = $count;
             $page['curr'] = $curr_page;
             $page['totalPage'] = ceil($count/$perpage);
             $list = Db::table('mp_funding')->alias('f')
-                ->join('mp_req r','f.req_id=r.id','left')
-                ->join('mp_req_works w','f.work_id=w.id','left')
-                ->join('mp_req_idea i','f.idea_id=i.id','left')
+                ->join('mp_activity r','f.req_id=r.id','left')
+                ->join('mp_activity_works w','f.work_id=w.id','left')
+                ->join('mp_activity_idea i','f.idea_id=i.id','left')
                 ->join('mp_user_role role','f.factory_id=role.uid','left')
                 ->field('f.*,r.title AS req_title,w.title AS work_title,i.title AS idea_title,role.org AS factory_name')
                 ->order(['f.id'=>'DESC'])
@@ -89,7 +89,7 @@ class Funding extends Base {
                     ['id','=',$val['work_id']],
                     ['del','=',0]
                 ];
-                $work_exist = Db::table('mp_req_works')
+                $work_exist = Db::table('mp_activity_works')
                     ->where($whereWork)->where('factory_id','>',0)->find();
                 if(!$work_exist) {
                     return ajax('非法参数',-1);
@@ -134,7 +134,7 @@ class Funding extends Base {
             if(!empty($works_ids_yet)) {
                 $whereWork[] = ['id','NOT IN',$works_ids_yet];
             }
-            $worklist = Db::table('mp_req_works')->where($whereWork)->field('id,title')->select();
+            $worklist = Db::table('mp_activity_works')->where($whereWork)->field('id,title')->select();
         } catch (\Exception $e) {
             die($e->getMessage());
         }
@@ -149,7 +149,7 @@ class Funding extends Base {
                 ['f.id','=',$param['id']]
             ];
             $info = Db::table('mp_funding')->alias('f')
-                ->join('mp_req_works w','f.work_id=w.id','left')
+                ->join('mp_activity_works w','f.work_id=w.id','left')
                 ->field('f.*,w.title AS work_title')
                 ->where($where)->find();
             if(!$info) { die('非法操作');}
