@@ -3,16 +3,6 @@
 </style>
 <article class="page-container">
     <form class="form form-horizontal" id="form-article-add">
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2">作品来源：</label>
-            <div class="formControls col-xs-4 col-sm-4">
-                <span>
-                    {$info.work_title} (id: {$info.work_id})
-                </span>
-            </div>
-            <div class="col-3">
-            </div>
-        </div>
         <div class="row cl" id="picsize">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span></label>
             <div class="formControls col-xs-8 col-sm-9">
@@ -48,13 +38,13 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>众筹开始时间：</label>
             <div class="formControls col-xs-4 col-sm-4">
-                <input type="text" id="start_time" name="start_time" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{ $dp.$D(\'end_time\')}' })" value="{$info.start_time|date='Y-m-d'}" class="input-text Wdate">
+                <input type="text" id="start_time" name="start_time" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{ $dp.$D(\'end_time\')}' })" value="{$info.start_time|date='Y-m-d'}" class="input-text Wdate" readonly>
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>众筹结束时间：</label>
             <div class="formControls col-xs-4 col-sm-4">
-                <input type="text" id="end_time" name="end_time" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{ $dp.$D(\'start_time\')}' })" value="{$info.end_time|date='Y-m-d'}" class="input-text Wdate">
+                <input type="text" id="end_time" name="end_time" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{ $dp.$D(\'start_time\')}' })" value="{$info.end_time|date='Y-m-d'}" class="input-text Wdate" readonly>
             </div>
         </div>
         <div class="row cl">
@@ -162,6 +152,7 @@
         });
 
         $(document).on("change","#qiniu-file",function() {
+            var load = null;
             var obj = $("#qiniu-file");
             var fileName = obj.val();//上传的本地文件绝对路径
             if(fileName === '') {
@@ -190,6 +181,7 @@
                 dataType:'json',
                 success: function(result){
                     if(result.code == 1){
+                        load = layer.load(2);
                         var observer = {                         //设置上传过程的监听函数
                             next(res){                        //上传中(result参数带有total字段的 object，包含loaded、total、percent三个属性)
                                 Math.floor(res.total.percent);//查看进度[loaded:已上传大小(字节);total:本次上传总大小;percent:当前上传进度(0-100)]
@@ -200,9 +192,9 @@
                             },
                             complete(res){                       //成功后
                                 // console.log(res,'---upload success');
-                                layer.alert('上传成功',{icon:6});
                                 $("#cover").val(result.data.filename);
-                                $("#fileList").html('<img class="thumbnail" src="' + result.data.weburl + result.data.filename + '" />')
+                                $("#fileList").html('<img class="thumbnail" src="' + result.data.weburl + result.data.filename + '" />');
+                                layer.close(load);
                             }
                         };
                         var putExtra = {

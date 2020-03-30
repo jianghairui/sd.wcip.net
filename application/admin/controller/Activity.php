@@ -208,10 +208,10 @@ class Activity extends Base {
                 $whereUser = [
                     ['id','=',$val['uid']]
                 ];
-//                $org_exist = Db::table('mp_user')->where($whereUser)->find();
-//                if(!$org_exist) {
-//                    return ajax('发布人不存在',-1);
-//                }
+                $org_exist = Db::table('mp_user')->where($whereUser)->find();
+                if(!$org_exist) {
+                    return ajax('发布人不存在',-1);
+                }
 
                 $where = [
                     ['id','=',$val['id']]

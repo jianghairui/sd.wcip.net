@@ -35,17 +35,16 @@
         <form id="multi-check">
             {foreach $list as $li}
             <tr class="text-c userinfo">
-                <td rowspan="2">{$li.id}</td>
-                <td rowspan="2">
+                <td>{$li.id}</td>
+                <td>
                     <div style="width: 120px;height: 120px;background-image: url('<?php echo config('qiniu_weburl');?>{$li.cover}');background-position: center;background-repeat: no-repeat;background-size: 100%"></div>
                 </td>
-                <td rowspan="2" class="text-l">
+                <td class="text-l">
                     <div style="margin: 0 10px;">
-                        <div><label class="funding-label">众筹标题:</label><span class="order-font-b">{$li.title}</span></div>
-                        <div><label class="funding-label">活动来源:</label><span class="order-font-b">{$li.req_title}</span></div>
-                        <div><label class="funding-label">引用创意:</label><span class="order-font-b">{if $li['idea_title']}{$li.idea_title}{else /}未引用{/if}</span></div>
-                        <div><label class="funding-label">创作作品:</label><span class="order-font-b">{$li.work_title}</span></div>
-                        <div><label class="funding-label">接单工厂:</label><span class="order-font-b">{$li.factory_name}</span></div>
+                        <div><label class="funding-label">项目名称:</label><span class="order-font-b">{$li.title}</span></div>
+                        <div><label class="funding-label">开始时间:</label><span class="order-font-b">{$li.start_time|date="Y年m月d日"}</span></div>
+                        <div><label class="funding-label">截止日期:</label><span class="order-font-b">{$li.end_time|date="Y年m月d日"}</span></div>
+                        <div><label class="funding-label">支持人数:</label><span class="order-font-b">{$li.order_num}</span></div>
                     </div>
                 </td>
                 <td>{$li.need_money}</td>
@@ -55,7 +54,7 @@
                 <td class="td-status">
                     {switch $li['status']}
                     {case 0}
-                    <span class="label label-danger radius">已终止</span>
+                    <span class="label label-danger radius">预热</span>
                     {/case}
                     {case 1}
                     <span class="label label-success radius">众筹中</span>
@@ -63,13 +62,10 @@
                     {case 2}
                     <span class="label label-primary radius">已结束</span>
                     {/case}
-                    {case 3}
-                    <span class="label label-defaunt radius">众筹失败</span>
-                    {/case}
                     {default /}
                     {/switch}
                 </td>
-                <td class="td-manage" rowspan="2">
+                <td class="td-manage">
                     <span>
                         <a style="text-decoration:none" onclick="pagefull('众筹详情','{:url("Funding/fundingDetail",array("id"=>$li["id"]))}')" href="javascript:;" title="众筹详情">
                             <i class="Hui-iconfont">&#xe6df;</i>
@@ -80,15 +76,6 @@
                         <i class="Hui-iconfont">&#xe6e2;</i>
                         </a>
                     </span>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="5">
-                    <div style="margin: 0 10px;">
-                        <div><label class="funding-label">开始时间:</label><span class="order-font-b">{$li.start_time|date="Y年m月d日"}</span></div>
-                        <div><label class="funding-label">截止日期:</label><span class="order-font-b">{$li.end_time|date="Y年m月d日"}</span></div>
-                        <div><label class="funding-label">支持人数:</label><span class="order-font-b">{$li.order_num}</span></div>
-                    </div>
                 </td>
             </tr>
             {/foreach}

@@ -13,9 +13,6 @@ class Funding extends Base {
     //众筹列表
     public function fundingList() {
         $param['status'] = input('param.status','');
-        $param['req_id'] = input('param.req_id');
-        $param['work_id'] = input('param.work_id');
-        $param['idea_id'] = input('param.idea_id');
         $param['search'] = input('param.search');
 
         $page['query'] = http_build_query(input('param.'));
@@ -24,38 +21,23 @@ class Funding extends Base {
         $perpage = input('param.perpage',10);
 
         $where = [
-            ['f.del','=',0]
+            ['del','=',0]
         ];
 
         if(!is_null($param['status']) && $param['status'] !== '') {
-            $where[] = ['f.status','=',$param['status']];
-        }
-        if($param['req_id']) {
-            $where[] = ['f.req_id','=',$param['req_id']];
-        }
-        if($param['work_id']) {
-            $where[] = ['f.work_id','=',$param['work_id']];
+            $where[] = ['status','=',$param['status']];
         }
         if($param['search']) {
-            $where[] = ['f.title','like',"%{$param['search']}%"];
+            $where[] = ['title','like',"%{$param['search']}%"];
         }
         try {
-            $count = Db::table('mp_funding')->alias('f')
-                ->join('mp_activity r','f.req_id=r.id','left')
-                ->join('mp_activity_works w','f.work_id=w.id','left')
-                ->where($where)->count();
+            $count = Db::table('mp_funding')->where($where)->count();
             $page['count'] = $count;
             $page['curr'] = $curr_page;
             $page['totalPage'] = ceil($count/$perpage);
-            $list = Db::table('mp_funding')->alias('f')
-                ->join('mp_activity r','f.req_id=r.id','left')
-                ->join('mp_activity_works w','f.work_id=w.id','left')
-                ->join('mp_activity_idea i','f.idea_id=i.id','left')
-                ->join('mp_user_role role','f.factory_id=role.uid','left')
-                ->field('f.*,r.title AS req_title,w.title AS work_title,i.title AS idea_title,role.org AS factory_name')
-                ->order(['f.id'=>'DESC'])
+            $list = Db::table('mp_funding')
                 ->where($where)
-                ->order(['r.id'=>'DESC'])->limit(($curr_page - 1)*$perpage,$perpage)->select();
+                ->order(['id'=>'DESC'])->limit(($curr_page - 1)*$perpage,$perpage)->select();
         }catch (\Exception $e) {
             die($e->getMessage());
         }
@@ -68,7 +50,6 @@ class Funding extends Base {
     //发起众筹
     public function fundingAdd() {
         if(request()->isPost()) {
-            $val['work_id'] = input('post.work_id');
             $val['title'] = input('post.title');
             $val['need_money'] = input('post.need_money');
             $val['start_time'] = input('post.start_time');
@@ -85,26 +66,7 @@ class Funding extends Base {
                 if(!$cover) {
                     return ajax('请传入封面图',-1);
                 }
-                $whereWork = [
-                    ['id','=',$val['work_id']],
-                    ['del','=',0]
-                ];
-                $work_exist = Db::table('mp_activity_works')
-                    ->where($whereWork)->where('factory_id','>',0)->find();
-                if(!$work_exist) {
-                    return ajax('非法参数',-1);
-                }
-                $val['req_id'] = $work_exist['req_id'];
-                $val['idea_id'] = $work_exist['idea_id'];
-                $val['factory_id'] = $work_exist['factory_id'];
-                $whereFunding = [
-                    ['work_id','=',$val['work_id']],
-                    ['del','=',0]
-                ];
-                $funding_exist = Db::table('mp_funding')->where($whereFunding)->find();
-                if($funding_exist) {
-                    return ajax('此作品已发起过众筹',-1);
-                }
+
                 $qiniu_exist = $this->qiniuFileExist($cover);
                 if($qiniu_exist !== true) {
                     return ajax($qiniu_exist['msg'],-1);
@@ -125,20 +87,6 @@ class Funding extends Base {
             }
             return ajax();
         }
-        try {
-            $yet = [];
-            $works_ids_yet = Db::table('mp_funding')->where($yet)->column('work_id');
-            $whereWork = [
-                ['factory_id','>',0]
-            ];
-            if(!empty($works_ids_yet)) {
-                $whereWork[] = ['id','NOT IN',$works_ids_yet];
-            }
-            $worklist = Db::table('mp_activity_works')->where($whereWork)->field('id,title')->select();
-        } catch (\Exception $e) {
-            die($e->getMessage());
-        }
-        $this->assign('worklist',$worklist);
         return $this->fetch();
     }
     //众筹详情
@@ -146,12 +94,9 @@ class Funding extends Base {
         $param['id'] = input('param.id','');
         try {
             $where = [
-                ['f.id','=',$param['id']]
+                ['id','=',$param['id']]
             ];
-            $info = Db::table('mp_funding')->alias('f')
-                ->join('mp_activity_works w','f.work_id=w.id','left')
-                ->field('f.*,w.title AS work_title')
-                ->where($where)->find();
+            $info = Db::table('mp_funding')->where($where)->find();
             if(!$info) { die('非法操作');}
         }catch (\Exception $e) {
             die($e->getMessage());

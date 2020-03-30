@@ -47,6 +47,7 @@ class Base extends Controller {
             ],
         ];
         $this->checkSession();
+        $this->checkUid();
     }
 
     private function checkSession() {
@@ -66,7 +67,7 @@ class Base extends Controller {
             $token = input('post.token');
             if(!$token) { throw new HttpResponseException(ajax('token is empty',-6)); }
             try {
-                $token_exist = Db::table('mp_user')->where('token','=',$token)->find();
+                $token_exist = Db::table('mp_user_mp')->where('token','=',$token)->field('id,uid,nickname,sex,avatar,user_auth,session_key,token,last_login_time,openid,unionid')->find();
             }catch (\Exception $e) {
                 throw new HttpResponseException(ajax($e->getMessage(),-1));
             }
@@ -74,8 +75,7 @@ class Base extends Controller {
                 if(($token_exist['last_login_time'] + 3600*24*7) < time()) {
                     throw new HttpResponseException(ajax('invalid token',-3));
                 }
-                $this->myinfo['mp_id'] = $token_exist['mp_id'];
-                $this->myinfo['uid'] = $token_exist['uid'];
+                $this->myinfo = $token_exist;
                 return true;
             }else {
                 throw new HttpResponseException(ajax('invalid token',-3));
@@ -83,6 +83,43 @@ class Base extends Controller {
         }
 
     }
+
+    private function checkUid() {
+        $need = [
+            '',
+            'Api/',
+        ];
+        if (!in_array($this->controller,$need) && !in_array($this->cmd, $need)) {
+            return true;
+        }else {
+            if(isset($this->myinfo['uid']) && $this->myinfo['uid']) {
+                return true;
+            }else {
+                throw new HttpResponseException(ajax('请绑定手机号',-7));
+            }
+        }
+    }
+
+    private function getUserInfo() {
+        if(!$this->myinfo['uid']) {
+            return [];
+        }else {
+            $whereUser = [
+                ['id','=',$this->myinfo['uid']]
+            ];
+            try {
+                $info = Db::table('mp_user')->where($whereUser)->find();
+            } catch (\Exception $e) {
+                throw new HttpResponseException(ajax($e->getMessage(),-1));
+            }
+            return $info;
+        }
+    }
+
+
+
+
+
 
     //七牛云判断文件是否存在
     public function qiniuFileExist($key) {
