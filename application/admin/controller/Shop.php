@@ -31,6 +31,7 @@ class Shop extends Base {
             $page['count'] = $count;
             $page['curr'] = $curr_page;
             $page['totalPage'] = ceil($count/$perpage);
+
             $list = Db::table('mp_goods')->alias('g')
                 ->join('mp_user_role r','g.shop_id=r.uid','left')
                 ->where($where)
@@ -38,11 +39,12 @@ class Shop extends Base {
                 ->limit(($curr_page - 1)*$perpage,$perpage)
                 ->order(['g.id'=>'DESC'])
                 ->select();
-            $whereFake = [
+
+            $whereShop = [
                 ['role_check','=',2],
-                ['role','>',0]
+                ['role','<>',0]
             ];
-            $shoplist = Db::table('mp_user')->where($whereFake)->field('id,nickname,org,role,fake')->select();
+            $shoplist = Db::table('mp_user')->where($whereShop)->field('id,nickname,org,role')->select();
         }catch (\Exception $e) {
             die('SQL错误: ' . $e->getMessage());
         }
@@ -62,16 +64,16 @@ class Shop extends Base {
                 ['status','=',1]
             ];
             $list = Db::table('mp_goods_cate')->where($where)->select();
-            $whereFake = [
+            $whereShop = [
                 ['role_check','=',2],
-                ['role','>',0]
+                ['role','<>',0]
             ];
-            $fake_list = Db::table('mp_user')->where($whereFake)->field('id,nickname,org,role,fake')->select();
+            $shop_list = Db::table('mp_user')->where($whereShop)->field('id,nickname,org,role')->select();
         }catch (\Exception $e) {
             die($e->getMessage());
         }
         $this->assign('list',$list);
-        $this->assign('fake_list',$fake_list);
+        $this->assign('shop_list',$shop_list);
         return $this->fetch();
     }
 //添加修改商品时获取分类列表
@@ -114,11 +116,11 @@ class Shop extends Base {
                 ['del','=',0]
             ];
             $attr_list = Db::table('mp_goods_attr')->where($where_attr)->select();
-            $whereFake = [
+            $whereShop = [
                 ['role_check','=',2],
-                ['role','>',0]
+                ['role','<>',0]
             ];
-            $fake_list = Db::table('mp_user')->where($whereFake)->field('id,nickname,org,role,fake')->select();
+            $shop_list = Db::table('mp_user')->where($whereShop)->field('id,nickname,org,role')->select();
         }catch (\Exception $e) {
             die($e->getMessage());
         }
@@ -127,7 +129,7 @@ class Shop extends Base {
         $this->assign('child',$child);
         $this->assign('info',$info);
         $this->assign('qiniu_weburl',config('qiniu_weburl'));
-        $this->assign('fake_list',$fake_list);
+        $this->assign('shop_list',$shop_list);
         return $this->fetch();
     }
 //添加商品POST
@@ -135,11 +137,12 @@ class Shop extends Base {
         $val['pcate_id'] = input('post.pcate_id');
         $val['cate_id'] = input('post.cate_id');
         $val['name'] = input('post.name');
-        $val['origin_price'] = input('post.origin_price');
         $val['price'] = input('post.price');
         $val['stock'] = input('post.stock');
-        $val['sort'] = input('post.sort');
         $val['hot'] = input('post.hot');
+        $val['batch'] = input('post.batch');
+        $val['sample'] = input('post.sample');
+        $val['mold'] = input('post.mold');
         $val['sales'] = input('post.sales');
         $val['status'] = input('post.status');
         $val['unit'] = input('post.unit');
@@ -152,10 +155,18 @@ class Shop extends Base {
         $val['check'] = 1;
         $val['detail'] = input('post.detail');
         $val['use_attr'] = input('post.use_attr','');
+        $val['use_vip_price'] = input('post.use_vip_price','');
+
+        if($val['use_vip_price']) {
+            $val['vip_price'] = input('post.vip_price');
+            if(!$val['vip_price']) { return ajax('请上传会员价',-1); }
+        }
         if($val['use_attr']) {
+            $val['stock'] = 0;
             $attr1 = input('post.attr1',[]);
             $attr2 = input('post.attr2',[]);
             $attr3 = input('post.attr3',[]);
+            $attr4 = input('post.attr4',[]);
 
             $val['attr'] = input('post.attr','');
             if(!$val['attr'] || empty($attr1)) {
@@ -178,11 +189,18 @@ class Shop extends Base {
                 if(!if_int($v)) {
                     return ajax('规格库存必须为数字',-1);
                 }
+                $val['stock'] += $v;
             }
+            foreach ($attr4 as $v) {
+                if(!is_currency($v)) {
+                    return ajax('属性会员价格式不合法',-1);
+                }
+            }
+
         }
-        $image = input('post.pic_url',[]);
 
         try {
+            $image = input('post.pic_url',[]);
             $image_array = [];
             $limit = 9;
             if(is_array($image) && !empty($image)) {
@@ -198,6 +216,7 @@ class Shop extends Base {
             }else {
                 return ajax('请上传商品图片',-1);
             }
+
             foreach ($image as $v) {
                 $qiniu_move = $this->moveFile($v,'upload/goods/');
                 if($qiniu_move['code'] == 0) {
@@ -206,6 +225,7 @@ class Shop extends Base {
                     return ajax($qiniu_move['msg'],-2);
                 }
             }
+
             $val['pics'] = serialize($image_array);
 
             $new_id = Db::table('mp_goods')->insertGetId($val);
@@ -216,6 +236,7 @@ class Shop extends Base {
                     $data['value'] = $attr1[$k];
                     $data['price'] = $attr2[$k];
                     $data['stock'] = $attr3[$k];
+                    $data['vip_price'] = $attr4[$k];
                     $data['create_time'] = time();
                     $attr_insert[] = $data;
                 }
@@ -234,11 +255,12 @@ class Shop extends Base {
         $val['pcate_id'] = input('post.pcate_id');
         $val['cate_id'] = input('post.cate_id');
         $val['name'] = input('post.name');
-        $val['origin_price'] = input('post.origin_price');
         $val['price'] = input('post.price');
         $val['stock'] = input('post.stock');
-        $val['sort'] = input('post.sort');
         $val['hot'] = input('post.hot');
+        $val['batch'] = input('post.batch');
+        $val['sample'] = input('post.sample');
+        $val['mold'] = input('post.mold');
         $val['sales'] = input('post.sales');
         $val['status'] = input('post.status');
         $val['unit'] = input('post.unit');
@@ -251,11 +273,20 @@ class Shop extends Base {
         checkInput($val);
         $val['detail'] = input('post.detail');
         $val['use_attr'] = input('post.use_attr','');
+        $val['use_vip_price'] = input('post.use_vip_price','');
+
+        if($val['use_vip_price']) {
+            $val['vip_price'] = input('post.vip_price');
+            if(!$val['vip_price']) { return ajax('请上传会员价',-1); }
+        }
+
         if($val['use_attr']) {
+            $val['stock'] = 0;
             $attr0 = input('post.attr0',[]);//attr_ids
             $attr1 = input('post.attr1',[]);//属性值
-            $attr2 = input('post.attr2',[]);//金额
+            $attr2 = input('post.attr2',[]);//价格
             $attr3 = input('post.attr3',[]);//库存
+            $attr4 = input('post.attr4',[]);//会员价
 
             $val['attr'] = input('post.attr','');//属性名
             if(!$val['attr'] || empty($attr1)) {
@@ -272,6 +303,10 @@ class Shop extends Base {
             }
             foreach ($attr3 as $v) {
                 if(!if_int($v)) {return ajax('规格库存必须为数字'.$v,-1);}
+                $val['stock'] += $v;
+            }
+            foreach ($attr4 as $v) {
+                if(!is_currency($v)) {return ajax('属性会员价格式不合法',-1);}
             }
         }
         $image = input('post.pic_url',[]);
@@ -326,6 +361,7 @@ class Shop extends Base {
                     $data['value'] = $attr1[$k];
                     $data['price'] = $attr2[$k];
                     $data['stock'] = $attr3[$k];
+                    $data['vip_price'] = $attr4[$k];
                     if($attr0[$k] == '') {
                         $data['create_time'] = time();
                         $attr_insert[] = $data;
@@ -348,7 +384,7 @@ class Shop extends Base {
                     $this->rs_delete($v);
                 }
             }
-            return ajax($e->getMessage(),-1111);
+            return ajax($e->getMessage(),-1);
         }
         foreach ($old_pics as $v) {
             if(!in_array($v,$image_array)) {

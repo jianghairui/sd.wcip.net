@@ -15,16 +15,11 @@
                     <option value="{$li.id}" {if $param['shop_id']==$li['id']}selected{/if}>
                             (id:{$li.id} |
                             {switch $li['role']}
-                                {case 1} 博物馆 {/case}
-                                {case 2} 设计师 {/case}
-                                {case 3} 工厂 {/case}
+                                {case 1} 文旅机构 {/case}
+                                {case 2} 工厂 {/case}
                                 {default /}
                             {/switch} ) -
-                            {if $li['role'] == 2}
-                                {$li.nickname}
-                            {else /}
-                                {$li.org}
-                            {/if}
+                            {$li.org}
                     </option>
                     {/foreach}
 				</select>

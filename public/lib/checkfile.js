@@ -60,7 +60,7 @@ function checkfile(fileId,maxsize=512){
     return false;
 }
 
-function onlyNumber(obj){
+function onlyMoney(obj){
     //先把非数字的都替换掉，除了数字和.    
     obj.value = obj.value.replace(/[^\d\.]/g,'');
 
