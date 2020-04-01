@@ -6,10 +6,11 @@
     <section id="formAjax">
         <div class="text-c">
             <span class="select-box inline" style="width: 120px;">
-                <select name="cate_id" id="type" class="select">
+                <select name="type" id="type" class="select">
                     <option value="">全部</option>
-                    <option value="1" {if $param['type'] == 1}selected{/if}>小程序</option>
-                    <option value="2" {if $param['type'] == 2}selected{/if}>PC</option>
+                    {foreach $slideshow_type as $li}
+                    <option value="{$li.id}" {if $param['type'] == $li['id']}selected{/if}>{$li.type_name}</option>
+                    {/foreach}
                 </select>
             </span>
             <button name="" id="search-btn" class="btn btn-success" style="height: 28px;" type="button"><i class="Hui-iconfont">&#xe665;</i> 查找</button>
@@ -46,13 +47,7 @@
                 </td>
                 <td class="text-c">{$li.title}</td>
                 <td class="text-l">{$li.url}</td>
-                <td class="text-c">
-                    {switch $li['type']}
-                    {case 1}小程序{/case}
-                    {case 2}PC{/case}
-                    {default /} DEFAULT
-                    {/switch}
-                </td>
+                <td class="text-c">{$li.type_name}</td>
                 <td class="td-status">{if condition="$li['status'] == 1"}<span class="label label-success radius">已启用</span>{else /}<span class="label label-defaunt radius">已禁用</span>{/if}</td>
                 <td class="f-14 product-brand-manage">
                     {if condition="$li['status'] == 1"}
@@ -109,7 +104,6 @@
 
         $("#search-btn").click(function () {
             var type = $("#formAjax").find("#type").val();
-
             var str = '';
             if(type.length != '') {
                 str += '&type=' + type;

@@ -226,11 +226,11 @@
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>免费拿样：</label>
             <div class="formControls col-xs-8 col-sm-9 skin-minimal">
                 <div class="radio-box">
-                    <input name="sample" type="radio" id="sample" value="1" >
+                    <input name="sample" type="radio" id="sample" value="1" {if $info['sample'] == 1}checked{/if}>
                     <label for="hot">是</label>
                 </div>
                 <div class="radio-box">
-                    <input name="sample" type="radio" id="unsample" value="0" checked>
+                    <input name="sample" type="radio" id="unsample" value="0" {if $info['sample'] == 0}checked{/if}>
                     <label for="unsample">否</label>
                 </div>
             </div>
@@ -239,11 +239,11 @@
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>免费开模：</label>
             <div class="formControls col-xs-8 col-sm-9 skin-minimal">
                 <div class="radio-box">
-                    <input name="mold" type="radio" id="mold" value="1" >
+                    <input name="mold" type="radio" id="mold" value="1" {if $info['mold'] == 1}checked{/if}>
                     <label for="mold">是</label>
                 </div>
                 <div class="radio-box">
-                    <input name="mold" type="radio" id="unmold" value="0" checked>
+                    <input name="mold" type="radio" id="unmold" value="0" {if $info['mold'] == 0}checked{/if}>
                     <label for="unmold">否</label>
                 </div>
             </div>

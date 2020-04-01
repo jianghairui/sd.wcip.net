@@ -19,20 +19,25 @@ class Plat extends Base {
         try {
             $where = [];
             if($param['type']) {
-                $where[] = ['type','=',$param['type']];
+                $where[] = ['s.type','=',$param['type']];
             }
-            $count = Db::table('mp_slideshow')->where($where)->count();
+            $count = Db::table('mp_slideshow')->alias('s')->where($where)->count();
 
             $page['count'] = $count;
             $page['curr'] = $curr_page;
             $page['totalPage'] = ceil($count/$perpage);
-            $list = Db::table('mp_slideshow')->where($where)
-                ->order(['sort'=>'ASC'])
+            $list = Db::table('mp_slideshow')->alias('s')
+                ->join('mp_slideshow_type t','s.type=t.id','left')
+                ->where($where)
+                ->field('s.*,t.type_name')
+                ->order(['s.sort'=>'ASC'])
                 ->limit(($curr_page-1)*$perpage,$perpage)->select();
+            $slideshow_type = Db::table('mp_slideshow_type')->select();
         } catch (\Exception $e) {
             die($e->getMessage());
         }
         $this->assign('list',$list);
+        $this->assign('slideshow_type',$slideshow_type);
         $this->assign('page',$page);
         $this->assign('param',$param);
         $this->assign('qiniu_weburl',config('qiniu_weburl'));
@@ -40,6 +45,12 @@ class Plat extends Base {
     }
 
     public function slideAdd() {
+        try {
+            $slideshow_type = Db::table('mp_slideshow_type')->select();
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        $this->assign('slideshow_type',$slideshow_type);
         return $this->fetch();
     }
 
@@ -83,14 +94,15 @@ class Plat extends Base {
         $val['id'] = input('param.id');
         try {
             $exist = Db::table('mp_slideshow')->where('id','=',$val['id'])->find();
+            $slideshow_type = Db::table('mp_slideshow_type')->select();
         } catch (\Exception $e) {
             die($e->getMessage());
         }
         if(!$exist) {
             $this->error('非法操作',url('Banner/slideshow'));
         }
-
         $this->assign('info',$exist);
+        $this->assign('slideshow_type',$slideshow_type);
         $this->assign('qiniu_weburl',config('qiniu_weburl'));
         return $this->fetch();
     }

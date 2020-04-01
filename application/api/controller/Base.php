@@ -84,7 +84,7 @@ class Base extends Controller {
 
     }
 
-    private function checkUid() {
+    protected function checkUid() {
         $need = [
             '',
             'Api/',
