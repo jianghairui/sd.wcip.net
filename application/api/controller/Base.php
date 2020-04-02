@@ -238,10 +238,10 @@ class Base extends Controller {
         return $audit;
     }
 
-
     //Exception日志
     protected function log($cmd,$str) {
-        $file= ROOT_PATH . '/log/exception_api.log';
+        $file= LOG_PATH . '/exception_api.log';
+        create_dir($file);
         $text='[Time ' . date('Y-m-d H:i:s') ."]\ncmd:" .$cmd. "\n" .$str. "\n---END---" . "\n";
         if(false !== fopen($file,'a+')){
             file_put_contents($file,$text,FILE_APPEND);
@@ -251,7 +251,8 @@ class Base extends Controller {
     }
     //支付回调日志
     protected function paylog($cmd,$str) {
-        $file= ROOT_PATH . '/log/notify.log';
+        $file= LOG_PATH . '/notify.log';
+        create_dir($file);
         $text='[Time ' . date('Y-m-d H:i:s') ."]\ncmd:" .$cmd. "\n" .$str. "\n---END---" . "\n";
         if(false !== fopen($file,'a+')){
             file_put_contents($file,$text,FILE_APPEND);
@@ -259,9 +260,11 @@ class Base extends Controller {
             echo '创建失败';
         }
     }
+
     //七牛云日志
     public function qiniuLog($cmd,$str) {
-        $file= ROOT_PATH . '/log/qiniu_error.log';
+        $file= LOG_PATH . '/qiniu_error.log';
+        create_dir($file);
         $text='[Time ' . date('Y-m-d H:i:s') ."]\ncmd:" .$cmd. "\n" .$str. "\n---END---" . "\n";
         if(false !== fopen($file,'a+')){
             file_put_contents($file,$text,FILE_APPEND);
@@ -272,7 +275,8 @@ class Base extends Controller {
 
     //模板消息日志
     protected function msglog($cmd,$str) {
-        $file= ROOT_PATH . '/log/message.log';
+        $file= LOG_PATH . '/message.log';
+        create_dir($file);
         $text='[Time ' . date('Y-m-d H:i:s') ."]\ncmd:" .$cmd. "\n" .$str. "\n---END---" . "\n";
         if(false !== fopen($file,'a+')){
             file_put_contents($file,$text,FILE_APPEND);
@@ -283,7 +287,8 @@ class Base extends Controller {
 
     //短信通知日志
     protected function smslog($cmd,$str) {
-        $file= ROOT_PATH . '/log/sms.log';
+        $file= LOG_PATH . '/sms.log';
+        create_dir($file);
         $text='[Time ' . date('Y-m-d H:i:s') ."]\ncmd:" .$cmd. "\n" .$str. "\n---END---" . "\n";
         if(false !== fopen($file,'a+')){
             file_put_contents($file,$text,FILE_APPEND);
@@ -294,7 +299,8 @@ class Base extends Controller {
 
     //小程序验证内容违规
     protected function mplog($cmd,$str) {
-        $file= ROOT_PATH . '/log/mp.log';
+        $file= LOG_PATH . '/mp.log';
+        create_dir($file);
         $text='[Time ' . date('Y-m-d H:i:s') ."]\ncmd:" .$cmd. "\n" .$str. "\n---END---" . "\n";
         if(false !== fopen($file,'a+')){
             file_put_contents($file,$text,FILE_APPEND);
@@ -305,7 +311,8 @@ class Base extends Controller {
 
     //小程序
     protected function planlog($cmd,$str) {
-        $file= ROOT_PATH . '/log/plan.log';
+        $file= LOG_PATH . '/plan.log';
+        create_dir($file);
         $text='[Time ' . date('Y-m-d H:i:s') ."]\ncmd:" .$cmd. "\n" .$str. "\n---END---" . "\n";
         if(false !== fopen($file,'a+')){
             file_put_contents($file,$text,FILE_APPEND);

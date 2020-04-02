@@ -7,6 +7,7 @@
  */
 namespace app\api\controller;
 
+use my\Sendsms;
 use think\Db;
 class Copyright extends Base {
 
@@ -152,7 +153,13 @@ class Copyright extends Base {
         }
         try {
             //检测版权是否存在
-
+            $whereIp = [
+                ['id','=',$val['ip_id']]
+            ];
+            $ip_exist = Db::table('mp_ip')->where($whereIp)->find();
+            if(!$ip_exist) {
+                return ajax('invalid ip_id',-4);
+            }
             // 检验短信验证码
             $whereCode = [
                 ['tel','=',$val['tel']],
@@ -168,6 +175,7 @@ class Copyright extends Base {
             }
             unset($val['code']);
             Db::table('mp_ip_consult')->insert($val);
+            Db::table('mp_verify')->where($whereCode)->delete();
         } catch (\Exception $e) {
             return ajax($e->getMessage(), -1);
         }

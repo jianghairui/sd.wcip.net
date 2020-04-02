@@ -259,6 +259,7 @@ class Funding extends Base {
             }
             unset($val['code']);
             Db::table('mp_funding_consult')->insert($val);
+            Db::table('mp_verify')->where($whereCode)->delete();
         } catch (\Exception $e) {
             return ajax($e->getMessage(), -1);
         }

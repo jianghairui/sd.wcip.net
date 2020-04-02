@@ -13,7 +13,28 @@ class Test extends Base {
 
     public function index() {
 
-        $this->qiniuLog('Hello','World');
+        $val = [];
+        $use_video = 0;
+        $exist = [
+            'id' => 1,
+            'url' => 'abcd'
+        ];
+        if($use_video) {
+            $val['url'] = 'abcd';
+        }
+
+        try {
+            echo $exist['nickname'];
+        } catch (\Exception $e) {
+            if($val['url'] == $exist) {
+                $this->excep('YES','YES');
+            }else {
+                $this->excep('NO','NO');
+            }
+            return ajax($e->getMessage(),-111);
+        }
+
+//        echo 'SUCCESS<br>';
 
 //        $nicheng_tou = array('战国','春秋','秦','飘逸的','轻浮的','缥缈の','崛起の','汉初');
 //

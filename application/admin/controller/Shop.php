@@ -156,6 +156,8 @@ class Shop extends Base {
         $val['detail'] = input('post.detail');
         $val['use_attr'] = input('post.use_attr','');
         $val['use_vip_price'] = input('post.use_vip_price','');
+        $use_video = input('post.use_video',0);
+        $video_url = input('post.video_url');
 
         if($val['use_vip_price']) {
             $val['vip_price'] = input('post.vip_price');
@@ -200,6 +202,20 @@ class Shop extends Base {
         }
 
         try {
+            if($use_video) {
+                $val['use_video'] = 1;
+                $qiniu_exist = $this->qiniuFileExist($video_url);
+                if($qiniu_exist !== true) {
+                    return ajax($qiniu_exist['msg'],-1);
+                }
+                $qiniu_move = $this->moveFile($video_url,'upload/goodsvideo/');
+                if($qiniu_move['code'] == 0) {
+                    $val['video_url'] = $qiniu_move['path'];
+                }else {
+                    return ajax($qiniu_move['msg'],-2);
+                }
+            }
+
             $image = input('post.pic_url',[]);
             $image_array = [];
             $limit = 9;
@@ -243,6 +259,9 @@ class Shop extends Base {
                 Db::table('mp_goods_attr')->insertAll($attr_insert);
             }
         }catch (\Exception $e) {
+            if($use_video) {
+                $this->rs_delete($val['video_url']);
+            }
             foreach ($image_array as $v) {
                 $this->rs_delete($v);
             }
@@ -274,6 +293,8 @@ class Shop extends Base {
         $val['detail'] = input('post.detail');
         $val['use_attr'] = input('post.use_attr','');
         $val['use_vip_price'] = input('post.use_vip_price','');
+        $use_video = input('post.use_video',0);
+        $video_url = input('post.video_url');
 
         if($val['use_vip_price']) {
             $val['vip_price'] = input('post.vip_price');
@@ -320,6 +341,21 @@ class Shop extends Base {
             if(!$exist) {
                 return ajax('非法参数',-1);
             }
+
+            if($use_video) {
+                $val['use_video'] = 1;
+                $qiniu_exist = $this->qiniuFileExist($video_url);
+                if($qiniu_exist !== true) {
+                    return ajax($qiniu_exist['msg'],-1);
+                }
+                $qiniu_move = $this->moveFile($video_url,'upload/goodsvideo/');
+                if($qiniu_move['code'] == 0) {
+                    $val['video_url'] = $qiniu_move['path'];
+                }else {
+                    return ajax($qiniu_move['msg'],-2);
+                }
+            }
+
             $old_pics = unserialize($exist['pics']);
 
             $image_array = [];
@@ -379,12 +415,18 @@ class Shop extends Base {
                 }
             }
         }catch (\Exception $e) {
+            if($use_video && $val['video_url'] !== $exist['video_url']) {
+                $this->rs_delete($val['video_url']);
+            }
             foreach ($image_array as $v) {
                 if(!in_array($v,$old_pics)) {
                     $this->rs_delete($v);
                 }
             }
             return ajax($e->getMessage(),-1);
+        }
+        if($use_video && $val['video_url'] !== $exist['video_url']) {
+            $this->rs_delete($exist['video_url']);
         }
         foreach ($old_pics as $v) {
             if(!in_array($v,$image_array)) {

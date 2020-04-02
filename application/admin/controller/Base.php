@@ -199,5 +199,17 @@ class Base extends Controller {
         }
     }
 
+    //Exception日志
+    protected function excep($cmd,$str) {
+        $file= LOG_PATH . '/exception.log';
+        create_dir($file);
+        $text='[Time ' . date('Y-m-d H:i:s') ."]\ncmd:" .$cmd. "\n" .$str. "\n---END---" . "\n";
+        if(false !== fopen($file,'a+')){
+            file_put_contents($file,$text,FILE_APPEND);
+        }else{
+            echo '创建失败';
+        }
+    }
+
 
 }
