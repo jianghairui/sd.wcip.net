@@ -28,7 +28,6 @@ class Api extends Base
         }
         return ajax($list);
     }
-
     //上传参赛作品
     public function uploadWorks() {
         $val['uid'] = $this->myinfo['id'];
@@ -288,6 +287,70 @@ class Api extends Base
         return ajax();
     }
 
+    public function videoList() {
+        $whereVideo = [
+            ['use_video','=',1]
+        ];
+        try {
+            $list = Db::table('mp_goods')
+                ->where($whereVideo)
+                ->field('id,name,poster,video_url')
+                ->limit(0,3)
+                ->select();
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax($list);
+    }
+
+    public function goodsList() {
+        $val['type'] = input('post.type');
+        $curr_page = input('post.page',1);
+        $perpage = input('post.perpage',10);
+        $where = [];
+        switch ($val['type']) {
+            case 1:;break;//小批量
+            case 2:;break;//免费拿样
+            case 3:;break;//免开模
+            case 4:;break;//爆款推荐
+            default:;
+        }
+        $order = ['id'=>'DESC'];
+        try {
+            $list = Db::table('mp_goods')->alias('g')
+                ->join('mp_user u','g.shop_id=u.id','left')
+                ->field('g.id,g.name,g.price,g.use_vip_price,g.vip_price,g.poster,u.org')
+                ->where($where)
+                ->order($order)
+                ->limit(($curr_page-1)*$perpage,$perpage)
+                ->select();
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax($list);
+
+    }
+
+    public function goodsDetail() {
+        $val['goods_id'] = input('post.goods_id');
+        checkPost($val);
+        $where = [
+            ['g.id','=',$val['goods_id']]
+        ];
+        try {
+            $info = Db::table('mp_goods')->alias('g')
+                ->join('mp_user u','g.shop_id=u.id','left')
+                ->field('g.*,u.org')
+                ->where($where)
+                ->find();
+            if(!$info) {
+                return ajax('invalid goods_id',-4);
+            }
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax($info);
+    }
 
 
 

@@ -158,11 +158,15 @@ class Shop extends Base {
         $val['use_vip_price'] = input('post.use_vip_price','');
         $use_video = input('post.use_video',0);
         $video_url = input('post.video_url');
+        $poster = input('post.poster');
+
+        if(!$poster) { return ajax('请上传封面',-1); }
 
         if($val['use_vip_price']) {
             $val['vip_price'] = input('post.vip_price');
             if(!$val['vip_price']) { return ajax('请上传会员价',-1); }
         }
+
         if($val['use_attr']) {
             $val['stock'] = 0;
             $attr1 = input('post.attr1',[]);
@@ -202,8 +206,23 @@ class Shop extends Base {
         }
 
         try {
+
+            if($poster) {
+                $qiniu_exist = $this->qiniuFileExist($poster);
+                if($qiniu_exist !== true) {
+                    return ajax($qiniu_exist['msg'],-1);
+                }
+                $qiniu_move = $this->moveFile($poster,'upload/goodsposter/');
+                if($qiniu_move['code'] == 0) {
+                    $val['poster'] = $qiniu_move['path'];
+                }else {
+                    return ajax($qiniu_move['msg'],-1);
+                }
+            }
+
             if($use_video) {
                 $val['use_video'] = 1;
+                if(!$video_url) { return ajax('请上传视频文件',-1); }
                 $qiniu_exist = $this->qiniuFileExist($video_url);
                 if($qiniu_exist !== true) {
                     return ajax($qiniu_exist['msg'],-1);
@@ -238,7 +257,7 @@ class Shop extends Base {
                 if($qiniu_move['code'] == 0) {
                     $image_array[] = $qiniu_move['path'];
                 }else {
-                    return ajax($qiniu_move['msg'],-2);
+                    return ajax($qiniu_move['msg'],-3);
                 }
             }
 
@@ -261,6 +280,9 @@ class Shop extends Base {
         }catch (\Exception $e) {
             if($use_video) {
                 $this->rs_delete($val['video_url']);
+            }
+            if($poster) {
+                $this->rs_delete($val['poster']);
             }
             foreach ($image_array as $v) {
                 $this->rs_delete($v);
@@ -295,6 +317,11 @@ class Shop extends Base {
         $val['use_vip_price'] = input('post.use_vip_price','');
         $use_video = input('post.use_video',0);
         $video_url = input('post.video_url');
+        $poster = input('post.poster');
+
+        if(!$poster) {
+            return ajax('请上传封面',-1);
+        }
 
         if($val['use_vip_price']) {
             $val['vip_price'] = input('post.vip_price');
@@ -342,22 +369,33 @@ class Shop extends Base {
                 return ajax('非法参数',-1);
             }
 
+            $qiniu_exist = $this->qiniuFileExist($poster);//七牛云文件 poster 是否存在
+            if($qiniu_exist !== true) {
+                return ajax($qiniu_exist['msg'],-1);
+            }
+            $poster_move = $this->moveFile($poster,'upload/goodsposter/');
+            if($poster_move['code'] == 0) {
+                $val['poster'] = $poster_move['path'];
+            }else {
+                return ajax($poster_move['msg'],-1);
+            }
+
             if($use_video) {
                 $val['use_video'] = 1;
-                $qiniu_exist = $this->qiniuFileExist($video_url);
+                if(!$video_url) { return ajax('请上传视频文件',-1); }
+                $qiniu_exist = $this->qiniuFileExist($video_url);//七牛云文件 video_url 是否存在
                 if($qiniu_exist !== true) {
                     return ajax($qiniu_exist['msg'],-1);
                 }
-                $qiniu_move = $this->moveFile($video_url,'upload/goodsvideo/');
-                if($qiniu_move['code'] == 0) {
-                    $val['video_url'] = $qiniu_move['path'];
+                $video_move = $this->moveFile($video_url,'upload/goodsvideo/');
+                if($video_move['code'] == 0) {
+                    $val['video_url'] = $video_move['path'];
                 }else {
-                    return ajax($qiniu_move['msg'],-2);
+                    return ajax($video_move['msg'],-2);
                 }
             }
 
             $old_pics = unserialize($exist['pics']);
-
             $image_array = [];
             $limit = 9;
             if(is_array($image) && !empty($image)) {
@@ -374,11 +412,11 @@ class Shop extends Base {
                 return ajax('请上传商品图片',-1);
             }
             foreach ($image as $v) {
-                $qiniu_move = $this->moveFile($v,'upload/goods/');
-                if($qiniu_move['code'] == 0) {
-                    $image_array[] = $qiniu_move['path'];
+                $image_move = $this->moveFile($v,'upload/goods/');
+                if($image_move['code'] == 0) {
+                    $image_array[] = $image_move['path'];
                 }else {
-                    return ajax($qiniu_move['msg'],-2);
+                    return ajax($image_move['msg'],-2);
                 }
             }
             $val['pics'] = serialize($image_array);
@@ -415,6 +453,9 @@ class Shop extends Base {
                 }
             }
         }catch (\Exception $e) {
+            if($val['poster'] !== $exist['poster']) {
+                $this->rs_delete($val['poster']);
+            }
             if($use_video && $val['video_url'] !== $exist['video_url']) {
                 $this->rs_delete($val['video_url']);
             }
@@ -424,6 +465,9 @@ class Shop extends Base {
                 }
             }
             return ajax($e->getMessage(),-1);
+        }
+        if($val['poster'] !== $exist['poster']) {
+            $this->rs_delete($exist['poster']);
         }
         if($use_video && $val['video_url'] !== $exist['video_url']) {
             $this->rs_delete($exist['video_url']);
