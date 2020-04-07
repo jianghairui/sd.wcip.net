@@ -1,12 +1,12 @@
 <style>
-    .thumbnail{ width:120px}
+    .thumbnail{ width:200px}
 </style>
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 平台设置 <span class="c-gray en">&gt;</span> 轮播图<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
     <section id="formAjax">
         <div class="text-c">
-            <span class="select-box inline" style="width: 120px;">
-                <select name="type" id="type" class="select">
+            <span class="select-box inline">
+                <select name="type" id="type" class="select" style="width: 120px;">
                     <option value="">全部</option>
                     {foreach $slideshow_type as $li}
                     <option value="{$li.id}" {if $param['type'] == $li['id']}selected{/if}>{$li.type_name}</option>
@@ -30,9 +30,9 @@
                 <th width="70">ID</th>
                 <th width="80">排序</th>
                 <th width="200">图片</th>
-                <th width="200">具体描述</th>
-                <th>链接地址</th>
-                <th width="80">展示端</th>
+                <th width="300">描述</th>
+                <th width="200">链接地址</th>
+                <th width="120">展示端</th>
                 <th width="60">状态</th>
                 <th width="100">操作</th>
             </tr>

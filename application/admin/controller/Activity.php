@@ -315,9 +315,7 @@ class Activity extends Base {
     public function workList() {
         $param['status'] = input('param.status','');
         $param['activity_id'] = input('param.activity_id');
-        $param['idea_id'] = input('param.idea_id');
         $param['search'] = input('param.search');
-        $param['sort'] = input('param.sort');
 
         $page['query'] = http_build_query(input('param.'));
 
@@ -336,31 +334,25 @@ class Activity extends Base {
         if($param['search']) {
             $where[] = ['w.title','like',"%{$param['search']}%"];
         }
-        switch ($param['sort']) {
-            case '1':$order = ['w.vote'=>'DESC'];break;
-            case '2':$order = ['w.vote'=>'ASC'];break;
-            case '3':$order = ['w.bid_num'=>'DESC'];break;
-            case '4':$order = ['w.bid_num'=>'ASC'];break;
-            default:$order = ['w.id'=>'DESC'];
-        }
+
+        $order = ['w.id'=>'DESC'];
+
         try {
             $count = Db::table('mp_activity_works')->alias('w')
-                ->join('mp_activity r','w.activity_id=a.id','left')
-                ->join('mp_activity_idea i','w.idea_id=i.id','left')
+                ->join('mp_activity a','w.activity_id=a.id','left')
                 ->where($where)->count();
             $page['count'] = $count;
             $page['curr'] = $curr_page;
             $page['totalPage'] = ceil($count/$perpage);
             $list = Db::table('mp_activity_works')->alias('w')
-                ->join('mp_activity r','w.activity_id=a.id','left')
-                ->join('mp_activity_idea i','w.idea_id=i.id','left')
-                ->field('w.*,a.title AS activity_title,a.org,i.title AS idea_title')
+                ->join('mp_activity a','w.activity_id=a.id','left')
+                ->field('w.*,a.title AS activity_title,a.uid AS org')
                 ->where($where)
                 ->order($order)->limit(($curr_page - 1)*$perpage,$perpage)->select();
-            $whereReq = [
+            $whereAc = [
                 ['del','=',0]
             ];
-            $activitylist = Db::table('mp_activity')->where($whereReq)->field('id,title')->select();
+            $activitylist = Db::table('mp_activity')->where($whereAc)->field('id,title')->select();
         }catch (\Exception $e) {
             die($e->getMessage());
         }
@@ -371,6 +363,7 @@ class Activity extends Base {
         $this->assign('qiniu_weburl',config('qiniu_weburl'));
         return $this->fetch();
     }
+
     //作品详情
     public function workDetail() {
         $param['id'] = input('param.id','');
@@ -380,7 +373,6 @@ class Activity extends Base {
             ];
             $info = Db::table('mp_activity_works')->alias('w')
                 ->join('mp_activity r','w.activity_id=a.id','left')
-                ->join('mp_activity_idea i','w.idea_id=i.id','left')
                 ->join('mp_user u','w.uid=u.id','left')
                 ->field('w.*,a.title AS activity_title,a.org,u.nickname,u.avatar,i.title AS idea_title,i.content AS idea_content')
                 ->where($where)
@@ -413,6 +405,8 @@ class Activity extends Base {
         }
         return ajax();
     }
+
+
     //作品审核-通过
     public function workPass() {
         $whereWorks = [
@@ -430,14 +424,6 @@ class Activity extends Base {
 
             Db::table('mp_activity_works')->where($whereWorks)->update(['status'=>1]);
             Db::table('mp_activity')->where($whereReq)->setInc('works_num',1);
-
-            if($exist['idea_id']) {
-                $whereIdea = [
-                    ['id','=',$exist['idea_id']]
-                ];
-                Db::table('mp_activity_idea')->where($whereIdea)->setInc('works_num',1);
-            }
-            Db::table('mp_user')->where('id','=',$exist['uid'])->setInc('works_num',1);
         }catch (\Exception $e) {
             return ajax($e->getMessage(),-1);
         }
@@ -491,18 +477,11 @@ class Activity extends Base {
             if(!$exist) {
                 return ajax('非法操作',-1);
             }
-            $whereReq = [
+            $whereAc = [
                 ['id','=',$exist['activity_id']]
             ];
             Db::table('mp_activity_works')->where($map)->update(['del'=>1]);
-            Db::table('mp_activity')->where($whereReq)->setDec('works_num',1);
-            if($exist['idea_id']) {
-                $whereIdea = [
-                    ['id','=',$exist['idea_id']]
-                ];
-                Db::table('mp_activity_idea')->where($whereIdea)->setDec('works_num',1);
-            }
-            Db::table('mp_user')->where('id','=',$exist['uid'])->setDec('works_num',1);
+            Db::table('mp_activity')->where($whereAc)->setDec('works_num',1);
         }catch (\Exception $e) {
             return ajax($e->getMessage(),-1);
         }

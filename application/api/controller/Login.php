@@ -44,6 +44,7 @@ class Login extends Base {
                 }
             }else {
                 $insert = [
+                    'nickname' => gen_nickname(),
                     'create_time' => time(),
                     'last_login_time' => time(),
                     'openid' => $ret['openid'],

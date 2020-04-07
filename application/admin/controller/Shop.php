@@ -41,7 +41,6 @@ class Shop extends Base {
                 ->select();
 
             $whereShop = [
-                ['role_check','=',2],
                 ['role','<>',0]
             ];
             $shoplist = Db::table('mp_user')->where($whereShop)->field('id,nickname,org,role')->select();
@@ -65,7 +64,6 @@ class Shop extends Base {
             ];
             $list = Db::table('mp_goods_cate')->where($where)->select();
             $whereShop = [
-                ['role_check','=',2],
                 ['role','<>',0]
             ];
             $shop_list = Db::table('mp_user')->where($whereShop)->field('id,nickname,org,role')->select();
@@ -97,7 +95,8 @@ class Shop extends Base {
         try {
             $wherecate = [
                 ['pid','=',0],
-                ['del','=',0]
+                ['del','=',0],
+                ['status','=',1]
             ];
             $info = Db::table('mp_goods')->where('id','=',$id)->find();
             if(!$info) {
@@ -117,7 +116,6 @@ class Shop extends Base {
             ];
             $attr_list = Db::table('mp_goods_attr')->where($where_attr)->select();
             $whereShop = [
-                ['role_check','=',2],
                 ['role','<>',0]
             ];
             $shop_list = Db::table('mp_user')->where($whereShop)->field('id,nickname,org,role')->select();

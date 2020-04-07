@@ -28,35 +28,35 @@ class User extends Base {
 
         $where = [];
 
-        if(!is_null($param['role_check']) && $param['role_check'] !== '') {
-            $where[] = ['role_check','=',$param['role_check']];
+        if($param['role_check'] !== '') {
+            $where[] = ['r.role_check','=',$param['role_check']];
         }
-        if(!is_null($param['role']) && $param['role'] !== '') {
-            $where[] = ['role','=',$param['role']];
+        if($param['role'] !== '') {
+            $where[] = ['u.role','=',$param['role']];
         }
         if($param['datemin']) {
-            $where[] = ['create_time','>=',strtotime(date('Y-m-d 00:00:00',strtotime($param['datemin'])))];
+            $where[] = ['u.create_time','>=',strtotime(date('Y-m-d 00:00:00',strtotime($param['datemin'])))];
         }
 
         if($param['datemax']) {
-            $where[] = ['create_time','<=',strtotime(date('Y-m-d 23:59:59',strtotime($param['datemax'])))];
+            $where[] = ['u.create_time','<=',strtotime(date('Y-m-d 23:59:59',strtotime($param['datemax'])))];
         }
 
         if($param['search']) {
-            $where[] = ['nickname|tel','like',"%{$param['search']}%"];
+            $where[] = ['u.nickname|u.tel','like',"%{$param['search']}%"];
         }
-        $order = ['id'=>'DESC'];
+        $order = ['u.id'=>'DESC'];
         try {
-            $count = Db::table('mp_user')
-                ->where($where)
-//                ->whereNotNull('nickname')
-                ->count();
+            $count = Db::table('mp_user')->alias('u')
+                ->join('mp_user_role r','u.id=r.uid','left')
+                ->where($where)->count();
             $page['count'] = $count;
             $page['curr'] = $curr_page;
             $page['totalPage'] = ceil($count/$perpage);
-            $list = Db::table('mp_user')->where($where)
-//                ->whereNotNull('nickname')
-                ->order($order)
+            $list = Db::table('mp_user')->alias('u')
+                ->join('mp_user_role r','u.id=r.uid','left')
+                ->where($where)->order($order)
+                ->field('u.*,r.role AS tmp_role,r.role_check')
                 ->limit(($curr_page - 1)*$perpage,$perpage)->select();
         } catch (\Exception $e) {
             return ajax($e->getMessage(), -1);
@@ -67,7 +67,6 @@ class User extends Base {
         $this->assign('qiniu_weburl',config('qiniu_weburl'));
         return $this->fetch();
     }
-
     //用户详情
     public function userDetail() {
         $id = input('param.id');
@@ -76,8 +75,8 @@ class User extends Base {
         ];
         try {
             $info = Db::table('mp_user')->alias('u')
-                ->join('mp_user_role r','u.id=r.uid','LEFT')
-                ->field('u.*,r.name,r.identity,r.id_front,r.id_back,r.tel as role_tel,r.weixin,r.works,r.license,r.province_code,r.city_code,r.region_code')
+                ->join('mp_user_role r','u.id=r.uid','left')
+                ->field('u.*,r.role AS tmp_role,r.org AS role_org,r.name,r.identity,r.id_front,r.id_back,r.tel as role_tel,r.role_check,r.license,r.province_code,r.city_code,r.region_code')
                 ->where($where)
                 ->find();
             $whereProvince = [
@@ -117,11 +116,11 @@ class User extends Base {
         $val['city_code'] = input('post.cityCode',0);
         $val['region_code'] = input('post.regionCode',0);
         try {
-            $whereUser = [
-                ['id','=',$val['uid']]
+            $whereRole = [
+                ['uid','=',$val['uid']]
             ];
-            $user_exist = Db::table('mp_user')->where($whereUser)->find();
-            if(!$user_exist) {
+            $role_exist = Db::table('mp_user_role')->where($whereRole)->find();
+            if(!$role_exist) {
                 return ajax('非法参数',-1);
             }
             if($val['region_code']) {
@@ -147,9 +146,6 @@ class User extends Base {
                 'city_code' => $val['city_code'],
                 'region_code' => $val['region_code']
             ];
-            $whereRole = [
-                ['uid','=',$val['uid']]
-            ];
             Db::table('mp_user_role')->where($whereRole)->update($update_data);
         } catch (\Exception $e) {
             return ajax($e->getMessage(), -1);
@@ -159,21 +155,30 @@ class User extends Base {
     }
     //申请角色-通过审核
     public function rolePass() {
-        $map = [
-            ['role_check','=',1],
-            ['id','=',input('post.id',0)]
-        ];
+        $uid = input('post.id','');
         try {
-            $exist = Db::table('mp_user')->where($map)->field('id')->find();
-            if(!$exist) {
+            $whereRole = [
+                ['role_check','=',1],
+                ['uid','=',$uid]
+            ];
+            $role_exist = Db::table('mp_user_role')->where($whereRole)->field('id,role,uid,org')->find();
+            if(!$role_exist) {
                 return ajax('非法操作',-1);
             }
-            Db::table('mp_user')->where($map)->update(['role_check'=>2]);
-            $param = [
-                'action' => 'rolePass',
-                'uid' => $exist['id']
+            Db::table('mp_user_role')->where($whereRole)->update(['role_check'=>2,'pass_time'=>time()]);
+
+            $whereUser = [
+                ['id','=',$uid]
             ];
-            $this->asyn_tpl_send($param);
+            Db::table('mp_user')->where($whereUser)->update([
+                'role' => $role_exist['role'],
+                'org' => $role_exist['org']
+            ]);
+            $tpl_data = [
+                'action' => 'rolePass',
+                'uid' => $role_exist['uid']
+            ];
+            $this->asyn_tpl_send($tpl_data);
         }catch (\Exception $e) {
             return ajax($e->getMessage(),-1);
         }
@@ -203,7 +208,6 @@ class User extends Base {
         }
         return ajax([],1);
     }
-
     //充值类目列表
     public function vipList() {
         $where = [
@@ -408,52 +412,6 @@ class User extends Base {
         return $this->fetch();
     }
 
-
-    public function role3OrderList() {
-        $param['status'] = input('param.status','');
-        $param['datemin'] = input('param.datemin');
-        $param['datemax'] = input('param.datemax');
-        $param['search'] = input('param.search');
-
-        $page['query'] = http_build_query(input('param.'));
-        $where = [];
-
-        if($param['datemin']) {
-            $where[] = ['o.create_time','>=',strtotime(date('Y-m-d 00:00:00',strtotime($param['datemin'])))];
-        }
-        if($param['datemax']) {
-            $where[] = ['o.create_time','<=',strtotime(date('Y-m-d 23:59:59',strtotime($param['datemax'])))];
-        }
-        if($param['search']) {
-            $where[] = ['o.pay_order_sn|r.org|r.tel','like',"%{$param['search']}%"];
-        }
-        $curr_page = input('param.page',1);
-        $perpage = input('param.perpage',10);
-
-        try {
-            $count = Db::table('mp_role3_order')->alias('o')->join("mp_user_role r","o.uid=r.uid","left")
-                ->join("mp_role3_level l","o.level_id=l.id","left")->where($where)->count();
-            $page['count'] = $count;
-            $page['curr'] = $curr_page;
-            $page['totalPage'] = ceil($count/$perpage);
-            $list = Db::table('mp_role3_order')->alias('o')
-                ->join("mp_user_role r","o.uid=r.uid","left")
-                ->join("mp_role3_level l","o.level_id=l.id","left")
-                ->where($where)
-                ->order(['o.create_time'=>'DESC'])
-                ->field("o.*,r.org,r.tel,l.title")
-                ->limit(($curr_page-1)*$perpage,$perpage)
-                ->select();
-        }catch (\Exception $e) {
-            die($e->getMessage());
-        }
-        $this->assign('list',$list);
-        $this->assign('page',$page);
-        $this->assign('qiniu_weburl',config('qiniu_weburl'));
-        return $this->fetch();
-
-    }
-
     public function rechargeDetail() {
         $id = input('param.id');
         try {
@@ -471,111 +429,6 @@ class User extends Base {
         $this->assign('info',$info);
         return $this->fetch();
     }
-
-    //订单发货
-    public function orderSend() {
-        $id = input('param.id');
-        try {
-            $where = [
-                ['del','=',0]
-            ];
-            $list = Db::table('mp_tracking')->where($where)->select();
-        } catch (\Exception $e) {
-            die($e->getMessage());
-        }
-        $this->assign('list',$list);
-        $this->assign('id',$id);
-        return $this->fetch();
-    }
-    //确认发货
-    public function deliver() {
-        $val['tracking_name'] = input('post.tracking_name');
-        $val['tracking_num'] = input('post.tracking_num');
-        $val['id'] = input('post.id');
-        checkInput($val);
-        try {
-            $where = [
-                ['id','=',$val['id']],
-                ['status','=',1]
-            ];
-            $exist = Db::table('mp_vip_order')->where($where)->find();
-            if(!$exist) {
-                return ajax('订单不存在或状态已改变',-1);
-            }
-            $update_data = [
-                'status' => 2,
-                'send_time' => time(),
-                'tracking_name' => $val['tracking_name'],
-                'tracking_num' => $val['tracking_num']
-            ];
-            Db::table('mp_vip_order')->where($where)->update($update_data);
-        } catch (\Exception $e) {
-            return ajax($e->getMessage(), -1);
-        }
-        return ajax();
-    }
-
-
-    //会员列表
-    public function signList() {
-        $param['contact'] = input('param.contact','');
-        $param['datemin'] = input('param.datemin');
-        $param['datemax'] = input('param.datemax');
-        $param['search'] = input('param.search');
-
-        $page['query'] = http_build_query(input('param.'));
-
-        $curr_page = input('param.page',1);
-        $perpage = input('param.perpage',10);
-
-        $where = [];
-
-        if(!is_null($param['contact']) && $param['contact'] !== '') {
-            $where[] = ['contact','=',$param['contact']];
-        }
-        if($param['datemin']) {
-            $where[] = ['create_time','>=',strtotime(date('Y-m-d 00:00:00',strtotime($param['datemin'])))];
-        }
-
-        if($param['datemax']) {
-            $where[] = ['create_time','<=',strtotime(date('Y-m-d 23:59:59',strtotime($param['datemax'])))];
-        }
-
-        if($param['search']) {
-            $where[] = ['nickname|tel','like',"%{$param['search']}%"];
-        }
-        $order = ['id'=>'DESC'];
-        try {
-            $count = Db::table('mp_sign')->where($where)->count();
-            $page['count'] = $count;
-            $page['curr'] = $curr_page;
-            $page['totalPage'] = ceil($count/$perpage);
-            $list = Db::table('mp_sign')->where($where)
-                ->order($order)
-                ->limit(($curr_page - 1)*$perpage,$perpage)->select();
-        } catch (\Exception $e) {
-            return ajax($e->getMessage(), -1);
-        }
-        $this->assign('list',$list);
-        $this->assign('page',$page);
-        $this->assign('param',$param);
-        return $this->fetch();
-    }
-
-    public function signContact() {
-        $id = input('post.id');
-        try {
-            $where = [
-                ['id','=',$id]
-            ];
-            Db::table('mp_sign')->where($where)->update(['contact'=>1]);
-        } catch (\Exception $e) {
-            return ajax($e->getMessage(), -1);
-        }
-        return ajax();
-    }
-
-
 
     protected function asyn_tpl_send($data) {
         $param = http_build_query($data);
@@ -600,10 +453,6 @@ class User extends Base {
             fclose($fp);
         }
     }
-
-
-
-
 
     //获取城市列表
     public function getCityList() {

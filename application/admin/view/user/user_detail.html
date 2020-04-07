@@ -26,7 +26,7 @@
                 {case 1}<span class="">男</span>{/case}
                 {case 2}<span class="">女</span>{/case}
                 {default /}
-                <span class="">保密</span>
+                <span class="">未知</span>
                 {/switch}
             </div>
         </div>
@@ -37,8 +37,19 @@
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3">是否认证：</label>
+            <label class="form-label col-xs-4 col-sm-3">申请角色状态：</label>
             <div class="formControls col-xs-8 col-sm-9">
+                ({switch $info['tmp_role']}
+                {case 0}
+                普通用户{/case}
+                {case 1}
+                文旅机构{/case}
+                {case 2}
+                工厂{/case}
+                {default /}
+                无
+                {/switch})
+
                 {switch $info['role_check']}
                 {case 1}
                 <span class="label label-warning radius">审核中</span>{/case}
@@ -53,7 +64,7 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3">组织机构：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <span class="">{$info.org}</span>
+                <span class="">{$info.role_org}</span>
             </div>
         </div>
         <div class="row cl">
@@ -90,40 +101,6 @@
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3">认证手机号：</label>
-            <div class="formControls col-xs-8 col-sm-3">
-                <span class="">{$info.role_tel}</span>
-            </div>
-        </div>
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3">运营者微信号：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <span class="">{$info.weixin}</span>
-            </div>
-        </div>
-        {if $info['role'] == 2}
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3">
-                作品6张：
-            </label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <ul class="cl portfolio-area">
-                    {if $info['works']}
-                    <?php $image = unserialize($info['works']);?>
-                    {foreach $image as $li}
-                    <li class="item">
-                        <div class="portfoliobox">
-                            <div class="picbox"><a href="{$qiniu_weburl}{$li}" data-lightbox="gallery" data-title=""><img src="{$qiniu_weburl}{$li}"></a></div>
-                            <div class="textbox"></div>
-                        </div>
-                    </li>
-                    {/foreach}
-                    {/if}
-                </ul>
-            </div>
-        </div>
-        {/if}
-        <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3">
                 资质证明：
             </label>
@@ -138,7 +115,7 @@
                 </ul>
             </div>
         </div>
-        {if $info['role'] == 3}
+        {if $info['role'] || $info['tmp_role']}
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">选择地区：</label>
             <div class="formControls col-xs-2 col-sm-2 col-xs-offset-2 col-sm-offset-1" > <span class="select-box">
@@ -173,7 +150,7 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3">备注：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <textarea name="sign" cols="" rows="" class="textarea" placeholder="" readonly style="border: none">{$info.sign}</textarea>
+                <textarea name="desc" cols="" rows="" class="textarea" placeholder="" readonly style="border: none">{$info.desc}</textarea>
             </div>
         </div>
         <div class="row cl">

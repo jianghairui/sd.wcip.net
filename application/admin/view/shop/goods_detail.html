@@ -60,7 +60,7 @@
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span></label>
             <div class="formControls col-xs-8 col-sm-9">
                 <span style="font-size: 16px">
-                    (建议尺寸: 750*400)
+                    (建议尺寸: 750*421)
                 </span>
             </div>
         </div>
@@ -78,7 +78,7 @@
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span></label>
             <div class="formControls col-xs-8 col-sm-9">
                 <span style="font-size: 16px">
-                    (建议尺寸: 800*800)
+                    (建议尺寸: 750 * 750)
                 </span>
             </div>
         </div>
@@ -666,8 +666,8 @@
                 return;
             }
             var file = obj.get(0).files[0];	                                           //上传的文件
-            if(file.size > 256*1024*1024) {
-                layer.alert('上传文件大小不超过256M');
+            if(file.size > 64*1024*1024) {
+                layer.alert('上传文件大小不超过64M');
                 return;
             }
             //七牛云上传

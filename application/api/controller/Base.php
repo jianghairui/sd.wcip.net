@@ -86,8 +86,8 @@ class Base extends Controller {
 
     protected function checkUid() {
         $need = [
+            'My',
             '',
-            'Api/',
         ];
         if (!in_array($this->controller,$need) && !in_array($this->cmd, $need)) {
             return true;
