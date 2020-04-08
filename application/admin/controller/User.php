@@ -76,7 +76,7 @@ class User extends Base {
         try {
             $info = Db::table('mp_user')->alias('u')
                 ->join('mp_user_role r','u.id=r.uid','left')
-                ->field('u.*,r.role AS tmp_role,r.org AS role_org,r.name,r.identity,r.id_front,r.id_back,r.tel as role_tel,r.role_check,r.license,r.province_code,r.city_code,r.region_code')
+                ->field('u.*,r.cover,r.role AS tmp_role,r.org AS role_org,r.name,r.identity,r.id_front,r.id_back,r.tel as role_tel,r.role_check,r.license,r.province_code,r.city_code,r.region_code')
                 ->where($where)
                 ->find();
             $whereProvince = [
@@ -115,6 +115,7 @@ class User extends Base {
         $val['province_code'] = input('post.provinceCode',0);
         $val['city_code'] = input('post.cityCode',0);
         $val['region_code'] = input('post.regionCode',0);
+        $cover = input('post.cover');
         try {
             $whereRole = [
                 ['uid','=',$val['uid']]
@@ -146,6 +147,20 @@ class User extends Base {
                 'city_code' => $val['city_code'],
                 'region_code' => $val['region_code']
             ];
+            if($cover) {
+                $qiniu_exist = $this->qiniuFileExist($cover);
+                if($qiniu_exist !== true) {
+                    return ajax($qiniu_exist['msg'],-1);
+                }
+                $qiniu_move = $this->moveFile($cover,'upload/role/');
+                if($qiniu_move['code'] == 0) {
+                    $val['cover'] = $qiniu_move['path'];
+                }else {
+                    return ajax($qiniu_move['msg'],-2);
+                }
+                $update_data['cover'] = $val['cover'];
+            }
+
             Db::table('mp_user_role')->where($whereRole)->update($update_data);
         } catch (\Exception $e) {
             return ajax($e->getMessage(), -1);

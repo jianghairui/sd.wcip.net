@@ -57,9 +57,10 @@ class Base extends Controller {
             'Message',
             'Email',
             'Login/login',
-            'Pay/recharge_notify',
-            'Pay/order_notify',
-            'Pay/funding_notify'
+            'Pay/vipnotify',
+            'Pay/ordernotify',
+            'Pay/fundingnotify',
+
         ];
         if (in_array($this->controller,$noneed) || in_array($this->cmd, $noneed)) {
             return true;
@@ -106,6 +107,8 @@ class Base extends Controller {
             'Note/ifocus',
 
             'Xuqiu/xuqiurelease',
+
+            'Pay/vippay'
 
         ];
         if (!in_array($this->controller,$need) && !in_array($this->cmd, $need)) {
@@ -268,6 +271,7 @@ class Base extends Controller {
             echo '创建失败';
         }
     }
+
     //支付回调日志
     protected function paylog($cmd,$str) {
         $file= LOG_PATH . '/notify.log';

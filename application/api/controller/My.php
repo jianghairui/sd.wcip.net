@@ -30,21 +30,13 @@ class My extends Base {
     //充值
     public function recharge()
     {
-        $val['vip_id'] = input('post.vip_id');
-        $val['name'] = input('post.name');
-        $val['tel'] = input('post.tel');
-        $val['address'] = input('post.address');
         $val['uid'] = $this->myinfo['uid'];
-
         checkPost($val);
         try {
-            $exist = Db::table('mp_vip')->where('id', $val['vip_id'])->find();
-            if (!$exist) {
-                return ajax('invalid vip_id', -4);
-            }
-            $val['price'] = $exist['price'];
-            $val['days'] = $exist['days'];
+            $val['price'] = 0.03;
+            $val['days'] = 365;
             $val['create_time'] = time();
+            $val['desc'] = '充值年度会员';
             $val['order_sn'] = create_unique_number('v');
             Db::table('mp_vip_order')->insert($val);
         } catch (\Exception $e) {
