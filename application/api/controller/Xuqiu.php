@@ -132,4 +132,28 @@ class Xuqiu extends Base {
         return ajax($list);
     }
 
+    public function xuqiuDetail() {
+        $param['xuqiu_id'] = input('post.xuqiu_id');
+        checkPost($param);
+        try {
+            $whereXuqiu = [
+                ['x.id','=',$param['xuqiu_id']]
+            ];
+            $xuqiu_exist = Db::table('mp_xuqiu')->alias('x')
+                ->join('mp_user u','x.uid=u.id','left')
+                ->field('x.*,u.org,u.avatar')
+                ->where($whereXuqiu)->find();
+            if(!$xuqiu_exist) {
+                return ajax('invliad xuqiu_id',-4);
+            }
+            $xuqiu_exist['pics'] = unserialize($xuqiu_exist['pics']);
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax($xuqiu_exist);
+
+    }
+
+
+
 }
