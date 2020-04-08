@@ -33,7 +33,7 @@ class Xuqiu extends Base {
         }
 
         if($param['search']) {
-            $where[] = ['x.title|x.content','like',"%{$param['search']}%"];
+            $where[] = ['x.title','like',"%{$param['search']}%"];
         }
 
         $count = Db::table('mp_xuqiu')->alias("x")->where($where)->count();
@@ -43,7 +43,7 @@ class Xuqiu extends Base {
         try {
             $list = Db::table('mp_xuqiu')->alias('x')
                 ->join("mp_user u","x.uid=u.id","left")
-                ->field("x.*,u.nickname")
+                ->field("x.*,u.org")
                 ->order(['x.id'=>'DESC'])
                 ->where($where)->limit(($curr_page - 1)*$perpage,$perpage)->select();
         }catch (\Exception $e) {
@@ -56,49 +56,47 @@ class Xuqiu extends Base {
     }
 
     public function xuqiuPass() {
-        $map = [
+        $param['id'] = input('post.id');
+        checkInput($param);
+        $whereXuqiu = [
             ['status','=',0],
-            ['id','=',input('post.id',0)]
+            ['id','=',$param['id']]
         ];
         try {
-            Db::startTrans();
-
-            $exist = Db::table('mp_xuqiu')->where($map)->find();
-            if(!$exist) {
+            $xuqiu_exist = Db::table('mp_xuqiu')->where($whereXuqiu)->find();
+            if(!$xuqiu_exist) {
                 return ajax('非法操作',-1);
             }
-            Db::table('mp_xuqiu')->where($map)->update(['status'=>1]);
-            //审核笔记时
-//            $wherexuqiu = [
-//                ['uid','=',$exist['uid']],
-//                ['status','=',1]
-//            ];
-//            $count = Db::table('mp_xuqiu')->where($wherexuqiu)->count();
-//            Db::table('mp_user')->where('id','=',$exist['uid'])->update(['xuqiu_num'=>($count+1)]);
-            Db::commit();
+            $update_data = [
+                'status' => 1,
+                'check_time' =>time()
+            ];
+            Db::table('mp_xuqiu')->where($whereXuqiu)->update($update_data);
         }catch (\Exception $e) {
-            Db::rollback();
             return ajax($e->getMessage(),-1);
         }
         return ajax([],1);
     }
 
     public function xuqiuReject() {
-        $map = [
+        $param['id'] = input('post.id');
+        $param['reason'] = input('post.reason');
+        checkInput($param);
+        $whereXuqiu = [
             ['status','=',0],
-            ['id','=',input('post.id',0)]
+            ['id','=',$param['id']]
         ];
         try {
-            $reason = input('post.reason');
-            $exist = Db::table('mp_xuqiu')->where($map)->find();
-            if(!$exist) {
+            $xuqiu_exist = Db::table('mp_xuqiu')->where($whereXuqiu)->find();
+            if(!$xuqiu_exist) {
                 return ajax('非法操作',-1);
             }
             $update_data = [
                 'status' => 2,
-                'reason' => $reason
+                'reason' => $param['reason'],
+                'check_time' =>time()
             ];
-            Db::table('mp_xuqiu')->where($map)->update($update_data);
+            Db::table('mp_xuqiu')->where($whereXuqiu)->update($update_data);
         }catch (\Exception $e) {
             return ajax($e->getMessage(),-1);
         }
@@ -110,7 +108,7 @@ class Xuqiu extends Base {
         try {
             $info = Db::table('mp_xuqiu')->alias("x")
                 ->join("mp_user u","x.uid=u.id","left")
-                ->field("x.*,u.nickname")
+                ->field("x.*,u.org")
                 ->where('x.id','=',$id)->find();
         }catch (\Exception $e) {
             die('参数无效');
@@ -132,30 +130,27 @@ class Xuqiu extends Base {
                 return ajax('非法参数',-1);
             }
             Db::table('mp_xuqiu')->where($wherexuqiu)->update(['del'=>1]);
-//            if($exist['status'] == 1) {
-//                Db::table('mp_user')->where('id','=',$exist['uid'])->setDec('xuqiu_num',1);
-//            }
         }catch (\Exception $e) {
             return ajax($e->getMessage(),-1);
         }
         return ajax([],1);
     }
 
-    public function xuqiuModPost() {
-        $val['title'] = input('post.title');
-        $val['content'] = input('post.content');
-        $val['id'] = input('post.id');
-        checkInput($val);
-        try {
-            $where = [
-                ['id','=',$val['id']]
-            ];
-            Db::table('mp_xuqiu')->where($where)->update($val);
-        }catch (\Exception $e) {
-            return ajax($e->getMessage(),-1);
-        }
-        return ajax();
-    }
+//    public function xuqiuModPost() {
+//        $val['title'] = input('post.title');
+//        $val['content'] = input('post.content');
+//        $val['id'] = input('post.id');
+//        checkInput($val);
+//        try {
+//            $where = [
+//                ['id','=',$val['id']]
+//            ];
+//            Db::table('mp_xuqiu')->where($where)->update($val);
+//        }catch (\Exception $e) {
+//            return ajax($e->getMessage(),-1);
+//        }
+//        return ajax();
+//    }
 
     public function recommend() {
         $id = input('post.id');

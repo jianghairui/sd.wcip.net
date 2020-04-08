@@ -133,7 +133,6 @@ class Copyright extends Base {
 
     //申请合作授权
     public function ipApply() {
-        $this->checkUid();
         $val['uid'] = $this->myinfo['uid'];
         $val['ip_id'] = input('post.ip_id');
         $val['company'] = input('post.company');

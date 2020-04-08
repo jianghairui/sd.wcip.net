@@ -1,61 +1,61 @@
 <article class="page-container">
     <form class="form form-horizontal" id="form-admin-add">
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>用户名：</label>
+            <label class="form-label col-xs-4 col-sm-3">用户名：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="{$info.username}" placeholder="设置登陆账号" id="username" name="username">
+                <input type="text" class="input-text" value="" placeholder="设置登陆账号" id="username" name="username">
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>真实姓名：</label>
+            <label class="form-label col-xs-4 col-sm-3">真实姓名：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="{$info.realname}" placeholder="" id="realname" name="realname">
+                <input type="text" class="input-text" value="" placeholder="" id="realname" name="realname">
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>初始密码：</label>
+            <label class="form-label col-xs-4 col-sm-3">初始密码：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <input type="password" class="input-text" autocomplete="off" value="" placeholder="密码" id="password" name="password">
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>确认密码：</label>
+            <label class="form-label col-xs-4 col-sm-3">确认密码：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <input type="password" class="input-text" autocomplete="off"  placeholder="确认新密码" id="password2" name="password2">
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>性别：</label>
+            <label class="form-label col-xs-4 col-sm-3">性别：</label>
             <div class="formControls col-xs-8 col-sm-9 skin-minimal">
                 <div class="radio-box">
-                    <input name="gender" type="radio" id="sex-1" value="1" {if $info['gender'] === 1}checked{/if}>
+                    <input name="gender" type="radio" id="sex-1" value="1" checked>
                     <label for="sex-1">男</label>
                 </div>
                 <div class="radio-box">
-                    <input name="gender" type="radio" id="sex-2" value="2" {if $info['gender'] === 2}checked{/if}>
+                    <input type="radio" id="sex-2" value="2" name="gender">
                     <label for="sex-2">女</label>
                 </div>
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>手机：</label>
+            <label class="form-label col-xs-4 col-sm-3">手机：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="{$info.tel}" placeholder="" id="tel" name="tel">
+                <input type="text" class="input-text" value="" placeholder="" id="tel" name="tel">
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>邮箱：</label>
+            <label class="form-label col-xs-4 col-sm-3">邮箱：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" placeholder="@" name="email" id="email" value="{$info.email}">
+                <input type="text" class="input-text" placeholder="@" name="email" id="email">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3">角色：</label>
             <div class="formControls col-xs-8 col-sm-9"> <span class="select-box" style="width:150px;">
 			<select class="select" name="group_id" size="1">
-                <option value="" {if is_null($group_id)}selected{/if}>路人</option>
+                <option value="">路人</option>
                 {foreach $list as $li}
-                    <option value="{$li.id}" {if $group_id==$li['id']}selected{/if}>{$li.title}</option>
+                    <option value="{$li.id}">{$li.title}</option>
                 {/foreach}
 			</select>
 			</span> </div>
@@ -63,7 +63,7 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3">备注：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <textarea name="desc" cols="" rows="" class="textarea"  placeholder="说点什么...100个字符以内" dragonfly="true" maxlength="100">{$info.desc}</textarea>
+                <textarea name="desc" cols="" rows="" class="textarea"  placeholder="说点什么...100个字符以内" dragonfly="true" maxlength="100"></textarea>
                 <p class="textarea-numberbar"><em class="textarea-length">0</em>/100</p>
             </div>
         </div>
@@ -72,7 +72,6 @@
                 <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
             </div>
         </div>
-        <input type="hidden" name="id" value="{$info.id}">
     </form>
 </article>
 
@@ -83,7 +82,8 @@
 <script type="text/javascript">
 
     $(function(){
-        var isclick = true
+
+        var isclick = true;
 
         $('.skin-minimal input').iCheck({
             checkboxClass: 'icheckbox-blue',
@@ -96,19 +96,20 @@
                 username:{
                     required:true,
                     minlength:4,
-                    maxlength:30
+                    maxlength:16
                 },
                 password:{
-                    minlength:6,
-                    maxlength:30
+                    required:true,
                 },
                 password2:{
-                    minlength:6,
-                    maxlength:30,
+                    required:true,
                     equalTo: "#password"
                 },
                 gender:{
                     required:true,
+                },
+                tel:{
+                    isPhone:true,
                 },
                 email:{
                     email:true,
@@ -118,14 +119,14 @@
             success:"valid",
             submitHandler:function(form){
                 if(isclick) {
-                    isclick = false
+                    isclick = false;
                     $(form).ajaxSubmit({
                         type: 'post',
-                        url: "{:url('Admin/adminmod_post')}" ,
+                        url: "{:url('Admin/adminAddPost')}" ,
                         success: function(data){
-                            console.log(data)
+                            // console.log(data);
                             if(data.code == 1) {
-                                layer.msg('修改成功!',{icon:1,time:1000},function(){
+                                layer.msg('添加成功!',{icon:1,time:1000},function(){
                                     window.parent.location.reload();
                                 });
                             }else {
@@ -144,4 +145,6 @@
             }
         });
     });
+
+
 </script>

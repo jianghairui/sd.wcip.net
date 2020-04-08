@@ -11,7 +11,11 @@ use think\Db;
 class System extends Base {
 
     public function setting() {
-        $info = Db::table('mp_setting')->find();
+        try {
+            $info = Db::table('mp_setting')->find();
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
         $this->assign('info',$info);
         return $this->fetch();
     }

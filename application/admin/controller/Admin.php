@@ -6,10 +6,12 @@
  * Time: 20:59
  */
 namespace app\admin\controller;
+
 use think\Db;
+
 class Admin extends Base {
 
-    public function adminlist() {
+    public function adminList() {
         $param['datemin'] = input('param.datemin');
         $param['datemax'] = input('param.datemax');
         $param['search'] = input('param.search');
@@ -39,8 +41,8 @@ class Admin extends Base {
         $page['totalPage'] = ceil($count/$perpage);
         try {
             $list = Db::table('mp_admin')->alias('a')
-                ->join('mp_auth_group_access au','a.id=au.uid','left')
-                ->join('mp_auth_group g','au.group_id=g.id','left')
+                ->join('mp_auth_group_access ac','a.id=ac.uid','left')
+                ->join('mp_auth_group g','ac.group_id=g.id','left')
                 ->where($where)
                 ->field('a.*,g.title')
                 ->order(['a.id'=>'ASC'])
@@ -54,7 +56,7 @@ class Admin extends Base {
         return $this->fetch();
     }
 
-    public function adminadd() {
+    public function adminAdd() {
         try {
             $list = Db::table('mp_auth_group')->select();
         } catch (\Exception $e) {
@@ -64,7 +66,7 @@ class Admin extends Base {
         return $this->fetch();
     }
 
-    public function adminadd_post() {
+    public function adminAddPost() {
         $data['username'] = input('post.username');
         $data['realname'] = input('post.realname');
         $data['email'] = input('post.email');
@@ -85,7 +87,7 @@ class Admin extends Base {
                     return ajax('手机号不合法',-1);
                 }
             }
-            $exist = Db::table('mp_admin')->where('username',$data['username'])->find();
+            $exist = Db::table('mp_admin')->where('username','=',$data['username'])->find();
             if($exist) {
                 return ajax('用户名已存在',-1);
             }
@@ -100,14 +102,14 @@ class Admin extends Base {
         return ajax($data);
     }
 
-    public function adminmod() {
-        $id = input('param.id');
+    public function adminDetail() {
+        $id = input('param.id','');
         if($id == 1) {
             return $this->fetch('public/noAuth');
         }
         try {
-            $info = Db::table('mp_admin')->where('id',$id)->find();
-            $group_id = Db::table('mp_auth_group_access')->where('uid',$id)->value('group_id');
+            $info = Db::table('mp_admin')->where('id','=',$id)->find();
+            $group_id = Db::table('mp_auth_group_access')->where('uid','=',$id)->value('group_id');
             $list = Db::table('mp_auth_group')->select();
         } catch (\Exception $e) {
             die($e->getMessage());
@@ -118,7 +120,7 @@ class Admin extends Base {
         return $this->fetch();
     }
 
-    public function adminmod_post() {
+    public function adminMod() {
         $data['username'] = input('post.username');
         $data['realname'] = input('post.realname');
         $data['email'] = input('post.email');
@@ -185,7 +187,7 @@ class Admin extends Base {
         return ajax();
     }
 
-    public function admin_multidel() {
+    public function adminMultiDel() {
         $ids = input('post.check');
         if(empty($ids)) {
             return ajax('未选择删除项',-1);
@@ -238,7 +240,7 @@ class Admin extends Base {
         return ajax();
     }
 
-    public function rulelist() {
+    public function ruleList() {
         try {
             $list = Db::table('mp_auth_rule')->where('status','=',1)->select();
             $newlist = $this->sortMerge($list);
@@ -249,7 +251,7 @@ class Admin extends Base {
         return $this->fetch();
     }
 
-    public function ruleadd() {
+    public function ruleAdd() {
         $pid = input('param.pid');
         try {
             if($pid) {
@@ -277,7 +279,7 @@ class Admin extends Base {
         return $this->fetch();
     }
 
-    public function ruleadd_post() {
+    public function ruleAddPost() {
         $val['name'] = input('post.name');
         $val['title'] = input('post.title');
         $val['pid'] = input('post.pid');
@@ -295,7 +297,7 @@ class Admin extends Base {
         return ajax($val,1);
     }
 
-    public function ruledel() {
+    public function ruleDel() {
         $rules = input('post.check');
         if(empty($rules)) {
             return ajax('未选择删除项',-1);
@@ -316,7 +318,7 @@ class Admin extends Base {
         return ajax();
     }
 
-    public function grouplist() {
+    public function groupList() {
         try {
             $list = Db::table('mp_auth_group')->select();
         } catch (\Exception $e) {
@@ -326,7 +328,7 @@ class Admin extends Base {
         return $this->fetch();
     }
 
-    public function groupadd() {
+    public function groupAdd() {
         try {
             $list = Db::table('mp_auth_rule')->where('status',1)->select();
         } catch (\Exception $e) {
@@ -337,7 +339,7 @@ class Admin extends Base {
         return $this->fetch();
     }
 
-    public function groupadd_post() {
+    public function groupAddPost() {
         $data['title'] = input('post.title');
         checkInput($data);
         $data['desc'] = input('post.desc');
@@ -361,7 +363,7 @@ class Admin extends Base {
         return ajax($data);
     }
 
-    public function groupmod() {
+    public function groupMod() {
         $gid = input('param.gid');
         try {
             $exist = Db::table('mp_auth_group')->where('id','=',$gid)->find();
@@ -380,7 +382,7 @@ class Admin extends Base {
         return $this->fetch();
     }
 
-    public function groupmod_post() {
+    public function groupModPost() {
         $data['title'] = input('post.title');
         $data['id'] = input('post.group_id');
         checkInput($data);
@@ -413,7 +415,7 @@ class Admin extends Base {
         return ajax([]);
     }
 
-    public function groupdel() {
+    public function groupDel() {
         $gid = input('post.gid');
         try{
             Db::table('mp_auth_group')->where('id','=',$gid)->delete();
@@ -424,19 +426,6 @@ class Admin extends Base {
         return ajax();
     }
 
-    public function group_multidel() {
-        $gid = input('post.check');
-        if(empty($gid)) {
-            return ajax('未选择删除项',-1);
-        }
-        try{
-            Db::table('mp_auth_group')->where('id','in',$gid)->delete();
-            Db::table('mp_auth_group_access')->where('group_id','in',$gid)->delete();
-        }catch (\Exception $e) {
-            return ajax($e->getMessage(),-1);
-        }
-        return ajax();
-    }
 
     private function sortMerge($node,$access=null,$pid=0)
     {

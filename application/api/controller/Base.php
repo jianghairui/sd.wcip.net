@@ -87,12 +87,31 @@ class Base extends Controller {
     protected function checkUid() {
         $need = [
             'My',
-            '',
+
+            'Activity/uploadworks',
+            'Activity/worksvote',
+
+            'Copyright/ipapply',
+
+            'Funding/fundingpurchase',
+            'Funding/fundingrelease',
+
+            'Note/noterelease',
+            'Note/commentadd',
+            'Note/iflike',
+            'Note/ilike',
+            'Note/ifcollect',
+            'Note/icollect',
+            'Note/iffocus',
+            'Note/ifocus',
+
+            'Xuqiu/xuqiurelease',
+
         ];
         if (!in_array($this->controller,$need) && !in_array($this->cmd, $need)) {
             return true;
         }else {
-            if(isset($this->myinfo['uid']) && $this->myinfo['uid']) {
+            if($this->myinfo['uid']) {
                 return true;
             }else {
                 throw new HttpResponseException(ajax('请绑定手机号',-7));

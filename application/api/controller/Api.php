@@ -123,41 +123,14 @@ class Api extends Base
 
 
 
-
-    //充值
-    public function recharge()
-    {
-        $val['vip_id'] = input('post.vip_id');
-        $val['name'] = input('post.name');
-        $val['tel'] = input('post.tel');
-        $val['address'] = input('post.address');
-        $val['uid'] = $this->myinfo['id'];
-
-        checkPost($val);
-        try {
-            $exist = Db::table('mp_vip')->where('id', $val['vip_id'])->find();
-            if (!$exist) {
-                return ajax('invalid vip_id', -4);
-            }
-            $val['price'] = $exist['price'];
-            $val['days'] = $exist['days'];
-            $val['create_time'] = time();
-            $val['order_sn'] = create_unique_number('v');
-            Db::table('mp_vip_order')->insert($val);
-        } catch (\Exception $e) {
-            return ajax($e->getMessage(), -1);
-        }
-        return ajax($val);
-
-    }
     //收集formid
     public function collectFormid() {
         $val['formid'] = input('post.formid');
+        $val['uid'] = $this->myinfo['id'];
         checkPost($val);
         if($val['formid'] == 'the formId is a mock one') {
             return ajax();
         }
-        $val['uid'] = $this->myinfo['id'];
         $val['create_time'] = time();
         try {
             Db::table('mp_formid')->insert($val);

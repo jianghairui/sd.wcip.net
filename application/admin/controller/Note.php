@@ -130,12 +130,13 @@ class Note extends Base {
             if(!$exist) {
                 return ajax('非法参数',-1);
             }
-            Db::table('mp_note')->where($whereNote)->update(['del'=>1]);
-            if($exist['status'] == 1) {
-                Db::table('mp_user')->where('id','=',$exist['uid'])->setDec('note_num',1);
-            }
+            $old_pics = unserialize($exist['pics']);
+            Db::table('mp_note')->where($whereNote)->delete();
         }catch (\Exception $e) {
             return ajax($e->getMessage(),-1);
+        }
+        foreach ($old_pics as $v) {
+            @$this->rs_delete($v);
         }
         return ajax([],1);
     }
@@ -176,5 +177,8 @@ class Note extends Base {
             return ajax($e->getMessage(),-1);
         }
     }
+
+
+
 
 }

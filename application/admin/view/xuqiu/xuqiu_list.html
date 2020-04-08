@@ -9,11 +9,11 @@
         <div class="text-c">
             <button onclick="removeIframe()" class="btn btn-primary radius">关闭选项卡</button>
             日期范围：
-            <input type="text" onfocus="WdatePicker({ maxDate:'#F{ $dp.$D(\'datemax\')||\'%y-%M-%d\' }' })" id="datemin" value="{$Think.get.datemin}" class="input-text Wdate" style="width:120px;">
+            <input type="text" onfocus="WdatePicker({ maxDate:'#F{ $dp.$D(\'datemax\')||\'%y-%M-%d\' }' })" id="datemin" value="{$Think.get.datemin}" class="input-text Wdate" style="width:120px;" readonly>
             -
-            <input type="text" onfocus="WdatePicker({ minDate:'#F{ $dp.$D(\'datemin\') }' })" id="datemax" value="{$Think.get.datemax}" class="input-text Wdate" style="width:120px;">
-            <input type="text" name="search" value="{$Think.get.search}" id="search" placeholder=" 需求名" style="width:250px" class="input-text">
-            <button name="" id="search-btn" class="btn btn-success" type="button"><i class="Hui-iconfont">&#xe665;</i> 查找需求</button>
+            <input type="text" onfocus="WdatePicker({ minDate:'#F{ $dp.$D(\'datemin\') }' })" id="datemax" value="{$Think.get.datemax}" class="input-text Wdate" style="width:120px;" readonly>
+            <input type="text" name="search" value="{$Think.get.search}" id="search" placeholder=" 需求标题" style="width:250px" class="input-text">
+            <button name="" id="search-btn" class="btn btn-success" type="button"><i class="Hui-iconfont">&#xe665;</i> 查找</button>
         </div>
     </section>
     <div class="cl pd-5 bg-1 bk-gray mt-20">
@@ -27,14 +27,13 @@
             <th width="80">图片</th>
             <th>标题</th>
             <th width="100">发布人</th>
+            <th width="60">审核状态</th>
+            <th width="60">审核</th>
             <th width="150">发布时间</th>
-            <th width="100">审核状态</th>
-            <th width="100">审核</th>
-            <th>操作</th>
+            <th width="100">操作</th>
         </tr>
         </thead>
         <tbody>
-        <form id="multi-check">
             {foreach $list as $li}
             <tr class="text-c userinfo">
                 <td>{$li.id}</td>
@@ -47,8 +46,7 @@
                     {/if}
                 </td>
                 <td>{$li.title}</td>
-                <td>{$li.nickname}</td>
-                <td>{$li.create_time|date="Y-m-d H:i"}</td>
+                <td>{$li.org}</td>
                 <th class="td-status">
                     {if $li['status'] == '0'}
                     <span class="label label-warning radius">待审核</span>
@@ -65,7 +63,8 @@
                     <span class="btn btn-link radius"></span>
                     {/if}
                 </td>
-                <td>
+                <td>{$li.create_time|date="Y-m-d H:i"}</td>
+                <td class="f-14">
                     {if $li['recommend']}
                     <a style="text-decoration:none;color:gold;" class="ml-5" onClick="recommend(this,{$li.id})" href="javascript:;" title="取消推荐">
                     <i class="Hui-iconfont">&#xe630;</i>
@@ -85,8 +84,6 @@
 
             </tr>
             {/foreach}
-        </form>
-
         <tr>
             <td colspan="13" id="page" class="text-r"></td>
         </tr>
@@ -100,20 +97,23 @@
 <script type="text/javascript">
 
     var url = '{:url("Xuqiu/xuqiuList")}' + '?<?php echo $page["query"];?>';
-    var curr = '{$page.curr}';
-    laypage({
-        cont: 'page', //容器。值支持id名、原生dom对象，jquery对象。
-        pages: '{$page.totalPage}', //通过后台拿到的总页数
-        skip: false, //是否开启跳页
-        skin: '#5a98de',
-        curr: curr || 1, //当前页
-        jump: function(obj, first){ //触发分页后的回调
-            // console.log(obj)
-            if(!first) {
-                window.location.href = url+'&page=' + obj.curr;
+    var curr = '{$page.curr}',totalPage='{$page.totalPage}';
+    if(totalPage > 1) {
+        laypage({
+            cont: 'page', //容器。值支持id名、原生dom对象，jquery对象。
+            pages: totalPage, //通过后台拿到的总页数
+            skip: false, //是否开启跳页
+            skin: '#5a98de',
+            curr: curr || 1, //当前页
+            jump: function(obj, first){ //触发分页后的回调
+                // console.log(obj)
+                if(!first) {
+                    window.location.href = url+'&page=' + obj.curr;
+                }
             }
-        }
-    });
+        });
+    }
+
 
     $("#search-btn").click(function () {
         var datemin = $("#formAjax").find("#datemin").val();

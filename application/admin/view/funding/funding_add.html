@@ -3,8 +3,14 @@
 </style>
 <article class="page-container">
     <form class="form form-horizontal" id="form-article-add">
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">众筹标题：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="" placeholder="输入众筹标题" id="title" name="title" maxlength="50">
+            </div>
+        </div>
         <div class="row cl" id="picsize">
-            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span></label>
+            <label class="form-label col-xs-4 col-sm-2"></label>
             <div class="formControls col-xs-8 col-sm-9">
                 <span style="font-size: 16px">
                     (建议尺寸: 600*360)
@@ -24,25 +30,19 @@
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>众筹标题：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="输入众筹标题" id="title" name="title" maxlength="50">
-            </div>
-        </div>
-        <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">目标金额：</label>
             <div class="formControls col-xs-4 col-sm-4">
                 <input type="text" class="input-text" value="" placeholder="金额格式 0.00" id="need_money" name="need_money" onkeyup="onlyMoney(this)">
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>众筹开始时间：</label>
+            <label class="form-label col-xs-4 col-sm-2">众筹开始时间：</label>
             <div class="formControls col-xs-4 col-sm-4">
                 <input type="text" id="start_time" name="start_time" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{ $dp.$D(\'end_time\')}' })" value="" class="input-text Wdate" readonly>
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>众筹结束时间：</label>
+            <label class="form-label col-xs-4 col-sm-2">众筹结束时间：</label>
             <div class="formControls col-xs-4 col-sm-4">
                 <input type="text" id="end_time" name="end_time" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{ $dp.$D(\'start_time\')}' })" value="" class="input-text Wdate" readonly>
             </div>

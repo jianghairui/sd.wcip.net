@@ -1,5 +1,4 @@
 <style>
-    .thumbnail{ width:256px;height: 256px;background-size: cover;background-position: center;position: relative}
     .comment-box{margin-top: 20px}
     .comment-box .form-label{
         text-align: right;
@@ -8,11 +7,8 @@
 <link href="/lib/lightbox2/2.8.1/css/lightbox.css" rel="stylesheet" type="text/css" >
 <article class="page-container">
     <form class="form form-horizontal" id="form-article-add">
-
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2">
-                <span id="btn-star1" class="btn btn-primary btn-uploadstar radius ml-10">需求图片</span>
-            </label>
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red"></span>需求图片：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <ul class="cl portfolio-area" id="fileList">
                     <?php $images = unserialize($info['pics']);?>
@@ -20,7 +16,6 @@
                     {foreach $images as $v}
                     <li class="item">
                         <div class="portfoliobox">
-                            <!--<span class="image-del" title="删除"><i class="Hui-iconfont">&#xe6e2;</i></span>-->
                             <div class="picbox">
                                 <a href="{$qiniu_weburl}{$v}" data-lightbox="gallery" data-title=""><img src="{$qiniu_weburl}{$v}"></a>
                             </div>
@@ -32,44 +27,128 @@
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>需求标题：</label>
+            <label class="form-label col-xs-4 col-sm-2">需求标题：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <input type="text" class="input-text" value="{$info.title}" name="title" placeholder="" >
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2">需求内容：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <textarea name="content" class="textarea" maxlength="1000" placeholder="" oninput="this.value.length<=1000?$('#textlen1').text(this.value.length):$('#textlen1').text(1000)" >{$info.content}</textarea>
-                <p class="textarea-numberbar"><em class="textarea-length" id="textlen1">0</em>/1000</p>
+            <label class="form-label col-xs-4 col-sm-2">预期金额：</label>
+            <div class="formControls col-xs-3 col-sm-3">
+                <input type="text" class="input-text" value="{$info.min_price}" name="min_price" placeholder="最低价" >
+            </div>
+            <div class="formControls col-xs-3 col-sm-3">
+                <input type="text" class="input-text" value="{$info.max_price}" name="max_price" placeholder="最高价" >
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>发布人(只读)：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="{$info.nickname}" name="nickname" placeholder=""  readonly>
+            <label class="form-label col-xs-4 col-sm-2">加工数量：</label>
+            <div class="formControls col-xs-3 col-sm-3">
+                <input type="text" class="input-text" value="{$info.num}" placeholder=""  readonly>
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2">发布时间(只读)：</label>
+            <label class="form-label col-xs-4 col-sm-2">交货时间：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="{$info.create_time}" placeholder=""  readonly>
+                <input type="text" class="input-text" value="{$info.deadline}" placeholder=""  readonly>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">需要发票：</label>
+            <div class="formControls col-xs-8 col-sm-9 skin-minimal">
+                <div class="radio-box">
+                    <input name="invoice" type="radio" id="invoice-1" value="1" {if $info['invoice'] == 1}checked{/if}>
+                    <label for="invoice-1">需要</label>
+                </div>
+                <div class="radio-box">
+                    <input name="invoice" type="radio" id="invoice-2" value="0" {if $info['invoice'] == 0}checked{/if}>
+                    <label for="invoice-2">不需要</label>
+                </div>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">有无样例：</label>
+            <div class="formControls col-xs-8 col-sm-9 skin-minimal">
+                <div class="radio-box">
+                    <input name="sample" type="radio" id="sample-1" value="1" {if $info['sample'] == 1}checked{/if}>
+                    <label for="sample-1">有</label>
+                </div>
+                <div class="radio-box">
+                    <input name="sample" type="radio" id="sample-2" value="0" {if $info['sample'] == 0}checked{/if}>
+                    <label for="sample-2">无</label>
+                </div>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">面向地区：</label>
+            <div class="formControls col-xs-8 col-sm-9 skin-minimal">
+                <div class="radio-box">
+                    <input name="area" type="radio" id="area-1" value="0" {if $info['area'] == 0}checked{/if}>
+                    <label for="area-1">全国</label>
+                </div>
+                <div class="radio-box">
+                    <input name="area" type="radio" id="area-2" value="1" {if $info['area'] == 1}checked{/if}>
+                    <label for="area-2">江浙沪</label>
+                </div>
+                <div class="radio-box">
+                    <input name="area" type="radio" id="area-3" value="2" {if $info['area'] == 2}checked{/if}>
+                    <label for="area-3">天津</label>
+                </div>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">发布人：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="{$info.org}" name="org" placeholder=""  readonly>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">联系卡电话：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="{$info.tel}" name="tel" placeholder=""  readonly>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">联系人：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="{$info.linkman}" name="linkman" placeholder=""  readonly>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">简介：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <textarea name="desc" cols="" rows="" class="textarea" maxlength="255" placeholder="" oninput="this.value.length<=255?$('#textlen1').text(this.value.length):$('#textlen1').text(255)" readonly>{$info.desc}</textarea>
+                <p class="textarea-numberbar"><em class="textarea-length" id="textlen1">0</em>/255</p>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">发布时间：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="{$info.create_time|date='Y-m-d h:i:s'}" placeholder=""  readonly>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">状态：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                {switch $info['status']}
+                {case 0}<span class="label label-warning radius">待审核</span>{/case}
+                {case 1}<span class="label label-success radius">已通过</span>{/case}
+                {case 2}<span class="label label-danger radius">未通过</span><span class="c-red"> ( 原因:  {$info.reason} ) </span>{/case}
+                {/switch}
             </div>
         </div>
         <div class="row cl">
             <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
-                <button class="btn btn-primary radius" type="submit"><i class="Hui-iconfont">&#xe632;</i> 保存</button>
-                <button onClick="layer_close();" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+                {if $info['status'] == 0}
+                <button onClick="check_pass('{$info.id}');" class="btn btn-success radius" type="button">&nbsp;&nbsp;通过&nbsp;&nbsp;</button>
+                <button onClick="check_reject('{$info.id}');" class="btn btn-danger radius" type="button">&nbsp;&nbsp;拒绝&nbsp;&nbsp;</button>
+                {/if}
+                <!--<button class="btn btn-primary radius" type="submit"><i class="Hui-iconfont">&#xe632;</i> 保存</button>-->
+                <button onClick="layer_close();" class="btn btn-primary radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
             </div>
         </div>
         <input type="hidden" name="id" value="{$info.id}">
     </form>
-    <div class="row cl comment-box">
-        <label class="form-label col-xs-4 col-sm-2">评论内容：</label>
-        <div class="formControls col-xs-8 col-sm-9">
-            <div class="comment">评论内容</div>
-        </div>
-    </div>
 </article>
 
 
@@ -80,6 +159,12 @@
 
 
     $(function () {
+
+        $('.skin-minimal input').iCheck({
+            checkboxClass: 'icheckbox-blue',
+            radioClass: 'iradio-blue',
+            increaseArea: '20%'
+        });
 
         var isclick = true;
         //表单验证
@@ -115,11 +200,81 @@
             }
         });
 
-
-        var textlen1 = $("textarea[name='content']").val().length;
+        var textlen1 = $("textarea[name='desc']").val().length;
         $("#textlen1").text(textlen1);
 
-    })
+    });
+
+
+    /*需求审核*/
+    function check_pass(id){
+        layer.confirm('通过审核？', {
+                btn: ['确定','取消'],
+                shade: false,
+                closeBtn: 0
+            },
+            function(){
+                $.ajax({
+                    url:"{:url('Xuqiu/xuqiuPass')}",
+                    type:'post',
+                    dataType:'json',
+                    data:{id:id},
+                    success:function(data) {
+                        console.log(data)
+                        if(data.code == 1) {
+                            layer.msg('已审核', {icon:1,time:1000},function () {
+                                window.parent.location.reload();
+                            });
+                        }else {
+                            layer.msg(data.data,{icon:2,time:1000})
+                        }
+                    },
+                    error:function(data) {
+                        layer.msg('请求失败!',{icon:5,time:1000})
+                    }
+                })
+
+            }
+        );
+    }
+
+    function check_reject(id) {
+        layer.confirm('拒绝通过审核？', {
+            btn: ['确定','取消'],
+            shade: false,
+            closeBtn: 0
+        }, function() {
+            layer.prompt({
+                formType: 2,
+                value: '内容违规',
+                title: '请输入理由(最多50个字)',
+                maxlength: 50,
+                area: ['400px', '300px'] //自定义文本域宽高
+            }, function (value, index, elem) {
+                reason = value;
+                layer.close(index);
+                $.ajax({
+                    url: "{:url('Xuqiu/xuqiuReject')}",
+                    type: 'post',
+                    dataType: 'json',
+                    data: {id: id, reason: reason},
+                    success: function (data) {
+                        console.log(data);
+                        if (data.code == 1) {
+                            layer.msg('已拒绝', {icon: 1, time: 1000},function () {
+                                window.parent.location.reload();
+                            });
+                        } else {
+                            layer.msg(data.data, {icon: 2, time: 1000})
+                        }
+                    },
+                    error: function (data) {
+                        layer.msg('请求失败!', {icon: 5, time: 1000})
+                    }
+                })
+            })
+        })
+    }
 
 
 </script>

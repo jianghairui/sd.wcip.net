@@ -1,31 +1,31 @@
 <article class="page-container">
     <form class="form form-horizontal" id="form-admin-add">
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>账号：</label>
+            <label class="form-label col-xs-4 col-sm-3">账号：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <input type="text" class="input-text" value="{$info.username}" placeholder="" id="username" name="username" readonly>
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>真实姓名：</label>
+            <label class="form-label col-xs-4 col-sm-3">真实姓名：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <input type="text" class="input-text" value="{$info.realname}" placeholder="" id="realname" name="realname">
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>新密码：</label>
+            <label class="form-label col-xs-4 col-sm-3">新密码：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <input type="password" class="input-text" autocomplete="off" value="" placeholder="密码" id="password" name="password">
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>确认密码：</label>
+            <label class="form-label col-xs-4 col-sm-3">确认密码：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <input type="password" class="input-text" autocomplete="off"  placeholder="确认新密码" id="password2" name="password2">
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>性别：</label>
+            <label class="form-label col-xs-4 col-sm-3">性别：</label>
             <div class="formControls col-xs-8 col-sm-9 skin-minimal">
                 <div class="radio-box">
                     <input name="gender" type="radio" id="sex-1" value="1" {if $info['gender'] == 1}checked{/if}>
@@ -38,13 +38,13 @@
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>手机：</label>
+            <label class="form-label col-xs-4 col-sm-3">手机：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <input type="text" class="input-text" value="{$info.tel}" placeholder="" id="tel" name="tel">
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>邮箱：</label>
+            <label class="form-label col-xs-4 col-sm-3">邮箱：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <input type="text" class="input-text" value="{$info.email}" placeholder="@" name="email" id="email">
             </div>

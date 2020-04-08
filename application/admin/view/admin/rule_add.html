@@ -1,19 +1,19 @@
 <article class="page-container">
     <form class="form form-horizontal" id="form-admin-add">
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>节点名：</label>
+            <label class="form-label col-xs-4 col-sm-3">节点名：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <input type="text" class="input-text" value="{if $pname != '顶级节点'}{$pname}/{/if}" placeholder="设置节点名称" id="name" name="name">
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>节点描述：</label>
+            <label class="form-label col-xs-4 col-sm-3">节点描述：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <input type="text" class="input-text" value="" placeholder="输入节点描述" id="title" name="title">
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>父节点：</label>
+            <label class="form-label col-xs-4 col-sm-3">父节点：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <input type="hidden" class="input-text" value="{$pid}" placeholder="" id="tel" name="pid" readonly>
                 <input type="text" class="input-text" value="{$pname}" id="pname" readonly>

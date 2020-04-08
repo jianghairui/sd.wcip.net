@@ -51,6 +51,7 @@ class Base extends Controller {
             }
         }
 
+
     }
 
     private function needSession() {

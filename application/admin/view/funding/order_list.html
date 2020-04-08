@@ -10,9 +10,9 @@
         <div class="text-c">
             <button onclick="removeIframe()" class="btn btn-primary radius">关闭选项卡</button>
             日期范围：
-            <input type="text" onfocus="WdatePicker({ maxDate:'#F{ $dp.$D(\'datemax\')||\'%y-%M-%d\' }' })" id="datemin" value="{$Think.get.datemin}" class="input-text Wdate" style="width:120px;">
+            <input type="text" onfocus="WdatePicker({ maxDate:'#F{ $dp.$D(\'datemax\')||\'%y-%M-%d\' }' })" id="datemin" value="{$Think.get.datemin}" class="input-text Wdate" style="width:120px;" readonly>
             -
-            <input type="text" onfocus="WdatePicker({ minDate:'#F{ $dp.$D(\'datemin\') }' })" id="datemax" value="{$Think.get.datemax}" class="input-text Wdate" style="width:120px;">
+            <input type="text" onfocus="WdatePicker({ minDate:'#F{ $dp.$D(\'datemin\') }' })" id="datemax" value="{$Think.get.datemax}" class="input-text Wdate" style="width:120px;" readonly>
             <span class="select-box inline" style="width: 120px;">
                 <select name="status" id="status" class="select">
                     <option value="">全部</option>

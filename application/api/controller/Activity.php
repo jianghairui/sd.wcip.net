@@ -71,7 +71,6 @@ class Activity extends Base {
 
     //上传参赛作品
     public function uploadWorks() {
-        $this->checkUid();
         $val['uid'] = $this->myinfo['uid'];
         $val['activity_id'] = input('post.activity_id');
         $val['title'] = input('post.title');
@@ -164,6 +163,7 @@ class Activity extends Base {
                 ->order($order)
                 ->limit(($curr_page - 1) * $perpage, $perpage)->select();
 
+            if(!$this->myinfo['uid']) { $this->myinfo['uid'] = -1; }
             $myvote = Db::table('mp_activity_works_vote')->where('uid','=',$this->myinfo['uid'])->column('work_id');
             foreach ($list as &$v) {
                 if(in_array($v['id'],$myvote)) {
@@ -185,6 +185,7 @@ class Activity extends Base {
     public function worksDetail() {
         $param['work_id'] = input('post.work_id');
         checkPost($param);
+        if(!$this->myinfo['uid']) { $this->myinfo['uid'] = -1; }
         try {
             //作品是否存在
             $whereWorks = [

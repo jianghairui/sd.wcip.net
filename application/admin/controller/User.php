@@ -155,20 +155,24 @@ class User extends Base {
     }
     //申请角色-通过审核
     public function rolePass() {
-        $uid = input('post.id','');
+        $param['uid'] = input('post.id','');
+        checkInput($param);
         try {
             $whereRole = [
                 ['role_check','=',1],
-                ['uid','=',$uid]
+                ['uid','=',$param['uid']]
             ];
             $role_exist = Db::table('mp_user_role')->where($whereRole)->field('id,role,uid,org')->find();
             if(!$role_exist) {
                 return ajax('非法操作',-1);
             }
-            Db::table('mp_user_role')->where($whereRole)->update(['role_check'=>2,'pass_time'=>time()]);
+            Db::table('mp_user_role')->where($whereRole)->update([
+                'role_check'=>2,
+                'check_time'=>time()
+            ]);
 
             $whereUser = [
-                ['id','=',$uid]
+                ['id','=',$param['uid']]
             ];
             Db::table('mp_user')->where($whereUser)->update([
                 'role' => $role_exist['role'],
@@ -186,23 +190,28 @@ class User extends Base {
     }
     //申请角色-拒绝审核
     public function roleReject() {
-        $map = [
-            ['role_check','=',1],
-            ['id','=',input('post.id',0)]
-        ];
-        $reason = input('post.reason','');
+        $param['uid'] = input('post.id','');
+        $param['reason'] = input('post.reason','');
+        checkInput($param);
         try {
-            $exist = Db::table('mp_user')->where($map)->field('id')->find();
-            if(!$exist) {
+            $whereRole = [
+                ['role_check','=',1],
+                ['uid','=',$param['uid']]
+            ];
+            $role_exist = Db::table('mp_user_role')->where($whereRole)->field('id,role,uid,org')->find();
+            if(!$role_exist) {
                 return ajax('非法操作',-1);
             }
-            Db::table('mp_user')->where($map)->update(['role_check'=>3]);
-            Db::table('mp_user_role')->where('uid','=',$exist['id'])->update(['reason'=>$reason]);
-            $param = [
+            Db::table('mp_user_role')->where($whereRole)->update([
+                'role_check'=>3,
+                'check_time'=>time(),
+                'reason' => $param['reason']
+            ]);
+            $tpl_data = [
                 'action' => 'roleReject',
-                'uid' => $exist['id']
+                'uid' => $role_exist['uid']
             ];
-            $this->asyn_tpl_send($param);
+            $this->asyn_tpl_send($tpl_data);
         }catch (\Exception $e) {
             return ajax($e->getMessage(),-1);
         }

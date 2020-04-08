@@ -111,7 +111,7 @@ class Funding extends Base {
         $val['tel'] = input('post.tel','');
         $val['address'] = input('post.address','');
         $val['desc'] = input('post.desc','');
-        $val['uid'] = $this->myinfo['id'];
+        $val['uid'] = $this->myinfo['uid'];
         $val['create_time'] = time();
         $val['pay_order_sn'] = create_unique_number('F');
 
@@ -225,7 +225,6 @@ class Funding extends Base {
 
     //众筹提交表单
     public function fundingRelease() {
-        $this->checkUid();
         $val['uid'] = $this->myinfo['uid'];
         $val['title'] = input('post.title');
         $val['company'] = input('post.company');

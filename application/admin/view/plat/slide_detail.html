@@ -30,20 +30,20 @@
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>标题：</label>
+            <label class="form-label col-xs-4 col-sm-2">标题：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <input type="text" class="input-text" value="{$info.title}" placeholder="" id="title" name="title" maxlength="30">
                 <input type="hidden" class="input-text" value="{$info.id}" placeholder="" id="slideid" name="slideid">
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>跳转链接：</label>
+            <label class="form-label col-xs-4 col-sm-2">跳转链接：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <input type="text" class="input-text" value="{$info.url}" placeholder="" id="url" name="url" maxlength="255">
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>状态：</label>
+            <label class="form-label col-xs-4 col-sm-2">状态：</label>
             <div class="formControls col-xs-8 col-sm-9 skin-minimal">
                 <div class="radio-box">
                     <input name="status" type="radio" id="sex-1" value="1" {if $info['status'] == 1}checked{/if}>

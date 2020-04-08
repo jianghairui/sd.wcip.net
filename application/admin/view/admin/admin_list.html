@@ -14,7 +14,7 @@
             <a href="javascript:;" onclick="admin_multidel()" class="btn btn-danger radius">
                 <i class="Hui-iconfont">&#xe6e2;</i> 批量删除
             </a>
-            <a href="javascript:;" onclick="admin_add('添加管理员','{:url("Admin/adminadd")}','1000','600')" class="btn btn-primary radius">
+            <a href="javascript:;" onclick="layeropen('添加管理员','{:url("Admin/adminAdd")}','1000','600')" class="btn btn-primary radius">
                 <i class="Hui-iconfont">&#xe600;</i> 添加管理员
             </a>
         </span>
@@ -69,7 +69,7 @@
                     </a>{/case}
                     {default/}
                     {/switch}
-                    <a title="编辑" href="javascript:;" onclick="admin_edit('管理员编辑','{:url("Admin/adminmod",array("id"=>$li['id']))}','1','1000','600')" class="ml-5" style="text-decoration:none">
+                    <a title="编辑" href="javascript:;" onclick="layeropen('管理员编辑','{:url("Admin/adminDetail",array("id"=>$li['id']))}','1000','600')" class="ml-5" style="text-decoration:none">
                     <i class="Hui-iconfont">&#xe6df;</i>
                     </a>
                     <a title="删除" href="javascript:;" onclick="admin_del(this,{$li.id})" class="ml-5" style="text-decoration:none">
@@ -79,7 +79,6 @@
             </tr>
             {/foreach}
         </form>
-
 
         <tr>
             <td colspan="10" id="page" class="text-r"></td>
@@ -95,7 +94,7 @@
 <script type="text/javascript" src="/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="/lib/laypage/1.2/laypage.js"></script>
 <script type="text/javascript">
-    var url = '{:url("Admin/adminlist")}' + '?<?php echo $page["query"];?>';
+    var url = '{:url("Admin/adminList")}' + '?<?php echo $page["query"];?>';
     var curr = '{$page.curr}';
     var isclick = true;
     laypage({
@@ -126,12 +125,10 @@
         if(search.length !== '') {
             str += '&search=' + search
         }
-        window.location.href = '{:url("Admin/adminlist")}' + '?' + str;
+        window.location.href = '{:url("Admin/adminList")}' + '?' + str;
     });
 
-    function admin_add(title,url,w,h){
-        layer_show(title,url,w,h);
-    }
+
     /*管理员-删除*/
     function admin_del(obj,id){
         layer.confirm('确认要删除吗？',function(index){
@@ -154,11 +151,6 @@
                 },
             });
         });
-    }
-
-    /*管理员-编辑*/
-    function admin_edit(title,url,id,w,h){
-        layer_show(title,url,w,h);
     }
     /*管理员-停用*/
     function admin_stop(obj,id){
@@ -185,7 +177,6 @@
             })
         });
     }
-
     /*管理员-启用*/
     function admin_start(obj,id){
         layer.confirm('确认要启用吗？',function(index){
@@ -211,16 +202,16 @@
             })
         });
     }
-
+    /*批量删除*/
     function admin_multidel() {
         layer.confirm('管理员删除须谨慎，确认要删除吗？',function(index){
             if(isclick) {
                 isclick = false;
                 $('#multidel').ajaxSubmit({
                     type: 'post',
-                    url: "{:url('Admin/admin_multidel')}" ,
+                    url: "{:url('Admin/adminMultiDel')}" ,
                     success: function(data){
-                        console.log(data)
+                        // console.log(data);
                         if(data.code == 1) {
                             layer.msg('删除成功',{icon:1,time:1000},function () {
                                 window.location.reload()
@@ -240,4 +231,5 @@
 
         })
     }
+
 </script>

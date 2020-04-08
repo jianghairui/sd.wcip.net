@@ -107,7 +107,8 @@ class Shop extends Base {
 
             $wherepcate = [
                 ['pid','=',$info['pcate_id']],
-                ['del','=',0]
+                ['del','=',0],
+                ['status','=',1]
             ];
             $child = Db::table('mp_goods_cate')->where($wherepcate)->select();
             $where_attr = [

@@ -231,4 +231,155 @@ class Copyright extends Base {
     }
 
 
+
+
+
+    //分类列表
+    public function cateList() {
+        $where = [];
+        try {
+            $list = Db::table('mp_ip_cate')->where($where)->select();
+        }catch (\Exception $e) {
+            die($e->getMessage());
+        }
+        $this->assign('list',$list);
+        $this->assign('qiniu_weburl',config('qiniu_weburl'));
+        return $this->fetch();
+    }
+//添加分类
+    public function cateAdd() {
+        return $this->fetch();
+    }
+//添加分类POST
+    public function cateAddPost() {
+        $val['cate_name'] = input('post.cate_name');
+        checkInput($val);
+        $icon = input('post.icon');
+        try {
+            if($icon) {
+                $qiniu_exist = $this->qiniuFileExist($icon);
+                if($qiniu_exist !== true) {
+                    return ajax($qiniu_exist['msg'],-1);
+                }
+                $qiniu_move = $this->moveFile($icon,'upload/ipcate/');
+                if($qiniu_move['code'] == 0) {
+                    $val['icon'] = $qiniu_move['path'];
+                }else {
+                    return ajax($qiniu_move['msg'],-2);
+                }
+            }
+            Db::table('mp_ip_cate')->insert($val);
+        }catch (\Exception $e) {
+            if(isset($val['icon'])) {
+                $this->rs_delete($val['icon']);
+            }
+            return ajax($e->getMessage(),-1);
+        }
+        return ajax([]);
+    }
+//分类详情
+    public function cateDetail() {
+        $id = input('param.id');
+        try {
+            $info = Db::table('mp_ip_cate')->where('id',$id)->find();
+        }catch (\Exception $e) {
+            die($e->getMessage());
+        }
+        $this->assign('info',$info);
+        $this->assign('qiniu_weburl',config('qiniu_weburl'));
+        return $this->fetch();
+    }
+//修改分类POST
+    public function cateModPost() {
+        $val['cate_name'] = input('post.cate_name');
+        $val['id'] = input('post.id',0);
+        checkInput($val);
+        $icon = input('post.icon');
+
+        try {
+            $where = [
+                ['id','=',$val['id']]
+            ];
+            $exist = Db::table('mp_ip_cate')->where($where)->find();
+            if(!$exist) {
+                return ajax('非法参数',-1);
+            }
+            if($icon) {
+                $qiniu_exist = $this->qiniuFileExist($icon);
+                if($qiniu_exist !== true) {
+                    return ajax($qiniu_exist['msg'],-1);
+                }
+                $qiniu_move = $this->moveFile($icon,'upload/ipcate/');
+                if($qiniu_move['code'] == 0) {
+                    $val['icon'] = $qiniu_move['path'];
+                }else {
+                    return ajax($qiniu_move['msg'],-2);
+                }
+            }
+            Db::table('mp_ip_cate')->where($where)->update($val);
+        }catch (\Exception $e) {
+            if(isset($val['icon']) && $val['icon'] != $exist['icon']) {
+                $this->rs_delete($val['icon']);
+            }
+            return ajax($e->getMessage(),-1);
+        }
+        if(isset($val['icon']) && $val['icon'] != $exist['icon']) {
+            $this->rs_delete($exist['icon']);
+        }
+        return ajax([]);
+    }
+//隐藏分类
+    public function cateHide() {
+        $id = input('post.id');
+        try {
+            $whereCate = [
+                ['id','=',$id]
+            ];
+            $exist = Db::table('mp_ip_cate')->where($whereCate)->find();
+            if(!$exist) {
+                return ajax('非法参数',-1);
+            }
+            Db::table('mp_ip_cate')->where($whereCate)->update(['status'=>0]);
+        }catch (\Exception $e) {
+            return ajax($e->getMessage(),-1);
+        }
+        return ajax();
+    }
+//显示分类
+    public function cateShow() {
+        $id = input('post.id');
+        try {
+            $whereCate = [
+                ['id','=',$id]
+            ];
+            $exist = Db::table('mp_ip_cate')->where($whereCate)->find();
+            if(!$exist) {
+                return ajax('非法参数',-1);
+            }
+            Db::table('mp_ip_cate')->where($whereCate)->update(['status'=>1]);
+        }catch (\Exception $e) {
+            return ajax($e->getMessage(),-1);
+        }
+        return ajax();
+    }
+//删除分类
+    public function cateDel() {
+        $id = input('post.id');
+        try {
+            $whereCate = [
+                ['id','=',$id]
+            ];
+            $exist = Db::table('mp_ip_cate')->where($whereCate)->find();
+            if(!$exist) {
+                return ajax('非法参数',-1);
+            }
+            Db::table('mp_ip_cate')->where($whereCate)->delete();
+        }catch (\Exception $e) {
+            return ajax($e->getMessage(),-1);
+        }
+        @$this->rs_delete($exist['icon']);
+        return ajax();
+    }
+
+
 }
