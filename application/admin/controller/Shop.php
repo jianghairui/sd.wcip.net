@@ -925,26 +925,33 @@ LEFT JOIN `mp_goods` `g` ON `d`.`goods_id`=`g`.`id`
         $val['id'] = input('post.id');
         checkInput($val);
         try {
-            $where = [
+            $whereOrder = [
                 ['id','=',$val['id']],
                 ['status','in',[1,2,3]]
             ];
-            $exist = Db::table('mp_order')->where($where)->find();
-            if(!$exist) {
+            $order_exist = Db::table('mp_order')->where($whereOrder)->find();
+            if(!$order_exist) {
                 return ajax('订单不存在或状态已改变',-1);
             }
-            $pay_order_sn = $exist['pay_order_sn'];
+            $pay_order_sn = $order_exist['pay_order_sn'];
+            $whereUnite = [
+                ['pay_order_sn','=',$pay_order_sn]
+            ];
+            $unite_exist = Db::table('mp_order_unite')->where($whereUnite)->find();
+            if(!$unite_exist) {
+                return ajax('订单异常',-1);
+            }
 //            $exist['pay_price'] = 0.01;
             $arr = [
                 'appid' => $this->config['app_id'],
                 'mch_id'=> $this->config['mch_id'],
                 'nonce_str'=>randomkeys(32),
                 'sign_type'=>'MD5',
-                'transaction_id'=> $exist['trans_id'],
+                'transaction_id'=> $unite_exist['trans_id'],
                 'out_trade_no'=> $pay_order_sn,
-                'out_refund_no'=> 'r' . $pay_order_sn,
-                'total_fee'=> floatval($exist['pay_price'])*100,
-                'refund_fee'=> floatval($exist['pay_price'])*100,
+                'out_refund_no'=> 'r' . $order_exist['order_sn'],
+                'total_fee'=> floatval($unite_exist['pay_price'])*100,
+                'refund_fee'=> floatval($order_exist['pay_price'])*100,
                 'refund_fee_type'=> 'CNY',
                 'refund_desc'=> '商品无货',
                 'notify_url'=> $_SERVER['REQUEST_SCHEME'] . '://'.$_SERVER['HTTP_HOST'].'/wxRefundNotify',
@@ -962,10 +969,10 @@ LEFT JOIN `mp_goods` `g` ON `d`.`goods_id`=`g`.`id`
                         'refund_apply' => 2,
                         'refund_time' => time()
                     ];
-                    Db::table('mp_order')->where($where)->update($update_data);
+                    Db::table('mp_order')->where($whereOrder)->update($update_data);
                     return ajax();
                 }else {
-                    return ajax($res['err_code_des'],-1);
+                    return ajax($result['err_code_des'],-1);
                 }
             }else {
                 return ajax('退款通知失败',-1);

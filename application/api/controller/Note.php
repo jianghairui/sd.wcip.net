@@ -53,7 +53,6 @@ class Note extends Base {
     }
     //发布笔记
     public function noteRelease () {
-        $val['title'] = input('post.title');
         $val['content'] = input('post.content');
         $val['width'] = input('post.width',1);
         $val['height'] = input('post.height',1);
@@ -62,10 +61,6 @@ class Note extends Base {
         $val['goods_id'] = input('post.goods_id');
         $val['create_time'] = time();
         $image = input('post.pics',[]);
-
-        if(!$this->msgSecCheck($val['title'])) {
-            return ajax('标题包含敏感词',63);
-        }
         if(!$this->msgSecCheck($val['content'])) {
             return ajax('内容包含敏感词',64);
         }
@@ -405,6 +400,51 @@ WHERE c.note_id=?",[$val['note_id']]);
         }catch (\Exception $e) {
             return ajax($e->getMessage(),-1);
         }
+    }
+    //发布笔记选择商品
+    public function goodsList() {
+        $param['type'] = input('post.type',1);
+        checkPost($param);
+        try {
+            if(!$this->myinfo['uid']) {
+                return ajax([]);
+            }
+            $param['type'] = intval($param['type']);
+            switch ($param['type']) {
+                case 1:
+                    $whereOrder = [
+                        ['uid','=',$this->myinfo['uid']]
+                    ];
+                    $order_ids = Db::table('mp_order')->where($whereOrder)->column('id');
+                    if(empty($order_ids)) {
+                        $list = [];
+                    }else {
+                        $whereGoods = [
+                            ['d.order_id','in',$order_ids]
+                        ];
+                        $list = Db::table('mp_order_detail')->alias('d')
+                            ->join('mp_goods g','d.goods_id=g.id','left')
+                            ->field('d.goods_id,d.goods_name,d.unit_price AS price,d.attr,g.poster')
+                            ->where($whereGoods)
+                            ->select();
+                    }
+                    break;
+                case 2:
+                    $whereGoods = [
+                        ['shop_id','=',$this->myinfo['uid']]
+                    ];
+                    $list = Db::table('mp_goods')
+                        ->field('id AS goods_id,name AS goods_name,price,"默认" AS attr,poster')
+                        ->where($whereGoods)
+                        ->select();
+                    break;
+                default:
+                    $list = [];
+            }
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax($list);
     }
 
 

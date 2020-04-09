@@ -292,7 +292,7 @@
                 dataType: 'json',
                 data:{id:id},
                 success: function(data){
-                    console.log(data);
+                    // console.log(data);return;
                     if(data.code == 1) {
                         $(obj).parents("tr").find("#refund-status").html('<span class="label label-danger radius">已退款</span>');
                         $(obj).parents("tr").find("#send-btn").remove();
