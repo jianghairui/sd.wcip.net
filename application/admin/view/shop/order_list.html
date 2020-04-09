@@ -57,7 +57,7 @@
                 <td>{$li.trans_id}</td>
                 <td><span class="order-font-price" onclick="mod_price(this,{$li.id},{$li.pay_price})">{$li.pay_price}</span>元</td>
                 <td><span class="order-font-price">{$li.total_price}</span>元
-                    <!--(运费:<span style="color: green">{$li.carriage}</span>元)-->
+                    (含运费:<span style="color: green">{$li.carriage}</span>元)
                 </td>
                 <td>{$li.pay_time|date="Y-m-d H:i:s"}</td>
                 <td class="td-status">
@@ -123,7 +123,7 @@
                         <div style="margin: 0 10px;">
                             <div><span class="order-font-b">{$vv.goods_name}</span></div>
                             <div>规格: <span class="order-font">{$vv.attr}</span></div>
-                            <div>数量: <span class="order-font">{$vv.num}</span></div>
+                            <div>单价: <span class="order-font">{if $vv['use_vip_price']}{$vv.vip_price}元(会员价){else /}{$vv.unit_price}元{/if} x {$vv.num} </span></div>
                             <div>小计: <span class="order-font">{$vv.total_price}元</span></div>
                         </div>
                     </div>

@@ -104,27 +104,17 @@ class Pay extends Base {
 
     }
 
-
-
-
-
-
-
-
-
-
-
-
     //购物车支付、联合ID支付单号支付
     public function orderIdPay() {
+        $val['uid'] = $this->myinfo['uid'];
         $order_id = input('post.order_id',[]);
         if(!is_array($order_id) || empty($order_id)) {
-            return ajax('请选择要支付的订单',79);
+            return ajax('请选择要支付的订单',58);
         }
         $whereOrder = [
             ['id','IN',$order_id],
             ['status','=',0],
-            ['uid','=',$this->myinfo['id']]
+            ['uid','=',$val['uid']]
         ];
         try {
             $pay_price = 0;
@@ -137,7 +127,7 @@ class Pay extends Base {
             }
             $pay_order_sn = create_unique_number('');
             $insert_data = [
-                'uid' => $this->myinfo['id'],
+                'uid' => $val['uid'],
                 'pay_order_sn' => $pay_order_sn,
                 'pay_price' => $pay_price,
                 'order_ids' => implode(',',$order_id),
@@ -152,7 +142,7 @@ class Pay extends Base {
                 'out_trade_no' => $pay_order_sn,
 //                'total_fee' => 1,
                 'total_fee' => floatval($pay_price)*100,
-                'notify_url' => $this->weburl . 'api/pay/order_notify',
+                'notify_url' => $this->weburl . 'api/pay/orderNotify',
                 'trade_type' => 'JSAPI',
                 'openid' => $this->myinfo['openid']
             ]);
@@ -176,24 +166,26 @@ class Pay extends Base {
     }
     //直接支付、待支付订单支付、联合订单号支付
     public function orderSnPay() {
+        $val['uid'] = $this->myinfo['uid'];
+        checkPost($val);
         $pay_order_sn = input('post.pay_order_sn');
         if(!$pay_order_sn) {
-            return ajax('请选择要支付的订单',-2);
+            return ajax('请选择要支付的订单',58);
         }
         $whereUnite = [
             ['pay_order_sn','=',$pay_order_sn],
             ['status','=',0],
-            ['uid','=',$this->myinfo['id']]
+            ['uid','=',$val['uid']]
         ];
         $whereOrder = [
             ['pay_order_sn','=',$pay_order_sn],
             ['status','=',0],
-            ['uid','=',$this->myinfo['id']]
+            ['uid','=',$val['uid']]
         ];
         try {
             $unite_exist =  Db::table('mp_order_unite')->where($whereUnite)->find();
             if(!$unite_exist) {
-                return ajax($whereUnite,4);
+                return ajax('invalid pay_order_sn',4);
             }
             $pay_price = $unite_exist['pay_price'];
             $order_ids = explode(',',$unite_exist['order_ids']);
@@ -207,7 +199,7 @@ class Pay extends Base {
                 'out_trade_no' => $pay_order_sn,
 //                'total_fee' => 1,
                 'total_fee' => floatval($pay_price)*100,
-                'notify_url' => $this->weburl . 'api/pay/order_notify',
+                'notify_url' => $this->weburl . 'api/pay/orderNotify',
                 'trade_type' => 'JSAPI',
                 'openid' => $this->myinfo['openid']
             ]);
@@ -230,7 +222,7 @@ class Pay extends Base {
         return ajax($sign);
     }
     //订单支付回调接口
-    public function order_notify() {
+    public function orderNotify() {
 //将返回的XML格式的参数转换成php数组格式
         $xml = file_get_contents('php://input');
         $data = xml2array($xml);
@@ -249,16 +241,14 @@ class Pay extends Base {
                             'trans_id' => $data['transaction_id'],
                             'pay_time' => time()
                         ];
-                        $order_ids = Db::table('mp_order')->where($whereUnite)->column('id');
-
                         Db::table('mp_order_unite')->where($whereUnite)->update($update_data);
                         Db::table('mp_order')->where($whereUnite)->update($update_data);
                         //给店家发送邮件
-                        $email_data = [
-                            'order_id' => $unite_exist['id'],
-                            'action' => 'goodsOrder'
-                        ];
-                        $this->asyn_email_send($email_data);
+//                        $email_data = [
+//                            'order_id' => $unite_exist['id'],
+//                            'action' => 'goodsOrder'
+//                        ];
+//                        $this->asyn_email_send($email_data);
                         //发送模板消息
 //                        $tpl_data = [
 //                            'order_id' => $unite_exist['id'],
@@ -266,11 +256,12 @@ class Pay extends Base {
 //                        ];
 //                        $this->asyn_tpl_send($tpl_data);
                         //变更商品销量
+                        $order_ids = explode(',',$unite_exist['order_ids']);
                         $whereDetail = [
                             ['order_id','IN',$order_ids]
                         ];
                         $detail = Db::table('mp_order_detail')->where($whereDetail)->field('id,goods_id,num')->select();
-                        $this->log($this->cmd,var_export($detail,true));
+                        $this->paylog($this->cmd,var_export($detail,true));
                         foreach ($detail as $v) {
                             $whereGoods = [
                                 ['id','=',$v['goods_id']]
@@ -285,6 +276,9 @@ class Pay extends Base {
         }
         exit(array2xml(['return_code'=>'SUCCESS','return_msg'=>'OK']));
     }
+
+
+
     //订单支付
     public function fundingPay() {
         $val['pay_order_sn'] = input('post.pay_order_sn');
@@ -390,8 +384,6 @@ class Pay extends Base {
         }
         exit(array2xml(['return_code'=>'SUCCESS','return_msg'=>'OK']));
     }
-
-
     //工厂购买套餐支付
     public function role3Pay() {
         $val['pay_order_sn'] = input('post.pay_order_sn');
@@ -447,7 +439,6 @@ class Pay extends Base {
         }
         return ajax($sign);
     }
-
     //工厂套餐支付回调接口
     public function role3_notify() {
         //将返回的XML格式的参数转换成php数组格式
@@ -526,7 +517,6 @@ class Pay extends Base {
         exit(array2xml(['return_code'=>'SUCCESS','return_msg'=>'OK']));
 
     }
-
 
     protected function asyn_tpl_send($data) {
         $param = http_build_query($data);

@@ -108,7 +108,12 @@ class Base extends Controller {
 
             'Xuqiu/xuqiurelease',
 
-            'Pay/vippay'
+            'Pay/vippay',
+            'Pay/orderidpay',
+            'Pay/ordersnpay',
+
+            'Shop/cartlist',
+            'Shop/cartadd',
 
         ];
         if (!in_array($this->controller,$need) && !in_array($this->cmd, $need)) {

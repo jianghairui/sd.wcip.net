@@ -65,16 +65,11 @@
                 <td>{$li.sales}</td>
                 <td>
                     {if $li['shop_id']}
-                    {if $li['role'] == 2}
-                    {$li.role_name}
-                    {else /}
                     {$li.org}
-                    {/if}
                     (
                     {switch $li['role']}
                     {case 1} 博物馆 {/case}
-                    {case 2} 设计师 {/case}
-                    {case 3} 工厂 {/case}
+                    {case 2} 文旅机构 {/case}
                     {default /}
                     {/switch}
                     )
