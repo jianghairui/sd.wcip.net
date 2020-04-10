@@ -28,7 +28,8 @@ class Cate extends Base {
 
     public function ipCateList() {
         $whereCate = [
-            ['recommend','=',1]
+            ['recommend','=',1],
+            ['status','=',1]
         ];
         try {
             $cate_list = Db::table('mp_ip_cate')->where($whereCate)->select();

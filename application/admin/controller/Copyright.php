@@ -381,5 +381,82 @@ class Copyright extends Base {
         return ajax();
     }
 
+    //推荐分类
+    public function cateRecommend() {
+        $id = input('post.id','0');
+        $map = [
+            ['id','=',$id]
+        ];
+        try {
+            $goods_exist = Db::table('mp_ip_cate')->where($map)->find();
+            if($goods_exist['recommend'] == 1) {
+                Db::table('mp_ip_cate')->where($map)->update(['recommend'=>0]);
+                return ajax(0);
+            }else {
+                Db::table('mp_ip_cate')->where($map)->update(['recommend'=>1]);
+                return ajax(1);
+            }
+        }catch (\Exception $e) {
+            return ajax($e->getMessage(),-1);
+        }
+
+    }
+
+    public function consultList() {
+        $param['search'] = input('param.search','');
+        $param['contact'] = input('param.contact','');
+        $param['datemin'] = input('param.datemin');
+        $param['datemax'] = input('param.datemax');
+        $page['query'] = http_build_query(input('param.'));
+        $curr_page = input('param.page',1);
+        $perpage = input('param.perpage',10);
+
+        $where = [];
+        if($param['search']) {
+            $where[] = ['i.title','like',"%{$param['search']}%"];
+        }
+        if($param['contact'] !== '') {
+            $where[] = ['c.contact','=',$param['contact']];
+        }
+        if($param['datemin']) {
+            $where[] = ['c.create_time','>=',strtotime($param['datemin'])];
+        }
+        if($param['datemax']) {
+            $where[] = ['c.create_time','<=',strtotime(date('Y-m-d 23:59:59',strtotime($param['datemax'])))];
+        }
+        try {
+            $count = Db::table('mp_ip_consult')->alias('c')
+                ->join('mp_ip i','c.ip_id=i.id','left')
+                ->where($where)->count();
+            $page['count'] = $count;
+            $page['curr'] = $curr_page;
+            $page['totalPage'] = ceil($count/$perpage);
+            $list = Db::table('mp_ip_consult')->alias('c')
+                ->join('mp_ip i','c.ip_id=i.id','left')
+                ->where($where)
+                ->field('c.*,i.title')
+                ->select();
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        $this->assign('list',$list);
+        $this->assign('page',$page);
+        $this->assign('param',$param);
+        return $this->fetch();
+    }
+
+    public function contact() {
+        $id = input('post.id');
+        try {
+            $where = [
+                ['id','=',$id]
+            ];
+            Db::table('mp_ip_consult')->where($where)->update(['contact'=>1,'contact_time'=>time()]);
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax();
+    }
+
 
 }

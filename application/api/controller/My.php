@@ -156,8 +156,572 @@ class My extends Base {
         }
         return ajax();
     }
-
-
     /*------ 申请角色 END ------*/
+
+
+    /*------ 众筹订单管理 START ------*/
+    //众筹订单列表
+    public function fundingOrderList() {
+        $curr_page = input('post.page',1);
+        $perpage = input('post.perpage',10);
+        $status = input('post.status','');
+        $order = ['o.id'=>'DESC'];
+        $where = [
+            ['o.uid','=',$this->myinfo['uid']],
+            ['o.del','=',0],
+            ['o.refund_apply','=',0]
+        ];
+        if($status !== '') {
+            $where[] = ['o.status','=',$status];
+        }
+        try {
+            $list = Db::table('mp_funding_order')->alias('o')
+                ->join('mp_funding f','o.funding_id=f.id','left')
+                ->join('mp_funding_goods g','o.goods_id=g.id','left')
+                ->where($where)
+                ->field('o.id,o.pay_order_sn,o.pay_price,o.unit_price,o.num,o.status,o.create_time,o.type,f.title AS funding_title,f.cover,f.id AS funding_id,g.name AS goods_name,g.pics')
+                ->order($order)
+                ->limit(($curr_page-1)*$perpage,$perpage)->select();
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        foreach ($list as &$v) {
+            $v['pics'] = unserialize($v['pics']);
+        }
+        return ajax($list);
+    }
+    //众筹售后列表
+    public function fundingRefundList() {
+        $curr_page = input('post.page',1);
+        $perpage = input('post.perpage',10);
+        $type = input('post.type','');
+        $order = ['o.id'=>'DESC'];
+
+        $where = [
+            ['o.uid','=',$this->myinfo['uid']],
+            ['o.del','=',0]
+        ];
+        switch ($type) {
+            case '1':$where[] = ['o.refund_apply','=',1];break;
+            case '2':$where[] = ['o.refund_apply','=',2];break;
+            default:$where[] = ['o.refund_apply','IN',[1,2]];
+        }
+        try {
+            $list = Db::table('mp_funding_order')->alias('o')
+                ->join('mp_funding f','o.funding_id=f.id','left')
+                ->join('mp_funding_goods g','o.goods_id=g.id','left')
+                ->where($where)
+                ->field('o.id,o.pay_order_sn,o.pay_price,o.unit_price,o.num,o.type,o.refund_apply,o.status,o.create_time,o.type,f.title AS funding_title,f.cover,g.name AS goods_name,g.pics')
+                ->order($order)
+                ->limit(($curr_page-1)*$perpage,$perpage)->select();
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        foreach ($list as &$v) {
+            $v['pics'] = unserialize($v['pics']);
+        }
+        return ajax($list);
+    }
+    //众筹订单详情
+    public function fundingOrderDetail() {
+        $val['order_id'] = input('post.order_id');
+        checkPost($val);
+        try {
+            $where = [
+                ['o.uid','=',$this->myinfo['uid']],
+                ['o.id','=',$val['order_id']],
+                ['o.del','=',0]
+            ];
+            $info = Db::table('mp_funding_order')->alias('o')
+                ->join('mp_funding_goods g','o.goods_id=g.id','left')
+                ->join('mp_funding f','o.funding_id=f.id','left')
+                ->where($where)
+                ->field('o.id,o.pay_order_sn,o.trans_id,o.pay_price,o.unit_price,o.num,o.receiver,o.tel,o.address,o.type,o.refund_apply,o.reason,o.status,o.create_time,o.pay_time,o.send_time,o.finish_time,o.refund_time,o.tracking_name,o.tracking_num,g.name AS goods_name,g.pics,f.id AS funding_id,f.title AS funding_title,f.cover')
+                ->find();
+            if(!$info) {
+                return ajax('invalid order_id',4);
+            }
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        $info['pics'] = unserialize($info['pics']);
+        return ajax($info);
+    }
+    //申请退款
+    public function fundingRefundApply() {
+        $val['order_id'] = input('post.order_id');
+        $val['reason'] = input('post.reason');
+        checkPost($val);
+        try {
+            $where = [
+                ['id','=',$val['order_id']],
+                ['uid','=',$this->myinfo['uid']],
+                ['refund_apply','=',0],
+                ['status','IN',[1,2,3]],
+                ['del','=',0]
+            ];
+            $info = Db::table('mp_funding_order')->where($where)->find();
+            if(!$info) {
+                return ajax('invalid order_id',4);
+            }
+            Db::table('mp_funding_order')->where($where)->update([
+                'refund_apply' => 1,
+                'reason' => $val['reason']
+            ]);
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax();
+    }
+    //确认收货
+    public function fundingOrderConfirm() {
+        $val['order_id'] = input('post.order_id');
+        checkPost($val);
+        try {
+            $where = [
+                ['id','=',$val['order_id']],
+                ['uid','=',$this->myinfo['uid']],
+                ['status','=',2],
+                ['del','=',0]
+            ];
+            $exist = Db::table('mp_funding_order')->alias('o')->where($where)->find();
+            if(!$exist) {
+                return ajax( 'invalid order_id',4);
+            }
+            $update_data = [
+                'status' => 3,
+                'finish_time' => time()
+            ];
+            Db::table('mp_funding_order')->where($where)->update($update_data);
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax();
+    }
+    //取消众筹订单
+    public function fundingOrderCancel() {
+        $val['order_id'] = input('post.order_id');
+        checkPost($val);
+        try {
+            $where = [
+                ['id','=',$val['order_id']],
+                ['uid','=',$this->myinfo['uid']],
+                ['status','=',0],
+                ['del','=',0]
+            ];
+            $exist = Db::table('mp_funding_order')->where($where)->find();
+            if(!$exist) {
+                return ajax( 'invalid order_id',4);
+            }
+            $update_data = [
+                'del' => 1
+            ];
+            Db::table('mp_funding_order')->where($where)->update($update_data);
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax();
+    }
+    /*------ 众筹订单管理 END ------*/
+
+    /*------ 商品订单管理 START------*/
+    //我的订单列表
+    public function orderList() {
+        $curr_page = input('post.page',1);
+        $perpage = input('post.perpage',10);
+        $status = input('post.status','');
+        $where = "del=0 AND uid=".$this->myinfo['uid'];
+        $where .= " AND `status` IN (0,1,2,3) AND `del`=0 AND `refund_apply`=0";
+        $order = " ORDER BY `id` DESC";
+        $orderby = " ORDER BY `d`.`id` DESC";
+        if($status !== '') {
+            $where .= " AND status=" . $status;
+        }
+        try {
+            $sql = "SELECT `o`.`id`,`o`.`pay_order_sn`,`o`.`pay_price`,`o`.`total_price`,`o`.`carriage`,`o`.`create_time`,`o`.`refund_apply`,`o`.`status`,`o`.`refund_apply`,`d`.`order_id`,`d`.`goods_id`,`d`.`num`,`d`.`unit_price`,`d`.`use_vip_price`,`d`.`vip_price`,`d`.`goods_name`,`d`.`attr`,`g`.`pics` 
+FROM (SELECT * FROM mp_order WHERE " . $where . $order ." LIMIT ".($curr_page-1)*$perpage.",".$perpage.") `o` 
+LEFT JOIN `mp_order_detail` `d` ON `o`.`id`=`d`.`order_id`
+LEFT JOIN `mp_goods` `g` ON `d`.`goods_id`=`g`.`id`
+" . $orderby;
+            $list = Db::query($sql);
+            $order_id = [];
+            $newlist = [];
+            foreach ($list as $v) {
+                $order_id[] = $v['id'];
+            }
+            $uniq_order_id = array_unique($order_id);
+            foreach ($uniq_order_id as $v) {
+                $child = [];
+                foreach ($list as $li) {
+                    if($li['order_id'] == $v) {
+                        $data['id'] = $li['id'];
+                        $data['pay_order_sn'] = $li['pay_order_sn'];
+                        $data['total_price'] = $li['total_price'];
+                        $data['carriage'] = $li['carriage'];
+                        $data['status'] = $li['status'];
+                        $data['refund_apply'] = $li['refund_apply'];
+                        $data['create_time'] = date('Y-m-d H:i',$li['create_time']);
+                        $data_child['goods_id'] = $li['goods_id'];
+                        $data_child['cover'] = unserialize($li['pics'])[0];
+                        $data_child['goods_name'] = $li['goods_name'];
+                        $data_child['num'] = $li['num'];
+                        $data_child['unit_price'] = $li['unit_price'];
+                        $data_child['use_vip_price'] = $li['use_vip_price'];
+                        $data_child['vip_price'] = $li['vip_price'];
+                        if($li['use_vip_price']) {
+                            $data_child['total_price'] = sprintf ( "%1\$.2f",($li['vip_price'] * $li['num']));
+                        }else {
+                            $data_child['total_price'] = sprintf ( "%1\$.2f",($li['unit_price'] * $li['num']));
+                        }
+                        $data_child['attr'] = $li['attr'];
+                        $child[] = $data_child;
+                    }
+                }
+                $data['child'] = $child;
+                $newlist[] = $data;
+            }
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+
+        return ajax($newlist);
+    }
+    //我的售后列表
+    public function refundList() {
+        $curr_page = input('post.page',1);
+        $perpage = input('post.perpage',10);
+        $type = input('post.type',1);
+        if(!in_array($type,[1,2,3])) {
+            return ajax($type,-4);
+        }
+        $where = "del=0 AND uid=".$this->myinfo['uid'];
+        $order = " ORDER BY `id` DESC";
+        $orderby = " ORDER BY `d`.`id` DESC";
+        if($type == 1) {
+            $where .= " AND refund_apply=1";
+        }else if($type == 2){
+            $where .= " AND refund_apply=2";
+        }else {
+            $where .= " AND refund_apply IN (1,2)";
+        }
+        try {
+            $list = Db::query("SELECT 
+`o`.`id`,`o`.`pay_order_sn`,`o`.`pay_price`,`o`.`total_price`,`o`.`carriage`,`o`.`create_time`,`o`.`refund_apply`,`o`.`status`,`o`.`refund_apply`,`d`.`order_id`,`d`.`goods_id`,`d`.`num`,`d`.`unit_price`,`d`.`goods_name`,`d`.`attr`,`g`.`pics` 
+FROM (SELECT * FROM mp_order WHERE " . $where . $order . " LIMIT ".($curr_page-1)*$perpage.",".$perpage.") `o` 
+LEFT JOIN `mp_order_detail` `d` ON `o`.`id`=`d`.`order_id`
+LEFT JOIN `mp_goods` `g` ON `d`.`goods_id`=`g`.`id`
+".$orderby);
+
+            $order_id = [];
+            $newlist = [];
+            foreach ($list as $v) {
+                $order_id[] = $v['id'];
+            }
+            $uniq_order_id = array_unique($order_id);
+            foreach ($uniq_order_id as $v) {
+                $child = [];
+                foreach ($list as $li) {
+                    if($li['order_id'] == $v) {
+                        $data['id'] = $li['id'];
+                        $data['pay_order_sn'] = $li['pay_order_sn'];
+                        $data['total_price'] = $li['total_price'];
+                        $data['carriage'] = $li['carriage'];
+                        $data['status'] = $li['status'];
+                        $data['refund_apply'] = $li['refund_apply'];
+                        $data['create_time'] = date('Y-m-d H:i',$li['create_time']);
+                        $data_child['goods_id'] = $li['goods_id'];
+                        $data_child['cover'] = unserialize($li['pics'])[0];
+                        $data_child['goods_name'] = $li['goods_name'];
+                        $data_child['num'] = $li['num'];
+                        $data_child['unit_price'] = $li['unit_price'];
+                        $data_child['total_price'] = sprintf ( "%1\$.2f",($li['unit_price'] * $li['num']));
+                        $data_child['attr'] = $li['attr'];
+                        $child[] = $data_child;
+                    }
+                }
+                $data['child'] = $child;
+                $newlist[] = $data;
+            }
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+
+        return ajax($newlist);
+    }
+    //查看订单详情
+    public function orderDetail() {
+        $val['order_id'] = input('post.order_id');
+        checkPost($val);
+        $where = [
+            ['o.id','=',$val['order_id']],
+            ['o.uid','=',$this->myinfo['uid']],
+            ['o.del','=',0]
+        ];
+        try {
+            $list = Db::table('mp_order')->alias('o')
+                ->join("mp_order_detail d","o.id=d.order_id","left")
+                ->join("mp_goods g","d.goods_id=g.id","left")
+                ->where($where)
+                ->field("o.id,o.pay_order_sn,o.pay_price,o.total_price,o.carriage,o.receiver,o.tel,o.address,o.create_time,o.refund_apply,o.status,d.order_id,d.num,d.unit_price,d.goods_name,d.attr,g.pics")->select();
+            if(!$list) {
+                return ajax('invalid order_id',4);
+            }
+
+            $data = [];
+            $child = [];
+            foreach ($list as $li) {
+                $data['pay_order_sn'] = $li['pay_order_sn'];
+                $data['receiver'] = $li['receiver'];
+                $data['tel'] = $li['tel'];
+                $data['address'] = $li['address'];
+                $data['total_price'] = $li['total_price'];
+                $data['carriage'] = $li['carriage'];
+                $data['amount'] = $li['total_price'] - $data['carriage'];
+                $data['create_time'] = date('Y-m-d H:i',$li['create_time']);
+                $data['refund_apply'] = $li['refund_apply'];
+                $data['status'] = $li['status'];
+                $data_child['cover'] = unserialize($li['pics'])[0];
+                $data_child['goods_name'] = $li['goods_name'];
+                $data_child['num'] = $li['num'];
+                $data_child['unit_price'] = $li['unit_price'];
+                $data_child['total_price'] = sprintf ( "%1\$.2f",($li['unit_price'] * $li['num']));
+                $data_child['attr'] = $li['attr'];
+                $data_child['cover'] = unserialize($li['pics'])[0];
+                $child[] = $data_child;
+            }
+            $data['child'] = $child;
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+
+        return ajax($data);
+
+    }
+    //申请退款
+    public function refundApply() {
+        $val['order_id'] = input('post.order_id');
+        $val['reason'] = input('post.reason');
+        checkPost($val);
+        try {
+            $where = [
+                ['id','=',$val['order_id']],
+                ['uid','=',$this->myinfo['uid']],
+                ['status','in',[1,2,3]],
+                ['del','=',0]
+            ];
+            $exist = Db::table('mp_order')->where($where)->find();
+            if(!$exist) {
+                return ajax( 'invalid order_id',4);
+            }
+            $update_data = [
+                'refund_apply' => 1,
+                'reason' => $val['reason']
+            ];
+            Db::table('mp_order')->where($where)->update($update_data);
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax();
+    }
+    //确认收货
+    public function orderConfirm() {
+        $val['order_id'] = input('post.order_id');
+        checkPost($val);
+        try {
+            $where = [
+                ['id','=',$val['order_id']],
+                ['uid','=',$this->myinfo['uid']],
+                ['status','=',2],
+                ['del','=',0]
+            ];
+            $exist = Db::table('mp_order')->alias('o')->where($where)->find();
+            if(!$exist) {
+                return ajax( 'invalid order_id',44);
+            }
+            $update_data = [
+                'status' => 3,
+                'finish_time' => time()
+            ];
+            Db::table('mp_order')->where($where)->update($update_data);
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax();
+    }
+    //取消订单
+    public function orderCancel() {
+        $val['order_id'] = input('post.order_id');
+        checkPost($val);
+        try {
+            $where = [
+                ['id','=',$val['order_id']],
+                ['uid','=',$this->myinfo['uid']],
+                ['status','=',0],
+                ['del','=',0]
+            ];
+            $exist = Db::table('mp_order')->alias('o')->where($where)->find();
+            if(!$exist) {
+                return ajax( 'invalid order_id',44);
+            }
+            $update_data = [
+                'del' => 1
+            ];
+            Db::table('mp_order')->where($where)->update($update_data);
+            $detail_list = Db::table('mp_order_detail')->where('order_id','=',$exist['id'])->select();
+            foreach ($detail_list as $v) {
+                if($v['use_attr'] == 1) {
+                    Db::table('mp_goods_attr')->where('id','=',$v['attr_id'])->setInc('stock',$v['num']);
+                }
+                Db::table('mp_goods')->where('id','=',$v['goods_id'])->setInc('stock',$v['num']);
+            }
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax();
+
+    }
+    /*------ 商品订单结束 END------*/
+
+
+
+    /*------收货地址管理 START------*/
+    //我的地址列表
+    public function addressList() {
+        $uid = $this->myinfo['uid'];
+        try {
+            $where = [
+                ['uid','=',$uid]
+            ];
+            $list = Db::table('mp_address')->where($where)->select();
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax($list);
+    }
+    //添加收货地址
+    public function addressAdd() {
+        $val['uid'] = $this->myinfo['uid'];
+        $val['provincename'] = input('post.provincename');
+        $val['cityname'] = input('post.cityname');
+        $val['countyname'] = input('post.countyname');
+        $val['detail'] = input('post.detail');
+        $val['tel'] = input('post.tel');
+        $val['username'] = input('post.username');
+        $val['default'] = input('post.default',0);
+        checkPost($val);
+        $val['postalcode'] = input('post.postalcode');
+        if(!is_tel($val['tel'])) {
+            return ajax('',6);
+        }
+        try {
+            $id = Db::table('mp_address')->insertGetId($val);
+            if($val['default']) {
+                $whereDefault = [
+                    ['id','<>',$id],
+                    ['uid','=',$val['uid']]
+                ];
+                Db::table('mp_address')->where($whereDefault)->update(['default'=>0]);
+            }
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax();
+    }
+    //收货地址详情
+    public function addressDetail() {
+        $val['id'] = input('post.id');
+        checkPost($val);
+        $uid = $this->myinfo['uid'];
+        $where = [
+            ['id','=',$val['id']],
+            ['uid','=',$uid]
+        ];
+        try {
+            $info = Db::table('mp_address')->where($where)->find();
+            if(!$info) {
+                return ajax('',-4);
+            }
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax($info);
+    }
+    //修改收货地址
+    public function addressMod() {
+        $val['id'] = input('post.id');
+        $uid = $this->myinfo['uid'];
+        $val['provincename'] = input('post.provincename');
+        $val['cityname'] = input('post.cityname');
+        $val['countyname'] = input('post.countyname');
+        $val['detail'] = input('post.detail');
+        $val['tel'] = input('post.tel');
+        $val['username'] = input('post.username');
+        $val['default'] = input('post.default',0);
+        checkPost($val);
+        $val['postalcode'] = input('post.postalcode');
+        if(!is_tel($val['tel'])) {
+            return ajax('',6);
+        }
+        $where = [
+            ['id','=',$val['id']],
+            ['uid','=',$uid]
+        ];
+        try {
+            $info = Db::table('mp_address')->where($where)->find();
+            if(!$info) {
+                return ajax('',-4);
+            }
+            Db::table('mp_address')->where($where)->update($val);
+            if($val['default']) {
+                $whereDefault = [
+                    ['id','<>',$val['id']],
+                    ['uid','=',$uid]
+                ];
+                Db::table('mp_address')->where($whereDefault)->update(['default'=>0]);
+            }
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax();
+    }
+    //删除收货地址
+    public function addressDel() {
+        $val['id'] = input('post.id');
+        checkPost($val);
+        try {
+            $uid = $this->myinfo['uid'];
+            $where = [
+                ['id','=',$val['id']],
+                ['uid','=',$uid]
+            ];
+            $info = Db::table('mp_address')->where($where)->find();
+            if(!$info) {
+                return ajax('invalid id',-4);
+            }
+            Db::table('mp_address')->where($where)->delete();
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax();
+    }
+    //获取我的默认收货地址
+    public function getDefaultAddress() {
+        $uid = $this->myinfo['uid'];
+        $where = [
+            ['default','=',1],
+            ['uid','=',$uid]
+        ];
+        try {
+            $info = Db::table('mp_address')->where($where)->find();
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax($info);
+    }
+    /*------收货地址管理 END------*/
+
+
+
+
 
 }

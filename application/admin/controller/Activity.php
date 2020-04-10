@@ -488,6 +488,57 @@ class Activity extends Base {
         return ajax();
     }
 
+    public function consultList() {
+        $param['search'] = input('param.search','');
+        $param['contact'] = input('param.contact','');
+        $param['datemin'] = input('param.datemin');
+        $param['datemax'] = input('param.datemax');
+        $page['query'] = http_build_query(input('param.'));
+        $curr_page = input('param.page',1);
+        $perpage = input('param.perpage',10);
+
+        $where = [];
+        if($param['search']) {
+            $where[] = ['title','like',"%{$param['search']}%"];
+        }
+        if($param['contact'] !== '') {
+            $where[] = ['contact','=',$param['contact']];
+        }
+        if($param['datemin']) {
+            $where[] = ['create_time','>=',strtotime($param['datemin'])];
+        }
+        if($param['datemax']) {
+            $where[] = ['create_time','<=',strtotime(date('Y-m-d 23:59:59',strtotime($param['datemax'])))];
+        }
+        try {
+            $count = Db::table('mp_activity_consult')->where($where)->count();
+            $page['count'] = $count;
+            $page['curr'] = $curr_page;
+            $page['totalPage'] = ceil($count/$perpage);
+            $list = Db::table('mp_activity_consult')->where($where)
+                ->select();
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        $this->assign('list',$list);
+        $this->assign('page',$page);
+        $this->assign('param',$param);
+        return $this->fetch();
+    }
+
+    public function contact() {
+        $id = input('post.id');
+        try {
+            $where = [
+                ['id','=',$id]
+            ];
+            Db::table('mp_activity_consult')->where($where)->update(['contact'=>1,'contact_time'=>time()]);
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax();
+    }
+
 
 
 

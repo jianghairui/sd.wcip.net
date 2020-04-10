@@ -715,7 +715,7 @@ class Funding extends Base {
             $where = [
                 ['id','=',$id]
             ];
-            Db::table('mp_funding_consult')->where($where)->update(['contact'=>1]);
+            Db::table('mp_funding_consult')->where($where)->update(['contact'=>1,'contact_time'=>time()]);
         } catch (\Exception $e) {
             return ajax($e->getMessage(), -1);
         }

@@ -117,6 +117,12 @@ class Base extends Controller {
             'My/recharge',
             'My/applyinfo',
             'My/roleapply',
+            'My/addresslist',
+            'My/addressadd',
+            'My/addressdetail',
+            'My/addressmod',
+            'My/addressdel',
+            'My/getdefaultaddress',
 
         ];
         if (!in_array($this->controller,$need) && !in_array($this->cmd, $need)) {

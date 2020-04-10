@@ -126,19 +126,19 @@ class Funding extends Base {
             if($funding_exist['end_time'] < time()) {
                 return ajax('众筹已结束',36);
             }
-            $whereGoods = [
-                ['id','=',$val['goods_id']],
-                ['del','=',0]
-            ];
-            $goods_exist = Db::table('mp_funding_goods')->where($whereGoods)->find();
-            if(!$goods_exist) {
-                return ajax('非法参数goods_id',-4);
-            }
-            if($goods_exist['funding_id'] != $val['funding_id']) {
-                return ajax('goods_id does not match the funding_id',-4);
-            }
-
             if($val['goods_id']) {
+                $whereGoods = [
+                    ['id','=',$val['goods_id']],
+                    ['del','=',0]
+                ];
+                $goods_exist = Db::table('mp_funding_goods')->where($whereGoods)->find();
+                if(!$goods_exist) {
+                    return ajax('非法参数goods_id',-4);
+                }
+                if($goods_exist['funding_id'] != $val['funding_id']) {
+                    return ajax('goods_id doesnot match the funding_id',-4);
+                }
+
                 $val['type'] = 1;
                 $postArray['num'] = $val['num'];
                 $postArray['receiver'] = $val['receiver'];

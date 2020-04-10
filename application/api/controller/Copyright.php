@@ -61,8 +61,10 @@ class Copyright extends Base {
         $val['ip_id'] = input('post.ip_id');
         checkPost($val);
         try {
-            $info = Db::table('mp_ip')
-                ->where('id','=',$val['ip_id'])
+            $info = Db::table('mp_ip')->alias('i')
+                ->join('mp_ip_cate c','i.cate_id=c.id','left')
+                ->where('i.id','=',$val['ip_id'])
+                ->field('i.*,c.cate_name')
                 ->find();
             if(!$info) {
                 return ajax('invalid ip_id',-4);
@@ -75,8 +77,11 @@ class Copyright extends Base {
 
     //ip分类
     public function ipCateList() {
+        $whereCate = [
+            ['status','=',1]
+        ];
         try {
-            $cate_list = Db::table('mp_ip_cate')->select();
+            $cate_list = Db::table('mp_ip_cate')->where($whereCate)->select();
         }catch (\Exception $e) {
             return ajax($e->getMessage(),-1);
         }
