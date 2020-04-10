@@ -17,7 +17,7 @@ class Cate extends Base {
         try {
             $list = Db::table('mp_goods')
                 ->where($whereVideo)
-                ->field('id,name,poster,video_url')
+                ->field('id,name,price,poster,video_url')
                 ->limit(0,10)
                 ->select();
         } catch (\Exception $e) {

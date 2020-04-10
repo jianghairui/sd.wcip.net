@@ -282,11 +282,12 @@ class Pay extends Base {
     //订单支付
     public function fundingPay() {
         $val['pay_order_sn'] = input('post.pay_order_sn');
+        $val['uid'] = $this->myinfo['uid'];
         checkPost($val);
         $where = [
             ['pay_order_sn','=',$val['pay_order_sn']],
             ['status','=',0],
-            ['uid','=',$this->myinfo['id']]
+            ['uid','=',$val['uid']]
         ];
         $app = Factory::payment($this->mp_config);
         try {
@@ -300,7 +301,7 @@ class Pay extends Base {
                 'out_trade_no' => $val['pay_order_sn'],
 //                'total_fee' => 1,
                 'total_fee' => floatval($total_price)*100,
-                'notify_url' => $this->weburl . 'api/pay/funding_notify',
+                'notify_url' => $this->weburl . 'api/pay/fundingNotify',
                 'trade_type' => 'JSAPI',
                 'openid' => $this->myinfo['openid']
             ]);
@@ -327,7 +328,7 @@ class Pay extends Base {
         return ajax($sign);
     }
     //订单支付回调接口
-    public function funding_notify() {
+    public function fundingNotify() {
 //将返回的XML格式的参数转换成php数组格式
         $xml = file_get_contents('php://input');
         $data = xml2array($xml);
@@ -384,139 +385,10 @@ class Pay extends Base {
         }
         exit(array2xml(['return_code'=>'SUCCESS','return_msg'=>'OK']));
     }
-    //工厂购买套餐支付
-    public function role3Pay() {
-        $val['pay_order_sn'] = input('post.pay_order_sn');
-        checkPost($val);
 
-        if($this->myinfo['role'] != 3 || $this->myinfo['role_check'] != 2) {
-            return ajax('套餐仅限通过审核的工厂',90);
-        }
-        try {
-            $whereCurr = [
-                ['uid','=',$this->myinfo['id']],
-                ['end_time','>',time()]
-            ];
-            $level_exist = Db::table('mp_role3_curr')->where($whereCurr)->find();
-            if($level_exist) {
-                return ajax('当前套餐结束前无法购买新套餐',91);
-            }
-            $whereOrder = [
-                ['pay_order_sn','=',$val['pay_order_sn']],
-                ['status','=',0],
-                ['uid','=',$this->myinfo['id']]
-            ];
-            $order_exist = Db::table('mp_role3_order')->where($whereOrder)->find();
-            if(!$order_exist) {
-                return ajax('pay_order_sn',4);
-            }
 
-            $app = Factory::payment($this->mp_config);
-            $result = $app->order->unify([
-                'body' => '工厂套餐充值',
-                'out_trade_no' => $val['pay_order_sn'],
-                'total_fee' => 1,
-//                'total_fee' => floatval($order_exist['pay_price'])*100,
-                'notify_url' => $this->weburl . 'api/pay/role3_notify',
-                'trade_type' => 'JSAPI',
-                'openid' => $this->myinfo['openid'],
-            ]);
-        }catch (\Exception $e) {
-            return ajax($e->getMessage(),-1);
-        }
-        if($result['return_code'] != 'SUCCESS' || $result['result_code'] != 'SUCCESS') {
-            return ajax($result['err_code_des'],-1);
-        }
-        try {
-            $sign['appId'] = $result['appid'];
-            $sign['timeStamp'] = strval(time());
-            $sign['nonceStr'] = $result['nonce_str'];
-            $sign['signType'] = 'MD5';
-            $sign['package'] = 'prepay_id=' . $result['prepay_id'];
-            $sign['paySign'] = getSign($sign);
-        }catch (\Exception $e) {
-            return ajax($e->getMessage(),-1);
-        }
-        return ajax($sign);
-    }
-    //工厂套餐支付回调接口
-    public function role3_notify() {
-        //将返回的XML格式的参数转换成php数组格式
-        $xml = file_get_contents('php://input');
-        $data = xml2array($xml);
-        $this->paylog($this->cmd,var_export($data,true));
-        if($data) {
-            if($data['return_code'] == 'SUCCESS' && $data['result_code'] == 'SUCCESS') {
-                $whereOrder = [
-                    ['pay_order_sn','=',$data['out_trade_no']],
-                    ['status','=',0]
-                ];
-                try {
-                    $order_exist = Db::table('mp_role3_order')->where($whereOrder)->find();
-                    if($order_exist) {
 
-                        $update_data = [
-                            'status' => 1,
-                            'trans_id' => $data['transaction_id'],
-                            'pay_time' => time(),
-                        ];
-                        Db::table('mp_role3_order')->where($whereOrder)->update($update_data);
 
-                        Db::startTrans();
-                        //TODO  查找role3_level表,插入role3_curr表,更改user表
-                        $whereLevel = [
-                            ['id','=',$order_exist['level_id']]
-                        ];
-                        $level_exist = Db::table('mp_role3_level')->where($whereLevel)->find();
-                        if($level_exist) {
-                            $insert_data = [
-                                'uid' => $order_exist['uid'],
-                                'title' => $level_exist['title'],
-                                'price' => $level_exist['price'],
-                                'level_id' => $level_exist['id'],
-                                'level' => $level_exist['level'],
-                                'days' => $level_exist['days'],
-                                'service_1' => $level_exist['service_1'],
-                                'service_2' => $level_exist['service_2'],
-                                'service_3' => $level_exist['service_3'],
-                                'service_4' => $level_exist['service_4'],
-                                'service_5' => $level_exist['service_5'],
-                                'service_6' => $level_exist['service_6'],
-                                'service_7' => $level_exist['service_7'],
-                                'service_8' => $level_exist['service_8'],
-                                'service_9' => $level_exist['service_9'],
-                                'service_10' => $level_exist['service_10'],
-                                'service_11' => $level_exist['service_11'],
-                                'service_12' => $level_exist['service_12'],
-                                'service_13' => $level_exist['service_13'],
-                                'service_14' => $level_exist['service_14'],
-                                'service_15' => $level_exist['service_15'],
-                                'service_16' => $level_exist['service_16'],
-                                'service_17' => $level_exist['service_17'],
-                                'create_time' => time(),
-                                'end_time' => (time()+$level_exist['days']*24*3600)
-                            ];
-                            Db::table('mp_role3_curr')->insert($insert_data);
-                            $update = [
-                                'role_level_id' => $level_exist['id'],
-                                'role_level' => $level_exist['level'],
-                                'role_level_endtime' => $insert_data['end_time']
-                            ];
-                            Db::table('mp_user')->where('id','=',$order_exist['uid'])->update($update);
-                        }
-
-                    }
-                    Db::commit();
-                }catch (\Exception $e) {
-                    Db::rollback();
-                    $this->log($this->cmd,$e->getMessage());
-                }
-            }
-
-        }
-        exit(array2xml(['return_code'=>'SUCCESS','return_msg'=>'OK']));
-
-    }
 
     protected function asyn_tpl_send($data) {
         $param = http_build_query($data);

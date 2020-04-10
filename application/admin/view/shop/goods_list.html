@@ -1,16 +1,52 @@
 <link href="/lib/select2/select2.min.css" rel="stylesheet">
 <script src="/lib/select2/select2.min.js"></script>
 <style>
-    .userinfo>td>img {width:80px;height:80px}
+    .td-jian,.td-batch,.td-sample,.td-mold { cursor: pointer }
+    .first-label { width: 200px;display: inline-flex }
 </style>
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 商城管理 <span class="c-gray en">&gt;</span> 商品列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
     <section id="formAjax">
-        <div class="text-c">
-            <span class="inline">
-				<select class="select" name="shop_id" id="shop_id" style="width: 400px;">
+        <div class="text-l">
+            <label class="first-label">在售状态</label>
+            <label class="label label-success radius"> &nbsp;&nbsp;全部&nbsp;&nbsp; </label>
+            <label class="label label-defaunt radius">在售中</label>
+            <label class="label label-defaunt radius">已下架</label>
+        </div>
+        <div class="text-l">
+            <label class="first-label">有无视频</label>
+            <label class="label label-defaunt radius"> &nbsp;&nbsp;全部&nbsp;&nbsp; </label>
+            <label class="label label-defaunt radius">有视频</label>
+            <label class="label label-defaunt radius">无视频</label>
+        </div>
+        <div class="text-l">
+            <label class="first-label">是否推荐</label>
+            <label class="label label-defaunt radius"> &nbsp;&nbsp;全部&nbsp;&nbsp; </label>
+            <label class="label label-defaunt radius"> &nbsp;&nbsp;&nbsp;是&nbsp;&nbsp;&nbsp; </label>
+            <label class="label label-defaunt radius"> &nbsp;&nbsp;&nbsp;否&nbsp;&nbsp;&nbsp; </label>
+        </div>
+        <div class="text-l">
+            <label class="first-label">小批量定制</label>
+            <label class="label label-defaunt radius"> &nbsp;&nbsp;全部&nbsp;&nbsp; </label>
+            <label class="label label-defaunt radius"> &nbsp;&nbsp;支持&nbsp;&nbsp; </label>
+            <label class="label label-defaunt radius"> 不支持 </label>
+        </div>
+        <div class="text-l">
+            <label class="first-label">免费拿样</label>
+            <label class="label label-defaunt radius"> &nbsp;&nbsp;全部&nbsp;&nbsp; </label>
+            <label class="label label-defaunt radius"> &nbsp;&nbsp;支持&nbsp;&nbsp; </label>
+            <label class="label label-defaunt radius"> 不支持 </label>
+        </div>
+        <div class="text-l">
+            <label class="first-label">免开模费</label>
+            <label class="label label-defaunt radius"> &nbsp;&nbsp;全部&nbsp;&nbsp; </label>
+            <label class="label label-defaunt radius"> &nbsp;&nbsp;支持&nbsp;&nbsp; </label>
+            <label class="label label-defaunt radius"> 不支持 </label>
+        </div>
+        <div class="text-l">
+            <span class="select-box inline">
+				<select class="select" name="shop_id" id="shop_id" style="width: 200px;">
                     <option value="">全部商户</option>
-                    <option value="0">自主平台</option>
                     {foreach $shoplist as $li}
                     <option value="{$li.id}" {if $param['shop_id']==$li['id']}selected{/if}>
                             (id:{$li.id} |
@@ -24,8 +60,39 @@
                     {/foreach}
 				</select>
             </span>
-            <input type="text" name="search" value="{$Think.get.search}" id="search" placeholder=" 商品名" style="width:250px;height: 28px;line-height: 28px;border-radius: 4px" class="input-text">
+            <span class="select-box inline">
+				<select class="select" name="use_video" id="use_video" style="width: 120px;">
+                    <option value="">全部(video)</option>
+                    <option value="0" {if $param['use_video']=='0'}selected{/if}>无视频</option>
+                    <option value="1" {if $param['use_video']=='1'}selected{/if}>有视频</option>
+				</select>
+            </span>
+            <span class="select-box inline">
+				<select class="select" name="status" id="status" style="width: 120px;">
+                    <option value="">全部(status)</option>
+                    <option value="0" {if $param['status']=='0'}selected{/if}>已下架</option>
+                    <option value="1" {if $param['status']=='1'}selected{/if}>在售中</option>
+				</select>
+            </span>
+            <span class="select-box inline">
+				<select class="select" name="pcate_id" id="pcate_id" style="width:120px">
+					<option value="">全部(一级分类)</option>
+                    {foreach $pcate_list as $li}
+					<option value="{$li.id}" {if $param['pcate_id']==$li['id']}selected{/if}>{$li.cate_name}</option>
+                    {/foreach}
+				</select>
+            </span>
+            <span class="select-box inline">
+				<select class="select" name="cate_id" id="cate_id" style="width:120px">
+                    <option value="">全部(二级分类)</option>
+                    {foreach $cate_list as $li}
+					<option value="{$li.id}" {if $param['cate_id']==$li['id']}selected{/if}>{$li.cate_name}</option>
+                    {/foreach}
+				</select>
+            </span>
+            <input type="text" name="search" value="{$Think.get.search}" id="search" placeholder=" 商品名" style="width:250px;" class="input-text">
             <button name="" id="search-btn" class="btn btn-success" style="height: 28px;" type="button"><i class="Hui-iconfont">&#xe665;</i> 查找商品</button>
+
         </div>
     </section>
     <div class="cl pd-5 bg-1 bk-gray mt-20">
@@ -37,17 +104,20 @@
     <table class="table table-border table-bordered table-bg">
         <thead>
         <tr class="text-c">
-            <th width="25">#</th>
-            <th width="50">排序</th>
+            <th width="40">#</th>
+            <th width="60">排序</th>
             <th width="80">商品图片</th>
             <th width="80">商品价格</th>
             <th width="80">库存</th>
             <th width="80">销量</th>
-            <th>商户名</th>
             <th width="120">上市日期</th>
             <th width="60">审核状态</th>
             <th width="60">审核</th>
-            <th width="80">操作</th>
+            <th width="40">爆款</th>
+            <th width="40">小批量</th>
+            <th width="40">免拿样</th>
+            <th width="40">免开模</th>
+            <th>操作</th>
         </tr>
         </thead>
         <tbody>
@@ -55,28 +125,13 @@
             {foreach $list as $li}
             <tr class="text-c userinfo">
                 <td rowspan="2">{$li.id}</td>
-                <td>{$li.sort}</td>
+                <td><input type="text" class="input-text text-c sort" value="{$li.sort}"></td>
                 <td>
-                    <?php $image = unserialize($li['pics'])[0];?>
-                    <div style="width: 80px;height: 80px;background-image: url('<?php echo config('qiniu_weburl');?>{$image}');background-position: center;background-repeat: no-repeat;background-size: 100%"></div>
+                    <div style="width: 80px;height: 80px;background-image: url('{$qiniu_weburl}{$li.poster}');background-position: center;background-repeat: no-repeat;background-size: 100%"></div>
                 </td>
                 <td>{$li.price}</td>
                 <td>{$li.stock}</td>
                 <td>{$li.sales}</td>
-                <td>
-                    {if $li['shop_id']}
-                    {$li.org}
-                    (
-                    {switch $li['role']}
-                    {case 1} 博物馆 {/case}
-                    {case 2} 文旅机构 {/case}
-                    {default /}
-                    {/switch}
-                    )
-                    {else /}
-                    自主平台
-                    {/if}
-                </td>
                 <td>{$li.create_time|date='Y年m月d日'}</td>
                 <th class="td-check">
                     {switch $li['check']}
@@ -91,6 +146,34 @@
                     <a class="btn btn-link radius" style="text-decoration:none;" onClick="goods_shenhe(this,{$li.id})" href="javascript:;" title="审核">审核</a>
                     {else /}
                     <span class="btn btn-link radius"></span>
+                    {/if}
+                </td>
+                <td class="td-jian" onclick="goods_recommend(this,{$li.id})">
+                    {if $li['recommend'] == '1'}
+                    <span class="iconfont">&#xe612;</span>
+                    {else /}
+                    <span class="iconfont" style="color: #bbbbbb;">&#xe612;</span>
+                    {/if}
+                </td>
+                <td class="td-batch" onclick="goods_batch(this,{$li.id})">
+                    {if $li['batch'] == '1'}
+                    <span class="iconfont">&#xe612;</span>
+                    {else /}
+                    <span class="iconfont" style="color: #bbbbbb;">&#xe612;</span>
+                    {/if}
+                </td>
+                <td class="td-sample" onclick="goods_sample(this,{$li.id})">
+                    {if $li['sample'] == '1'}
+                    <span class="iconfont">&#xe612;</span>
+                    {else /}
+                    <span class="iconfont" style="color: #bbbbbb;">&#xe612;</span>
+                    {/if}
+                </td>
+                <td class="td-mold" onclick="goods_mold(this,{$li.id})">
+                    {if $li['mold'] == '1'}
+                    <span class="iconfont">&#xe612;</span>
+                    {else /}
+                    <span class="iconfont" style="color: #bbbbbb;">&#xe612;</span>
                     {/if}
                 </td>
                 <td class="td-manage" rowspan="2">
@@ -109,7 +192,7 @@
                 </td>
             </tr>
             <tr class="text-c">
-                <td colspan="9" class="text-l"><b>商品名称</b> : {$li.name}
+                <td colspan="12" class="text-l"><b>商品名称</b> : {$li.name}
                     (
                     <span class="td-status">
                     {if $li['status'] == '1'}
@@ -120,13 +203,28 @@
                     {/if}
                     </span>
                     )
+                    <span style="font-weight: bold">
+                    【{if $li['shop_id']}
+                    {$li.org}
+                    (
+                    {switch $li['role']}
+                    {case 1} 文旅机构 {/case}
+                    {case 2} 工厂 {/case}
+                    {default /}
+                    {/switch}
+                    )
+                    {else /}
+                    自主平台
+                    {/if}】
+                    </span>
+
                 </td>
             </tr>
             {/foreach}
         </form>
 
         <tr>
-            <td colspan="12" id="page" class="text-r"></td>
+            <td colspan="16" id="page" class="text-r"></td>
         </tr>
         </tbody>
     </table>
@@ -157,11 +255,27 @@
 
     $("#search-btn").click(function () {
         var shop_id = $("#formAjax").find("#shop_id").val();
+        var use_video = $("#formAjax").find("#use_video").val();
+        var status = $("#formAjax").find("#status").val();
+        var pcate_id = $("#formAjax").find("#pcate_id").val();
+        var cate_id = $("#formAjax").find("#cate_id").val();
         var search = $("#formAjax").find("#search").val();
         var id = $("#formAjax").find("#id").val();
         var str = 'id=' + id;
         if(shop_id.length != '') {
             str += '&shop_id=' + shop_id;
+        }
+        if(use_video.length != '') {
+            str += '&use_video=' + use_video;
+        }
+        if(status.length != '') {
+            str += '&status=' + status;
+        }
+        if(pcate_id.length != '') {
+            str += '&pcate_id=' + pcate_id;
+        }
+        if(cate_id.length != '') {
+            str += '&cate_id=' + cate_id;
         }
         if(search.length != '') {
             str += '&search=' + search;
@@ -169,16 +283,6 @@
         window.location.href = '{:url("Shop/goodsList")}' + '?' + str;
     });
 
-    /*添加商品*/
-    function pagefull(title,url) {
-        var index = layer.open({
-            type: 2,
-            title: title,
-            content: url,
-            area:['100%','100%']
-        });
-        // layer.full(index);
-    }
 
     /*下架*/
     function goods_hide(obj,id){
@@ -296,6 +400,184 @@
 
             });
     }
+
+    var isclick = true;
+
+    function goods_recommend(obj,id) {
+        if(isclick) {
+            isclick = false;
+            $.ajax({
+                url:"{:url('Shop/goodsRecommend')}",
+                type:'post',
+                dataType:'json',
+                data:{id:id},
+                success:function(data) {
+                    // console.log(data);
+                    if(data.code == 1) {
+                        if(data.data == 1) {
+                            $(obj).html('<span class="iconfont">&#xe612;</span>');
+                        }else {
+                            $(obj).html('<span class="iconfont" style="color: #bbbbbb;">&#xe612;</span>');
+                        }
+                    }else {
+                        layer.msg(data.data,{icon:2,time:1000})
+                    }
+                    isclick = true;
+                },
+                error:function(data) {
+                    layer.msg('接口请求失败!',{icon:5,time:1000});
+                    isclick = true;
+                },
+            })
+        }
+
+    }
+
+    function goods_batch(obj,id) {
+        if(isclick) {
+            isclick = false;
+            $.ajax({
+                url:"{:url('Shop/goodsBatch')}",
+                type:'post',
+                dataType:'json',
+                data:{id:id},
+                success:function(data) {
+                    // console.log(data);
+                    if(data.code == 1) {
+                        if(data.data == 1) {
+                            $(obj).html('<span class="iconfont">&#xe612;</span>');
+                        }else {
+                            $(obj).html('<span class="iconfont" style="color: #bbbbbb;">&#xe612;</span>');
+                        }
+                    }else {
+                        layer.msg(data.data,{icon:2,time:1000})
+                    }
+                    isclick = true;
+                },
+                error:function(data) {
+                    layer.msg('接口请求失败!',{icon:5,time:1000});
+                    isclick = true;
+                },
+            })
+        }
+
+    }
+
+    function goods_sample(obj,id) {
+        if(isclick) {
+            isclick = false;
+            $.ajax({
+                url:"{:url('Shop/goodsSample')}",
+                type:'post',
+                dataType:'json',
+                data:{id:id},
+                success:function(data) {
+                    // console.log(data);
+                    if(data.code == 1) {
+                        if(data.data == 1) {
+                            $(obj).html('<span class="iconfont">&#xe612;</span>');
+                        }else {
+                            $(obj).html('<span class="iconfont" style="color: #bbbbbb;">&#xe612;</span>');
+                        }
+                    }else {
+                        layer.msg(data.data,{icon:2,time:1000})
+                    }
+                    isclick = true;
+                },
+                error:function(data) {
+                    layer.msg('接口请求失败!',{icon:5,time:1000});
+                    isclick = true;
+                },
+            })
+        }
+
+    }
+
+    function goods_mold(obj,id) {
+        if(isclick) {
+            isclick = false;
+            $.ajax({
+                url:"{:url('Shop/goodsMold')}",
+                type:'post',
+                dataType:'json',
+                data:{id:id},
+                success:function(data) {
+                    // console.log(data);
+                    if(data.code == 1) {
+                        if(data.data == 1) {
+                            $(obj).html('<span class="iconfont">&#xe612;</span>');
+                        }else {
+                            $(obj).html('<span class="iconfont" style="color: #bbbbbb;">&#xe612;</span>');
+                        }
+                    }else {
+                        layer.msg(data.data,{icon:2,time:1000})
+                    }
+                    isclick = true;
+                },
+                error:function(data) {
+                    layer.msg('接口请求失败!',{icon:5,time:1000});
+                    isclick = true;
+                },
+            })
+        }
+
+    }
+
+    $(".sort").bind('input propertychange', function() {
+        var id = $(this).parent().prev().text();
+        var sort = $(this).val();
+        var rule = /^[0-9]{0,10}$/;
+        if(!rule.test(sort)) {
+            // $(this).val('')
+            alert('排序必须为数字,且不超过10位');
+            return;
+        }
+        if(isclick) {
+            isclick = false;
+            $.ajax({
+                url:"{:url('Shop/sortGoods')}",
+                type:"post",
+                data:{id:id,sort:sort},
+                success:function(data) {
+                    console.log(data);
+                    isclick = true;
+                },
+                error: function(data) {
+                    console.log('接口请求失败!');
+                    isclick = true;
+                }
+            })
+        }
+
+    });
+
+    $("#pcate_id").change(function () {
+        var pid = $(this).val();
+        $.ajax({
+            url: "{:url('Shop/getCateList')}" ,
+            type: 'post',
+            data:{pid:pid},
+            success: function(data){
+                // console.log(data.data)
+                if(data.code == 1) {
+                    var html = '<option value="">全部(二级分类)</option>',list = data.data;
+                    if(list.length > 0) {
+                        for(var i=0; i <list.length;i++) {
+                            html += '<option value="'+list[i].id+'">'+list[i].cate_name+'</option>';
+                        }
+                    }
+                    $("#cate_id").html(html);
+
+                }else {
+                    layer.msg('接口异常',{icon:5,time:1000});
+                }
+            },
+            error: function(res){
+                layer.msg('接口请求失败!',{icon:5,time:1000});
+                isclick = true
+            }
+        })
+    });
 
 
     $(document).ready(function () {

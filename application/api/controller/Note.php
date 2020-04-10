@@ -13,8 +13,10 @@ class Note extends Base {
     //获取笔记列表
     public function getNoteList() {
         $search = input('post.search','');
-        $page = input('page',1);
+        $curr_page = input('page',1);
         $perpage = input('perpage',10);
+
+//        return ajax();
         $where = [
             ['n.status','=',1],
             ['n.del','=',0],
@@ -32,7 +34,7 @@ class Note extends Base {
                 ->where($where)
                 ->field('n.id,n.title,n.pics,u.nickname,n.like,u.avatar,n.width,n.height')
                 ->order(['n.create_time'=>'DESC'])
-                ->limit(($page-1)*$perpage,$perpage)->select();
+                ->limit(($curr_page-1)*$perpage,$perpage)->select();
             $map = [
                 ['uid','=',$this->myinfo['uid']]
             ];

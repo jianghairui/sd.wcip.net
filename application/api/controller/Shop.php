@@ -29,13 +29,25 @@ class Shop extends Base {
         $val['type'] = input('post.type');
         $curr_page = input('post.page',1);
         $perpage = input('post.perpage',10);
+        $pcate_id = input('post.pcate_id',0);
+        $cate_id = input('post.cate_id',0);
         $where = [];
         switch ($val['type']) {
-            case 1:;break;//小批量
-            case 2:;break;//免费拿样
-            case 3:;break;//免开模
-            case 4:;break;//爆款推荐
+            case 1:
+                $where[] = ['g.batch','=',1];break;//小批量
+            case 2:
+                $where[] = ['g.sample','=',1];break;//免费拿样
+            case 3:
+                $where[] = ['g.mold','=',1];break;//免开模
+            case 4:
+                $where[] = ['g.recommend','=',1];break;//爆款推荐
             default:;
+        }
+        if($pcate_id) {
+            $where[] = ['g.pcate_id','=',$pcate_id];
+        }
+        if($cate_id) {
+            $where[] = ['g.cate_id','=',$cate_id];
         }
         $order = ['id'=>'DESC'];
         try {
@@ -206,7 +218,7 @@ class Shop extends Base {
         try {
             $where = [
                 ['id','=',$val['cart_id']],
-                ['uid','=',$this->myinfo['id']]
+                ['uid','=',$this->myinfo['uid']]
             ];
             $cart_exist = Db::table('mp_cart')->where($where)->find();
             if(!$cart_exist) {
@@ -250,7 +262,7 @@ class Shop extends Base {
         try {
             $where = [
                 ['id','=',$val['cart_id']],
-                ['uid','=',$this->myinfo['id']]
+                ['uid','=',$this->myinfo['uid']]
             ];
             $cart_exist = Db::table('mp_cart')->where($where)->find();
             if(!$cart_exist) {
@@ -554,7 +566,7 @@ class Shop extends Base {
             }
 
             $order_unite = [
-                'uid' => $this->myinfo['id'],
+                'uid' => $this->myinfo['uid'],
                 'pay_order_sn' => $pay_order_sn,
                 'pay_price' => $unite_order_price,
                 'order_ids' => implode(',',$order_ids),
@@ -575,7 +587,7 @@ class Shop extends Base {
             }
             $whereDelete = [
                 ['id','in',$cart_ids],
-                ['uid','=',$this->myinfo['id']]
+                ['uid','=',$this->myinfo['uid']]
             ];
             Db::table('mp_cart')->where($whereDelete)->delete();
             Db::commit();

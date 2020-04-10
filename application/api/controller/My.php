@@ -11,15 +11,16 @@ use think\Db;
 use my\Sendsms;
 class My extends Base {
 
-    public function getMyInfo() {
+    public function myDetail() {
         try {
             $whereUser = [
-                ['u.id','=',$this->myinfo['uid']]
+                ['m.id','=',$this->myinfo['id']]
             ];
-            $info = Db::table('mp_user')->alias('u')
+            $info = Db::table('mp_user_mp')->alias('m')
+                ->join('mp_user u','m.uid=u.id','left')
                 ->join('mp_user_role r','u.id=r.uid','left')
                 ->where($whereUser)
-                ->field('u.id,u.nickname,u.realname,u.age,u.sex,u.avatar,u.tel,u.score,u.focus,u.subscribe,u.vip,u.vip_time,u.desc,u.role,u.org,r.busine')
+                ->field('m.uid,m.openid,m.unionid,m.last_login_time,m.create_time,m.bind_time,u.nickname,u.avatar,u.realname,u.age,u.sex,u.avatar,u.tel,u.score,u.focus,u.subscribe,u.vip,u.vip_time,u.desc,u.role,u.org,r.busine')
                 ->find();
         } catch (\Exception $e) {
             return ajax($e->getMessage(), -1);

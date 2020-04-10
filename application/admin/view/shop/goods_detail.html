@@ -15,7 +15,6 @@
             <div class="formControls col-xs-8 col-sm-9">
                 <span>
                     <select class="select" name="shop_id" id="shop_id">
-                        <option value="0">平台自营</option>
                         {foreach $shop_list as $li}
                         <option value="{$li.id}"  {if $li['id'] == $info['shop_id']}selected{/if}>
                             (id:{$li.id} |

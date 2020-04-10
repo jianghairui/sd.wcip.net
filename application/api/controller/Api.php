@@ -36,7 +36,7 @@ class Api extends Base
         try {
             $list = Db::table('mp_goods')
                 ->where($whereVideo)
-                ->field('id,name,poster,video_url')
+                ->field('id,name,price,poster,video_url')
                 ->limit(0,3)
                 ->select();
         } catch (\Exception $e) {
@@ -49,25 +49,40 @@ class Api extends Base
         $val['type'] = input('post.type');
         $curr_page = input('post.page',1);
         $perpage = input('post.perpage',10);
+        $pcate_id = input('post.pcate_id',0);
+        $cate_id = input('post.cate_id',0);
         $where = [];
         switch ($val['type']) {
-            case 1:;break;//小批量
-            case 2:;break;//免费拿样
-            case 3:;break;//免开模
-            case 4:;break;//爆款推荐
+            case 1:
+                $where[] = ['g.batch','=',1];break;//小批量
+            case 2:
+                $where[] = ['g.sample','=',1];break;//免费拿样
+            case 3:
+                $where[] = ['g.mold','=',1];break;//免开模
+            case 4:
+                $where[] = ['g.recommend','=',1];break;//爆款推荐
             default:;
+        }
+        if($pcate_id) {
+            $where[] = ['g.pcate_id','=',$pcate_id];
+        }
+        if($cate_id) {
+            $where[] = ['g.cate_id','=',$cate_id];
         }
         $order = ['id'=>'DESC'];
         try {
             $list = Db::table('mp_goods')->alias('g')
                 ->join('mp_user u','g.shop_id=u.id','left')
-                ->field('g.id,g.name,g.price,g.use_vip_price,g.vip_price,g.poster,u.org')
+                ->field('g.id,g.name,g.price,g.use_vip_price,g.vip_price,g.poster,g.pics,u.org')
                 ->where($where)
                 ->order($order)
                 ->limit(($curr_page-1)*$perpage,$perpage)
                 ->select();
         } catch (\Exception $e) {
             return ajax($e->getMessage(), -1);
+        }
+        foreach ($list as &$v) {
+
         }
         return ajax($list);
 

@@ -87,7 +87,6 @@ class Base extends Controller {
 
     protected function checkUid() {
         $need = [
-            'My',
 
             'Activity/uploadworks',
             'Activity/worksvote',
@@ -114,6 +113,10 @@ class Base extends Controller {
 
             'Shop/cartlist',
             'Shop/cartadd',
+
+            'My/recharge',
+            'My/applyinfo',
+            'My/roleapply',
 
         ];
         if (!in_array($this->controller,$need) && !in_array($this->cmd, $need)) {

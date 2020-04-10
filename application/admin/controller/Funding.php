@@ -673,7 +673,7 @@ class Funding extends Base {
 
     public function consultList() {
         $param['search'] = input('param.search','');
-        $param['status'] = input('param.status','');
+        $param['contact'] = input('param.contact','');
         $param['datemin'] = input('param.datemin');
         $param['datemax'] = input('param.datemax');
         $page['query'] = http_build_query(input('param.'));
@@ -683,6 +683,9 @@ class Funding extends Base {
         $where = [];
         if($param['search']) {
             $where[] = ['title','like',"%{$param['search']}%"];
+        }
+        if($param['contact'] !== '') {
+            $where[] = ['contact','=',$param['contact']];
         }
         if($param['datemin']) {
             $where[] = ['create_time','>=',strtotime($param['datemin'])];

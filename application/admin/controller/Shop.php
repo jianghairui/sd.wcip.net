@@ -12,17 +12,35 @@ class Shop extends Base {
 //商品列表
     public function goodsList() {
         $param['shop_id'] = input('param.shop_id','');
+        $param['use_video'] = input('param.use_video','');
+        $param['status'] = input('param.status','');
+        $param['pcate_id'] = input('param.pcate_id','');
+        $param['cate_id'] = input('param.cate_id','');
         $param['search'] = input('param.search');
         $page['query'] = http_build_query(input('param.'));
 
         $curr_page = input('param.page',1);
-        $perpage = input('param.perpage',10);
+        $perpage = input('param.perpage',20);
         $where = [];
-        if($param['search']) {
-            $where[] = ['g.name','like',"%{$param['search']}%"];
-        }
+
         if($param['shop_id'] !== '') {
             $where[] = ['g.shop_id','=',$param['shop_id']];
+        }
+        if($param['use_video'] !== '') {
+            $where[] = ['g.use_video','=',$param['use_video']];
+        }
+        if($param['status'] !== '') {
+            $where[] = ['g.status','=',$param['status']];
+        }
+
+        if($param['pcate_id'] !== '') {
+            $where[] = ['g.pcate_id','=',$param['pcate_id']];
+        }
+        if($param['cate_id'] !== '') {
+            $where[] = ['g.cate_id','=',$param['cate_id']];
+        }
+        if($param['search']) {
+            $where[] = ['g.name','like',"%{$param['search']}%"];
         }
 
         try {
@@ -44,14 +62,33 @@ class Shop extends Base {
                 ['role','<>',0]
             ];
             $shoplist = Db::table('mp_user')->where($whereShop)->field('id,nickname,org,role')->select();
+            $wherePcate = [
+                ['pid','=',0],
+                ['del','=',0],
+                ['status','=',1]
+            ];
+            $pcate_list = Db::table('mp_goods_cate')->where($wherePcate)->select();
+            if($param['pcate_id'] !== '') {
+                $whereCate = [
+                    ['pid','=',$param['pcate_id']],
+                    ['del','=',0],
+                    ['status','=',1]
+                ];
+                $cate_list = Db::table('mp_goods_cate')->where($whereCate)->select();
+            }else {
+                $cate_list = [];
+            }
         }catch (\Exception $e) {
             die('SQL错误: ' . $e->getMessage());
         }
 
         $this->assign('shoplist',$shoplist);
         $this->assign('list',$list);
+        $this->assign('pcate_list',$pcate_list);
+        $this->assign('cate_list',$cate_list);
         $this->assign('param',$param);
         $this->assign('page',$page);
+        $this->assign('qiniu_weburl',config('qiniu_weburl'));
         return $this->fetch();
     }
 //添加商品
@@ -1030,5 +1067,109 @@ LEFT JOIN `mp_goods` `g` ON `d`.`goods_id`=`g`.`id`
         }
         return ajax();
     }
+
+
+
+
+
+
+
+    //爆款推荐
+    public function goodsRecommend() {
+        $id = input('post.id','0');
+        $map = [
+            ['id','=',$id]
+        ];
+        try {
+            $goods_exist = Db::table('mp_goods')->where($map)->find();
+            if($goods_exist['recommend'] == 1) {
+                Db::table('mp_goods')->where($map)->update(['recommend'=>0]);
+                return ajax(0);
+            }else {
+                Db::table('mp_goods')->where($map)->update(['recommend'=>1]);
+                return ajax(1);
+            }
+        }catch (\Exception $e) {
+            return ajax($e->getMessage(),-1);
+        }
+
+    }
+
+    //小批量定制
+    public function goodsBatch() {
+        $id = input('post.id','0');
+        $map = [
+            ['id','=',$id]
+        ];
+        try {
+            $goods_exist = Db::table('mp_goods')->where($map)->find();
+            if($goods_exist['batch'] == 1) {
+                Db::table('mp_goods')->where($map)->update(['batch'=>0]);
+                return ajax(0);
+            }else {
+                Db::table('mp_goods')->where($map)->update(['batch'=>1]);
+                return ajax(1);
+            }
+        }catch (\Exception $e) {
+            return ajax($e->getMessage(),-1);
+        }
+
+    }
+
+    //免费拿样
+    public function goodsSample() {
+        $id = input('post.id','0');
+        $map = [
+            ['id','=',$id]
+        ];
+        try {
+            $goods_exist = Db::table('mp_goods')->where($map)->find();
+            if($goods_exist['sample'] == 1) {
+                Db::table('mp_goods')->where($map)->update(['sample'=>0]);
+                return ajax(0);
+            }else {
+                Db::table('mp_goods')->where($map)->update(['sample'=>1]);
+                return ajax(1);
+            }
+        }catch (\Exception $e) {
+            return ajax($e->getMessage(),-1);
+        }
+
+    }
+
+    //免费开模
+    public function goodsMold() {
+        $id = input('post.id','0');
+        $map = [
+            ['id','=',$id]
+        ];
+        try {
+            $goods_exist = Db::table('mp_goods')->where($map)->find();
+            if($goods_exist['mold'] == 1) {
+                Db::table('mp_goods')->where($map)->update(['mold'=>0]);
+                return ajax(0);
+            }else {
+                Db::table('mp_goods')->where($map)->update(['mold'=>1]);
+                return ajax(1);
+            }
+        }catch (\Exception $e) {
+            return ajax($e->getMessage(),-1);
+        }
+
+    }
+
+    //商品排序
+    public function sortGoods() {
+        $val['id'] = input('post.id');
+        $val['sort'] = input('post.sort');
+        checkInput($val);
+        try {
+            Db::table('mp_goods')->update($val);
+        }catch (\Exception $e) {
+            return ajax($e->getMessage(),-1);
+        }
+        return ajax($val);
+    }
+
 
 }
