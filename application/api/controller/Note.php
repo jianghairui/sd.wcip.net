@@ -13,8 +13,11 @@ class Note extends Base {
     //获取笔记列表
     public function getNoteList() {
         $search = input('post.search','');
+        $type = input('post.type',0);
         $curr_page = input('page',1);
         $perpage = input('perpage',10);
+        $curr_page = $curr_page ? $curr_page : 1;
+        $perpage = $perpage ? $perpage : 10;
 
 //        return ajax();
         $where = [
@@ -25,14 +28,41 @@ class Note extends Base {
         if($search) {
             $where[] = ['n.title','like',"%{$search}%"];
         }
+
         if(!$this->myinfo['uid']) { $this->myinfo['uid'] = -1; }
 
         try {
+            switch ($type) {
+                case 1:
+                    $whereUser = [
+                        ['role','=',1]
+                    ];
+                    $uids = Db::table('mp_user')->where($whereUser)->column('id');
+                    if(!empty($uids)) {
+                        $where[] = ['uid','in',$uids];
+                    }else {
+                        return ajax([]);
+                    }
+                    break;
+                case 2:
+                    $whereUser = [
+                        ['role','=',2]
+                    ];
+                    $uids = Db::table('mp_user')->where($whereUser)->column('id');
+                    if(!empty($uids)) {
+                        $where[] = ['uid','in',$uids];
+                    }else {
+                        return ajax([]);
+                    }
+                    break;
+                default:;
+            }
+
             $ret['count'] = Db::table('mp_note')->alias('n')->where($where)->count();
             $list = Db::table('mp_note')->alias('n')
                 ->join('mp_user u','n.uid=u.id','left')
                 ->where($where)
-                ->field('n.id,n.title,n.pics,u.nickname,n.like,u.avatar,n.width,n.height')
+                ->field('n.id,n.content,n.pics,u.nickname,n.like,n.comment_num,n.create_time,u.avatar,n.width,n.height')
                 ->order(['n.create_time'=>'DESC'])
                 ->limit(($curr_page-1)*$perpage,$perpage)->select();
             $map = [
@@ -49,6 +79,7 @@ class Note extends Base {
             }else {
                 $v['ilike'] = 0;
             }
+            $v['before_time'] = time() - $v['create_time'];
         }
         $ret['list'] = $list;
         return ajax($ret);
@@ -123,7 +154,7 @@ class Note extends Base {
                 ->join('mp_user u','n.uid=u.id','left')
                 ->join('mp_goods g','n.goods_id=g.id','left')
                 ->where('n.id','=',$val['note_id'])
-                ->field('n.id,n.uid,n.title,n.content,n.pics,n.like,n.status,n.reason,n.goods_id,g.poster,g.name AS goods_name,u.nickname,u.avatar')
+                ->field('n.id,n.uid,n.content,n.pics,n.like,n.status,n.reason,n.goods_id,n.comment_num,g.poster,g.name AS goods_name,u.nickname,u.avatar')
                 ->find();
             if(!$info) {
                 return ajax('invalid id',-4);
@@ -192,6 +223,9 @@ FROM mp_note_comment c
 LEFT JOIN mp_user u ON c.uid=u.id 
 LEFT JOIN mp_user u2 ON c.to_uid=u2.id 
 WHERE c.note_id=?",[$val['note_id']]);
+            foreach ($list as &$v) {
+                $v['before_time'] = time() - $v['create_time'];
+            }
             $list = $this->recursion($list);
             return ajax($list);
         }catch (\Exception $e) {
@@ -206,10 +240,13 @@ WHERE c.note_id=?",[$val['note_id']]);
         checkPost($val);
         $val['to_cid'] = input('post.to_cid');
         if(!$this->msgSecCheck($val['content'])) {
-            return ajax('评论内容包含敏感词',65);
+            return ajax('评论内容包含敏感词',60);
         }
         try {
-            $exist = Db::table('mp_note')->where('id',$val['note_id'])->find();
+            $whereNote = [
+                ['id','=',$val['note_id']]
+            ];
+            $exist = Db::table('mp_note')->where($whereNote)->find();
             if(!$exist) {
                 return ajax('invalid note_id',-4);
             }
@@ -235,8 +272,12 @@ WHERE c.note_id=?",[$val['note_id']]);
                 $val['root_cid'] = 0;
             }
             $val['create_time'] = time();
+            Db::startTrans();
             Db::table('mp_note_comment')->insert($val);
+            Db::table('mp_note')->where($whereNote)->setInc('comment_num',1);
+            Db::commit();
         }catch (\Exception $e) {
+            Db::rollback();
             return ajax($e->getMessage(),-1);
         }
         return ajax();

@@ -110,13 +110,40 @@ class Base extends Controller {
             'Pay/vippay',
             'Pay/orderidpay',
             'Pay/ordersnpay',
+            'Pay/fundingpay',
 
             'Shop/cartlist',
             'Shop/cartadd',
+            'Shop/cartinc',
+            'Shop/cartdec',
+            'Shop/cartdel',
+            'Shop/purchase',
+            'Shop/carttopurchase',
 
+            'My/modavatar',
+            'My/modnickname',
+            'My/modrealname',
+            'My/modsex',
+            'My/moddesc',
             'My/recharge',
             'My/applyinfo',
             'My/roleapply',
+
+            'My/fundingorderlist',
+            'My/fundingrefundlist',
+            'My/fundingorderdetail',
+            'My/fundingrefundapply',
+            'My/fundingorderconfirm',
+            'My/fundingordercancel',
+            'My/orderlist',
+            'My/refundlist',
+            'My/orderdetail',
+            'My/refundapply',
+            'My/orderconfirm',
+            'My/ordercancel',
+            'My/orderevaluate',
+            'My/refundapply',
+
             'My/addresslist',
             'My/addressadd',
             'My/addressdetail',
@@ -136,7 +163,7 @@ class Base extends Controller {
         }
     }
 
-    private function getUserInfo() {
+    protected function getUserInfo() {
         if(!$this->myinfo['uid']) {
             return [];
         }else {

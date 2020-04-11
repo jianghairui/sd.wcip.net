@@ -80,10 +80,45 @@ class Shop extends Base {
             if(!$info) {
                 return ajax('invalid goods_id',-4);
             }
+            $info['pics'] = unserialize($info['pics']);
         } catch (\Exception $e) {
             return ajax($e->getMessage(), -1);
         }
         return ajax($info);
+    }
+
+    //商品评论
+    public function goodsCommentList() {
+        $val['goods_id'] = input('post.goods_id');
+        checkPost($val);
+        try {
+            $whereGoods = [
+                ['id','=',$val['goods_id']]
+            ];
+            $goods_exist = Db::table('mp_goods')->where($whereGoods)->find();
+            if(!$goods_exist) {
+                return ajax('invalid goods_id',-4);
+            }
+            $curr_page = input('post.page',1);
+            $perpage = input('post.perpage',10);
+            $curr_page = $curr_page ? $curr_page : 1;
+            $perpage = $perpage ? $perpage : 10;
+            $whereComment = [
+                ['c.goods_id','=',$val['goods_id']],
+                ['c.status','=',1]
+            ];
+            $list = Db::table('mp_goods_comment')->alias('c')
+                ->join('mp_user u','c.uid=u.id','left')
+                ->join('mp_order_detail d','c.order_detail_id=d.id','left')
+                ->where($whereComment)
+                ->field('c.comment,c.create_time,u.nickname,u.avatar,d.attr')
+                ->limit(($curr_page-1)*$perpage,$perpage)
+                ->order(['c.id'=>'DESC'])
+                ->select();
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax($list);
     }
 
     //购物车列表
@@ -394,6 +429,7 @@ class Shop extends Base {
             Db::startTrans();
             $order_id = Db::table('mp_order')->insertGetId($insert_data);//店铺订单
 
+            $order_detail['uid'] = $data['uid'];
             $order_detail['order_id'] = $order_id;
             $order_detail['goods_id'] = $goods_exist['id'];
             $order_detail['goods_name'] = $goods_exist['name'];
@@ -511,6 +547,7 @@ class Shop extends Base {
 
                         $carriage += $v['carriage'];
 
+                        $insert_detail['uid'] = $val['uid'];
                         $insert_detail['goods_id'] = $v['goods_id'];
                         $insert_detail['goods_name'] = $v['name'];
                         $insert_detail['num'] = $v['num'];

@@ -9,6 +9,7 @@ namespace app\api\controller;
 
 use think\Db;
 use my\Sendsms;
+use my\Kuaidiniao;
 class My extends Base {
 
     public function myDetail() {
@@ -22,10 +23,115 @@ class My extends Base {
                 ->where($whereUser)
                 ->field('m.uid,m.openid,m.unionid,m.last_login_time,m.create_time,m.bind_time,u.nickname,u.avatar,u.realname,u.age,u.sex,u.avatar,u.tel,u.score,u.focus,u.subscribe,u.vip,u.vip_time,u.desc,u.role,u.org,r.busine')
                 ->find();
+            if($info['uid']) {
+                $whereNote = [
+                    ['uid','=',$info['uid']],
+                    ['status','=',1]
+                ];
+                $note_num = Db::table('mp_note')->where($whereNote)->count();
+            }else {
+                $note_num = 0;
+            }
+            $info['note_num'] = $note_num;
         } catch (\Exception $e) {
             return ajax($e->getMessage(), -1);
         }
         return ajax($info);
+    }
+
+    //修改头像
+    public function modAvatar() {
+        $val['avatar'] = input('post.avatar');
+        $val['uid'] = $this->myinfo['uid'];
+        checkPost($val);
+        $userinfo = $this->getUserInfo();
+        try {
+            if($val['avatar']) {
+                if (substr($val['avatar'],0,4) != 'http') {
+                    $qiniu_exist = $this->qiniuFileExist($val['avatar']);
+                    if($qiniu_exist !== true) {
+                        return ajax($qiniu_exist['msg'] . ' :'.$val['avatar'],5);
+                    }
+                    $img_check = $this->imgSecCheck(config('qiniu_weburl') . $val['avatar']);
+                    if(!$img_check) {
+                        return ajax('图片内容违规',59);
+                    }
+                    $qiniu_move = $this->moveFile($val['avatar'],'upload/avatar/');
+                    if($qiniu_move['code'] == 0) {
+                        $val['avatar'] = $qiniu_move['path'];
+                    }else {
+                        return ajax($qiniu_move['msg'],101);
+                    }
+                }
+            }else {
+                return ajax('请上传头像',3);
+            }
+            Db::table('mp_user')->where('id','=',$val['uid'])->update(['avatar'=>$val['avatar']]);
+        } catch (\Exception $e) {
+            if ($val['avatar'] != $userinfo['avatar'] &&  substr($val['avatar'],0,4) != 'http') {
+                $this->rs_delete($val['avatar']);
+            }
+            return ajax($e->getMessage(), -1);
+        }
+        if ($val['avatar'] != $userinfo['avatar'] && substr($userinfo['avatar'],0,4) != 'http') {
+            $this->rs_delete($userinfo['avatar']);
+        }
+        return ajax();
+
+    }
+    //修改昵称
+    public function modNickname() {
+        $val['nickname'] = input('post.nickname');
+        checkPost($val);
+        if(!$this->msgSecCheck($val['nickname'])) {
+            return ajax('昵称包含敏感词',68);
+        }
+        try {
+            Db::table('mp_user')->where('id','=',$this->myinfo['uid'])->update($val);
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax();
+    }
+    //修改真实姓名
+    public function modRealname() {
+        $val['realname'] = input('post.realname');
+        checkPost($val);
+        try {
+            Db::table('mp_user')->where('id','=',$this->myinfo['uid'])->update($val);
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax();
+    }
+    //修改性别 0未知 1 男 2 女
+    public function modSex() {
+        $val['sex'] = input('post.sex');
+        checkPost($val);
+        $val['sex'] = intval($val['sex']);
+        if(!in_array($val['sex'],[0,1,2], true)) {
+            return ajax('非法参数sex',-4);
+        }
+        try {
+            Db::table('mp_user')->where('id','=',$this->myinfo['uid'])->update($val);
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax();
+    }
+    //修改个人简介
+    public function modDesc() {
+        $val['desc'] = input('post.desc','');
+        checkPost($val);
+        if(!$this->msgSecCheck($val['desc'])) {
+            return ajax('内容包含敏感词',38);
+        }
+        try {
+            Db::table('mp_user')->where('id','=',$this->myinfo['uid'])->update($val);
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax();
     }
 
     //充值
@@ -462,7 +568,7 @@ LEFT JOIN `mp_goods` `g` ON `d`.`goods_id`=`g`.`id`
                 ->join("mp_order_detail d","o.id=d.order_id","left")
                 ->join("mp_goods g","d.goods_id=g.id","left")
                 ->where($where)
-                ->field("o.id,o.pay_order_sn,o.pay_price,o.total_price,o.carriage,o.receiver,o.tel,o.address,o.create_time,o.refund_apply,o.status,d.order_id,d.num,d.unit_price,d.goods_name,d.attr,g.pics")->select();
+                ->field("o.id,o.pay_order_sn,o.pay_price,o.total_price,o.carriage,o.receiver,o.tel,o.address,o.create_time,o.refund_apply,o.status,d.id AS order_detail_id,d.order_id,d.num,d.unit_price,d.goods_id,d.goods_name,d.attr,d.evaluate,g.pics")->select();
             if(!$list) {
                 return ajax('invalid order_id',4);
             }
@@ -481,11 +587,14 @@ LEFT JOIN `mp_goods` `g` ON `d`.`goods_id`=`g`.`id`
                 $data['refund_apply'] = $li['refund_apply'];
                 $data['status'] = $li['status'];
                 $data_child['cover'] = unserialize($li['pics'])[0];
+                $data_child['order_detail_id'] = $li['order_detail_id'];
+                $data_child['goods_id'] = $li['goods_id'];
                 $data_child['goods_name'] = $li['goods_name'];
                 $data_child['num'] = $li['num'];
                 $data_child['unit_price'] = $li['unit_price'];
                 $data_child['total_price'] = sprintf ( "%1\$.2f",($li['unit_price'] * $li['num']));
                 $data_child['attr'] = $li['attr'];
+                $data_child['evaluate'] = $li['evaluate'];
                 $data_child['cover'] = unserialize($li['pics'])[0];
                 $child[] = $data_child;
             }
@@ -579,6 +688,73 @@ LEFT JOIN `mp_goods` `g` ON `d`.`goods_id`=`g`.`id`
         }
         return ajax();
 
+    }
+    //获取快递信息
+    public function getKdTrace() {
+        $data['order_id'] = input('post.order_id');
+        checkPost($data);
+        try {
+            $whereOrder = [
+                ['status','IN',[2,3]],
+                ['id','=',$data['order_id']]
+            ];
+            $order_exist = Db::table('mp_order')->where($whereOrder)->find();
+            if(!$order_exist) {
+                return ajax('订单不存在或状态已改变',24);
+            }
+            $whereTracking = [
+                ['name','=',$order_exist['tracking_name']]
+            ];
+            $tracking_exist = Db::table('mp_tracking')->where($whereTracking)->find();
+            if(!$tracking_exist) {
+                return ajax('物流不存在',-4);
+            }
+            $tracking_code = $tracking_exist['code'];
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        $kuaidi = new Kuaidiniao();
+        $result = $kuaidi->getOrderTracesByJson($tracking_code,$order_exist['tracking_num']);
+        $result['tracking_name'] = $order_exist['tracking_name'];
+        return ajax($result);
+    }
+    //订单评价
+    public function orderEvaluate() {
+        $val['order_detail_id'] = input('post.order_detail_id');
+        $val['comment'] = input('post.comment');
+        $val['uid'] = $this->myinfo['uid'];
+        checkPost($val);
+        $val['create_time'] = time();
+        try {
+            if(!$this->msgSecCheck($val['comment'])) {
+                return ajax('内容包含敏感词',38);
+            }
+            $where_order_detail = [
+                ['uid','=',$this->myinfo['uid']],
+                ['id','=',$val['order_detail_id']]
+            ];
+            $order_detail_exist = Db::table('mp_order_detail')->where($where_order_detail)->find();
+            if(!$order_detail_exist) {
+                return ajax('invalid order_detail_id',-4);
+            }
+            if($order_detail_exist['evaluate']) { return ajax('不可重复评价',25); }
+            $where_order = [
+                ['id','=',$order_detail_exist['order_id']]
+            ];
+            $order_exist = Db::table('mp_order')->where($where_order)->find();
+            if(!$order_exist) {
+                return ajax('invalid order_id',-4);
+            }
+            if($order_exist['status'] != 3) { return ajax('订单未完成,无法评价',26); }
+
+            $val['order_id'] = $order_exist['id'];
+            $val['goods_id'] = $order_detail_exist['goods_id'];
+            Db::table('mp_goods_comment')->insert($val);
+            Db::table('mp_order_detail')->where($where_order_detail)->update(['evaluate'=>1]);
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax();
     }
     /*------ 商品订单结束 END------*/
 
