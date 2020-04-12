@@ -186,6 +186,48 @@ class Copyright extends Base {
         return ajax();
     }
 
+    //申请合作授权
+    public function ipFree() {
+        $val['uid'] = $this->myinfo['uid'];
+        $val['title'] = input('post.title');
+        $val['company'] = input('post.company');
+        $val['name'] = input('post.name');
+        $val['tel'] = input('post.tel');
+        $val['email'] = input('post.email');
+        $val['code'] = input('post.code');
+        checkPost($val);
+        $val['desc'] = input('post.desc');
+        $val['create_time'] = time();
+
+        if(!is_tel($val['tel'])) {
+            return ajax($val['tel'],6);
+        }
+        if(!is_email($val['email'])) {
+            return ajax($val['email'],7);
+        }
+        try {
+            // 检验短信验证码
+            $whereCode = [
+                ['tel','=',$val['tel']],
+                ['code','=',$val['code']]
+            ];
+            $code_exist = Db::table('mp_verify')->where($whereCode)->find();
+            if($code_exist) {
+                if((time() - $code_exist['create_time']) > 60*5) {//验证码5分钟过期
+                    return ajax('验证码已过期',32);
+                }
+            }else {
+                return ajax('验证码无效',33);
+            }
+            unset($val['code']);
+            Db::table('mp_ip_free')->insert($val);
+            Db::table('mp_verify')->where($whereCode)->delete();
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax();
+    }
+
 
 
 }

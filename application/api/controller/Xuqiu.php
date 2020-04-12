@@ -35,7 +35,7 @@ class Xuqiu extends Base {
         }
         try {
             $list = Db::table('mp_user_role')->where($whereRole)
-                ->field('id,uid,role,org,cover')
+                ->field('id,uid,role,org,cover AS logo')
                 ->limit(0,9)
                 ->select();
         } catch (\Exception $e) {
@@ -45,7 +45,8 @@ class Xuqiu extends Base {
     }
 
     public function xuqiuRelease() {
-        if(!in_array($this->myinfo['role'],[1,2])) {
+        $userinfo = $this->getUserInfo();
+        if(!in_array($userinfo['role'],[1,2])) {
             return ajax('此角色无权操作',50);
         }
         $val['uid'] = $this->myinfo['uid'];

@@ -92,6 +92,7 @@ class Base extends Controller {
             'Activity/worksvote',
 
             'Copyright/ipapply',
+            'Copyright/ipfree',
 
             'Funding/fundingpurchase',
             'Funding/fundingrelease',
