@@ -139,6 +139,7 @@ class Activity extends Base {
     //获取参赛作品列表
     public function worksList() {
         $param['activity_id'] = input('post.activity_id');
+        $param['search'] = input('post.search');
         $param['order'] = input('post.order',1);
         $curr_page = input('post.page', 1);
         $perpage = input('post.perpage', 10);
@@ -149,6 +150,9 @@ class Activity extends Base {
         try {
             if($param['activity_id']) {
                 $whereWork[] = ['w.activity_id', '=', $param['activity_id']];
+            }
+            if($param['search']) {
+                $whereWork[] = ['w.title', 'like', "%{$param['search']}%"];
             }
             if($param['order'] == 1) {
                 $order = ['w.id'=>'DESC'];
