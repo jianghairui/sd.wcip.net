@@ -423,9 +423,8 @@ class User extends Base {
             $page['totalPage'] = ceil($count/$perpage);
             $list = Db::table('mp_vip_order')->alias('o')
                 ->join("mp_user u","o.uid=u.id","left")
-                ->join("mp_vip v","o.vip_id=v.id","left")
                 ->order(['o.create_time'=>'DESC'])
-                ->field("o.*,u.nickname,u.avatar,v.title")
+                ->field("o.*,u.nickname,u.avatar")
                 ->limit(($curr_page-1)*$perpage,$perpage)
                 ->select();
         }catch (\Exception $e) {
@@ -443,9 +442,9 @@ class User extends Base {
                 ['o.id','=',$id]
             ];
             $info = Db::table('mp_vip_order')->alias('o')
-                ->join("mp_vip v","o.vip_id=v.id","left")
+                ->join("mp_user u","o.uid=u.id","left")
                 ->where($where)
-                ->field("o.*,v.title,v.detail,v.pic")
+                ->field("o.*,u.nickname,u.avatar,u.vip,u.vip_time")
                 ->find();
         }catch (\Exception $e) {
             die($e->getMessage());

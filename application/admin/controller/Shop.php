@@ -9,6 +9,7 @@ namespace app\admin\controller;
 use think\Db;
 use my\Kuaidiniao;
 class Shop extends Base {
+
 //商品列表
     public function goodsList() {
         $param['shop_id'] = input('param.shop_id','');
@@ -81,7 +82,9 @@ class Shop extends Base {
         }catch (\Exception $e) {
             die('SQL错误: ' . $e->getMessage());
         }
-
+        foreach ($list as &$v) {
+            $v['poster'] = unserialize($v['pics'])[0];
+        }
         $this->assign('shoplist',$shoplist);
         $this->assign('list',$list);
         $this->assign('pcate_list',$pcate_list);

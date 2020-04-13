@@ -41,6 +41,7 @@ class My extends Base {
             $info['note_num'] = $note_num;
             $info['focus'] = $focus;
             $info['subscribe'] = $subscribe;
+            $info['vip_price'] = 199.00;
         } catch (\Exception $e) {
             return ajax($e->getMessage(), -1);
         }

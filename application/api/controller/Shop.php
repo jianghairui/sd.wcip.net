@@ -9,7 +9,21 @@ namespace app\api\controller;
 
 use think\Db;
 class Shop extends Base {
-
+    //获取轮播图列表
+    public function slideList() {
+        $where = [
+            ['status', '=', 1],
+            ['type', '=', 8]
+        ];
+        try {
+            $list = Db::table('mp_slideshow')->where($where)
+                ->field('id,title,url,pic')
+                ->order(['sort' => 'ASC'])->select();
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax($list);
+    }
     //商城主页顶部分类
     public function topCate() {
         try {
@@ -26,6 +40,7 @@ class Shop extends Base {
     }
 
     public function goodsList() {
+        $val['search'] = input('post.search');
         $val['type'] = input('post.type');
         $curr_page = input('post.page',1);
         $perpage = input('post.perpage',10);
@@ -43,17 +58,51 @@ class Shop extends Base {
                 $where[] = ['g.recommend','=',1];break;//爆款推荐
             default:;
         }
+        if($val['search']) {
+            $where[] = ['g.name','like',"%{$val['search']}%"];
+        }
         if($pcate_id) {
             $where[] = ['g.pcate_id','=',$pcate_id];
         }
         if($cate_id) {
             $where[] = ['g.cate_id','=',$cate_id];
         }
-        $order = ['id'=>'DESC'];
+        $order = ['g.id'=>'DESC'];
         try {
             $list = Db::table('mp_goods')->alias('g')
                 ->join('mp_user u','g.shop_id=u.id','left')
                 ->field('g.id,g.name,g.price,g.use_vip_price,g.vip_price,g.poster,g.pics,u.org')
+                ->where($where)
+                ->order($order)
+                ->limit(($curr_page-1)*$perpage,$perpage)
+                ->select();
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        foreach ($list as &$v) {
+            $v['poster'] = unserialize($v['pics'])[0];
+        }
+        return ajax($list);
+
+    }
+
+    public function tehuiList() {
+        $curr_page = input('post.page',1);
+        $perpage = input('post.perpage',10);
+        $recommend = input('post.recommend','');
+        $curr_page = $curr_page ? $curr_page : 1;
+        $perpage = $perpage ? $perpage : 10;
+        $where = [
+            ['g.use_vip_price','=',1]
+        ];
+        if($recommend !== '') {
+            $where[] = ['g.recommend','=',$recommend];
+        }
+        $order = ['g.id'=>'DESC'];
+        try {
+            $list = Db::table('mp_goods')->alias('g')
+                ->join('mp_user u','g.shop_id=u.id','left')
+                ->field('g.id,g.name,g.price,g.use_vip_price,g.vip_price,g.pics,u.org')
                 ->where($where)
                 ->order($order)
                 ->limit(($curr_page-1)*$perpage,$perpage)
