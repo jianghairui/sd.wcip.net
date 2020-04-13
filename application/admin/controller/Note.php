@@ -68,12 +68,12 @@ class Note extends Base {
             }
             Db::table('mp_note')->where($map)->update(['status'=>1]);
             //审核笔记时
-            $whereNote = [
-                ['uid','=',$exist['uid']],
-                ['status','=',1]
-            ];
-            $count = Db::table('mp_note')->where($whereNote)->count();
-            Db::table('mp_user')->where('id','=',$exist['uid'])->update(['note_num'=>($count+1)]);
+//            $whereNote = [
+//                ['uid','=',$exist['uid']],
+//                ['status','=',1]
+//            ];
+//            $count = Db::table('mp_note')->where($whereNote)->count();
+//            Db::table('mp_user')->where('id','=',$exist['uid'])->update(['note_num'=>($count+1)]);
             Db::commit();
         }catch (\Exception $e) {
             Db::rollback();

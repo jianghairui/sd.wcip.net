@@ -21,7 +21,7 @@ class My extends Base {
                 ->join('mp_user u','m.uid=u.id','left')
                 ->join('mp_user_role r','u.id=r.uid','left')
                 ->where($whereUser)
-                ->field('m.uid,m.openid,m.unionid,m.last_login_time,m.create_time,m.bind_time,u.nickname,u.avatar,u.realname,u.age,u.sex,u.avatar,u.tel,u.score,u.focus,u.subscribe,u.vip,u.vip_time,u.desc,u.role,u.org,r.busine')
+                ->field('m.uid,m.openid,m.unionid,m.last_login_time,m.create_time,m.bind_time,u.nickname,u.avatar,u.realname,u.age,u.sex,u.avatar,u.tel,u.score,u.focus,u.subscribe,u.vip,u.vip_time,u.desc,IFNULL(u.role,0) AS role,u.org,r.busine')
                 ->find();
             if($info['uid']) {
                 $whereNote = [
@@ -29,16 +29,212 @@ class My extends Base {
                     ['status','=',1]
                 ];
                 $note_num = Db::table('mp_note')->where($whereNote)->count();
+                $whereSub = [['uid','=',$info['uid']]];
+                $subscribe = Db::table('mp_user_focus')->where($whereSub)->count();
+                $whereFans = [['to_uid','=',$info['uid']]];
+                $focus = Db::table('mp_user_focus')->where($whereFans)->count();
             }else {
                 $note_num = 0;
+                $subscribe = 0;
+                $focus = 0;
             }
             $info['note_num'] = $note_num;
+            $info['focus'] = $focus;
+            $info['subscribe'] = $subscribe;
         } catch (\Exception $e) {
             return ajax($e->getMessage(), -1);
         }
         return ajax($info);
     }
 
+    //获取我发的笔记列表
+    public function getMyNoteList()
+    {
+        $curr_page = input('page',1);
+        $perpage = input('perpage',10);
+        $curr_page = $curr_page ? $curr_page : 1;
+        $perpage = $perpage ? $perpage : 10;
+        $where = [
+            ['n.uid','=',$this->myinfo['uid']],
+            ['n.del','=',0]
+        ];
+        try {
+            $ret['count'] = Db::table('mp_note')->alias('n')->where($where)->count();
+            $list = Db::table('mp_note')->alias('n')
+                ->join('mp_user u','n.uid=u.id','left')
+                ->where($where)
+                ->field('n.id,n.content,n.pics,n.comment_num,n.create_time,u.nickname,u.avatar,n.like,n.status,n.width,n.height')
+                ->order(['n.create_time'=>'DESC'])
+                ->limit(($curr_page-1)*$perpage,$perpage)->select();
+        }catch (\Exception $e) {
+            return ajax($e->getMessage(),-1);
+        }
+        foreach ($list as &$v) {
+            $v['pics'] = unserialize($v['pics']);
+            $v['before_time'] = time() - $v['create_time'];
+        }
+        $ret['list'] = $list;
+        return ajax($ret);
+    }
+    //编辑笔记
+    public function noteMod ()
+    {
+        $val['id'] = input('post.id');
+        $val['content'] = input('post.content');
+        $val['uid'] = $this->myinfo['uid'];
+        checkPost($val);
+        $image = input('post.pics',[]);
+        if(!$this->msgSecCheck($val['content'])) {
+            return ajax('内容包含敏感词',38);
+        }
+        try {
+            $where = [
+                ['id','=',$val['id']],
+                ['uid','=',$val['uid']]
+            ];
+            $exist = Db::table('mp_note')->where($where)->find();
+            if(!$exist) {
+                return ajax($val['id'],-4);
+            }
+            if($exist['status'] != 2) {
+                return ajax('当前状态无法修改',61);
+            }
+
+            if(is_array($image) && !empty($image)) {
+                if(count($image) > 9) {
+                    return ajax('最多上传9张图片',8);
+                }
+                //验证图片是否存在
+                foreach ($image as $v) {
+                    $qiniu_exist = $this->qiniuFileExist($v);
+                    if($qiniu_exist !== true) {
+                        return ajax($qiniu_exist['msg'] . ' :'.$v,5);
+                    }
+                }
+            }else {
+                return ajax('请传入图片',3);
+            }
+
+            $old_pics = unserialize($exist['pics']);
+            $image_array = [];
+            //转移七牛云图片
+            foreach ($image as $v) {
+                $qiniu_move = $this->moveFile($v,'upload/note/');
+                if($qiniu_move['code'] == 0) {
+                    $image_array[] = $qiniu_move['path'];
+                }else {
+                    return ajax($qiniu_move['msg'] .' :' . $v . '',-1);
+                }
+            }
+            $val['pics'] = serialize($image_array);
+            $val['status'] = 0;
+            Db::table('mp_note')->where($where)->update($val);
+        }catch (\Exception $e) {
+            foreach ($image_array as $v) {
+                if(!in_array($v,$old_pics)) {
+                    $this->rs_delete($v);
+                }
+            }
+            return ajax($e->getMessage(),-1);
+        }
+        foreach ($old_pics as $v) {
+            if(!in_array($v,$image_array)) {
+                $this->rs_delete($v);
+            }
+        }
+        return ajax();
+    }
+    //获取我的收藏笔记列表
+    public function getMyCollectedNoteList() {
+        $curr_page = input('page',1);
+        $perpage = input('perpage',10);
+        $curr_page = $curr_page ? $curr_page : 1;
+        $perpage = $perpage ? $perpage : 10;
+        try {
+            $whereCollect = [
+                ['uid','=',$this->myinfo['uid']]
+            ];
+            $note_ids = Db::table('mp_note_collect')->where($whereCollect)->column('note_id');
+            if(empty($note_ids)) {
+                return ajax([]);
+            }
+            $whereNote = [
+                ['n.id','IN',$note_ids]
+            ];
+            $count = Db::table('mp_note')->alias('n')
+                ->join('mp_user u','n.uid=u.id','left')
+                ->where($whereNote)->count();
+            $list = Db::table('mp_note')->alias('n')
+                ->join('mp_user u','n.uid=u.id','left')
+                ->where($whereNote)
+                ->field('n.id,n.comment_num,n.create_time,n.pics,n.like,n.width,n.height,u.nickname,u.avatar')
+                ->order(['n.create_time'=>'DESC'])
+                ->limit(($curr_page-1)*$perpage,$perpage)->select();
+        }catch (\Exception $e) {
+            return ajax($e->getMessage(),-1);
+        }
+        foreach ($list as &$v) {
+            $v['pics'] = unserialize($v['pics']);
+            $v['before_time'] = time() - $v['create_time'];
+        }
+        $data['count'] = $count;
+        $data['list'] = $list;
+        return ajax($data);
+    }
+    //我的关注列表
+    public function mySubscribeList() {
+        $curr_page = input('page',1);
+        $perpage = input('perpage',10);
+        $curr_page = $curr_page ? $curr_page : 1;
+        $perpage = $perpage ? $perpage : 10;
+        try {
+            $whereSub = [
+                ['uid','=',$this->myinfo['uid']]
+            ];
+            $list = Db::table('mp_user_focus')->alias('f')
+                ->join('mp_user u','f.to_uid=u.id','left')
+                ->where($whereSub)
+                ->field('f.*,u.nickname,u.avatar')
+                ->limit(($curr_page-1)*$perpage,$perpage)
+                ->select();
+            $whereMyFans = [
+                ['to_uid','=',$this->myinfo['uid']]
+            ];
+            $my_fans_ids = Db::table('mp_user_focus')->where($whereMyFans)->column('uid');
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        $data['list'] = $list;
+        $data['my_fans_ids'] = $my_fans_ids;
+        return ajax($data);
+    }
+    //我的粉丝列表
+    public function myFansList() {
+        $curr_page = input('page',1);
+        $perpage = input('perpage',10);
+        $curr_page = $curr_page ? $curr_page : 1;
+        $perpage = $perpage ? $perpage : 10;
+        try {
+            $whereFans = [
+                ['to_uid','=',$this->myinfo['uid']]
+            ];
+            $list = Db::table('mp_user_focus')->alias('f')
+                ->join('mp_user u','f.uid=u.id','left')
+                ->where($whereFans)
+                ->field('f.*,u.nickname,u.avatar')
+                ->limit(($curr_page-1)*$perpage,$perpage)
+                ->select();
+            $whereMySub = [
+                ['uid','=',$this->myinfo['uid']]
+            ];
+            $my_sub_ids = Db::table('mp_user_focus')->where($whereMySub)->column('to_uid');
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        $data['list'] = $list;
+        $data['my_sub_ids'] = $my_sub_ids;
+        return ajax($data);
+    }
     //修改头像
     public function modAvatar() {
         $val['avatar'] = input('post.avatar');
@@ -84,7 +280,7 @@ class My extends Base {
         $val['nickname'] = input('post.nickname');
         checkPost($val);
         if(!$this->msgSecCheck($val['nickname'])) {
-            return ajax('昵称包含敏感词',68);
+            return ajax('昵称包含敏感词',62);
         }
         try {
             Db::table('mp_user')->where('id','=',$this->myinfo['uid'])->update($val);

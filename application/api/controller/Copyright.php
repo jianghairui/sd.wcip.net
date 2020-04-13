@@ -35,7 +35,10 @@ class Copyright extends Base {
         $curr_page = input('param.page',1);
         $perpage = input('param.perpage',10);
 
-        $where = [];
+        $where = [
+            ['i.show','=',1],
+            ['c.status','=',1]
+        ];
 
         if($param['search']) {
             $where[] = ['i.title','like',"%{$param['search']}%"];

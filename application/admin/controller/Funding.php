@@ -564,7 +564,7 @@ class Funding extends Base {
             ];
             $pay_order_sn = $order_exist['pay_order_sn'];
 
-            $order_exist['pay_price'] = 0.01;
+//            $order_exist['pay_price'] = 0.01;
             $arr = [
                 'appid' => $this->config['app_id'],
                 'mch_id'=> $this->config['mch_id'],
@@ -586,7 +586,7 @@ class Funding extends Base {
             $res = curl_post_data($url,array2xml($arr),true);
 
             $result = xml2array($res);
-//            $this->refundLog($this->cmd,var_export($result,true));
+            $this->refundLog($this->cmd,var_export($result,true));
             if($result && $result['return_code'] == 'SUCCESS') {
                 if($result['result_code'] == 'SUCCESS') {
                     $update_data = [

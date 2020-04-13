@@ -12,35 +12,43 @@ use think\Db;
 class Test extends Base {
 
     public function index() {
+        $uid = input('param.uid',0);
+        if(!in_array($uid,[1,2,3])) {
+            die('非法操作');
+        }
+        $whereRole = [
+            ['uid','=',$uid]
+        ];
+        $whereUser = [
+            ['id','=',$uid]
+        ];
+        try {
+            $role_exist = Db::table('mp_user_role')->where($whereRole)->find();
+            if(!$role_exist) {
+                die('角色不存在');
+            }
+            @$this->rs_delete($role_exist['id_front']);
+            @$this->rs_delete($role_exist['id_back']);
+            @$this->rs_delete($role_exist['license']);
+            @$this->rs_delete($role_exist['cover']);
+            Db::table('mp_user_role')->where($whereRole)->delete();
+            Db::table('mp_user')->where($whereUser)->update(
+                [
+                    'role' => 0,
+                    'org' => ''
+                    ]
+            );
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
 
-//        $val = [];
-//        $use_video = 0;
-//        $exist = [
-//            'id' => 1,
-//            'url' => 'abcd'
-//        ];
-//        if($use_video) {
-//            $val['url'] = 'abcd';
-//        }
-//
-//        try {
-//            echo $exist['nickname'];
-//        } catch (\Exception $e) {
-//            if($val['url'] == $exist) {
-//                $this->excep('YES','YES');
-//            }else {
-//                $this->excep('NO','NO');
-//            }
-//            return ajax($e->getMessage(),-111);
-//        }
+        echo 'id_front deleted<br>';
+        echo 'id_back deleted<br>';
+        echo 'license deleted<br>';
+        echo 'cover deleted<br>';
+        echo 'SUCCESS<br>';
 
-//        echo 'SUCCESS<br>';
 
-        echo gen_nickname();
-//
-//        $this->assign('nickname',$nicheng);
-//
-//        return $this->fetch();
 
     }
 

@@ -76,7 +76,7 @@ class User extends Base {
         try {
             $info = Db::table('mp_user')->alias('u')
                 ->join('mp_user_role r','u.id=r.uid','left')
-                ->field('u.*,r.cover,r.role AS tmp_role,r.org AS role_org,r.name,r.identity,r.id_front,r.id_back,r.tel as role_tel,r.role_check,r.license,r.province_code,r.city_code,r.region_code')
+                ->field('u.*,r.cover,r.role AS tmp_role,r.org AS role_org,r.name,r.identity,r.id_front,r.id_back,r.tel as role_tel,r.role_check,r.license,r.busine,r.province_code,r.city_code,r.region_code')
                 ->where($where)
                 ->find();
             $whereProvince = [

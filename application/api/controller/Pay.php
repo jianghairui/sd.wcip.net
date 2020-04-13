@@ -278,7 +278,6 @@ class Pay extends Base {
     }
 
 
-
     //订单支付
     public function fundingPay() {
         $val['pay_order_sn'] = input('post.pay_order_sn');

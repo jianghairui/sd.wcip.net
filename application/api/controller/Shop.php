@@ -34,9 +34,9 @@ class Shop extends Base {
         $where = [];
         switch ($val['type']) {
             case 1:
-                $where[] = ['g.batch','=',1];break;//小批量
-            case 2:
                 $where[] = ['g.sample','=',1];break;//免费拿样
+            case 2:
+                $where[] = ['g.batch','=',1];break;//小批量
             case 3:
                 $where[] = ['g.mold','=',1];break;//免开模
             case 4:
@@ -53,13 +53,16 @@ class Shop extends Base {
         try {
             $list = Db::table('mp_goods')->alias('g')
                 ->join('mp_user u','g.shop_id=u.id','left')
-                ->field('g.id,g.name,g.price,g.use_vip_price,g.vip_price,g.poster,u.org')
+                ->field('g.id,g.name,g.price,g.use_vip_price,g.vip_price,g.poster,g.pics,u.org')
                 ->where($where)
                 ->order($order)
                 ->limit(($curr_page-1)*$perpage,$perpage)
                 ->select();
         } catch (\Exception $e) {
             return ajax($e->getMessage(), -1);
+        }
+        foreach ($list as &$v) {
+            $v['poster'] = unserialize($v['pics'])[0];
         }
         return ajax($list);
 
@@ -634,6 +637,108 @@ class Shop extends Base {
         }
         return ajax($pay_order_sn);
 
+    }
+
+
+    //发送手机短信
+    public function sendSms() {
+        $val['tel'] = input('post.tel');
+        checkPost($val);
+        $sms = new \my\Sendsms();
+        $tel = $val['tel'];
+
+        if(!is_tel($tel)) {
+            return ajax('无效的手机号',6);
+        }
+        try {
+            $code = mt_rand(100000,999999);
+            $insert_data = [
+                'tel' => $tel,
+                'code' => $code,
+                'create_time' => time()
+            ];
+            $sms_data['tpl_code'] = 'SMS_174925606';
+            $sms_data['tel'] = $val['tel'];
+            $sms_data['param'] = [
+                'code' => $code
+            ];
+            $exist = Db::table('mp_verify')->where('tel','=',$tel)->find();
+            if($exist) {
+                if((time() - $exist['create_time']) < 60) {
+                    return ajax('1分钟内不可重复发送',11);
+                }
+                $res = $sms->send($sms_data);
+                if($res->Code === 'OK') {
+                    Db::table('mp_verify')->where('tel',$tel)->update($insert_data);
+                    return ajax();
+                }else {
+                    return ajax($res->Message,-1);
+                }
+            }else {
+                $res = $sms->send($sms_data);
+                if($res->Code === 'OK') {
+                    Db::table('mp_verify')->insert($insert_data);
+                    return ajax();
+                }else {
+                    return ajax($res->Message,-1);
+                }
+            }
+        }catch (\Exception $e) {
+            return ajax($e->getMessage(),-1);
+        }
+    }
+
+    //小批量、面楷模
+    public function bsmApply() {
+        $val['uid'] = $this->myinfo['uid'];
+        $val['goods_id'] = input('post.goods_id');
+        $val['company'] = input('post.company');
+        $val['name'] = input('post.name');
+        $val['tel'] = input('post.tel');
+        $val['email'] = input('post.email');
+        $val['code'] = input('post.code');
+        $val['type'] = input('post.type','');
+        checkPost($val);
+        $val['desc'] = input('post.desc');
+        $val['create_time'] = time();
+
+        if(!in_array($val['type'],[1,2,3])) {
+            return ajax('invalid type',-4);
+        }
+        if(!is_tel($val['tel'])) {
+            return ajax($val['tel'],6);
+        }
+        if(!is_email($val['email'])) {
+            return ajax($val['email'],7);
+        }
+        try {
+            $whereGoods = [
+                ['id','=',$val['goods_id']]
+            ];
+            $ip_exist = Db::table('mp_goods')->where($whereGoods)->find();
+            if(!$ip_exist) {
+                return ajax('invalid goods_id',-4);
+            }
+            // 检验短信验证码
+            $whereCode = [
+                ['tel','=',$val['tel']],
+                ['code','=',$val['code']]
+            ];
+            $code_exist = Db::table('mp_verify')->where($whereCode)->find();
+            if($code_exist) {
+                if((time() - $code_exist['create_time']) > 60*5) {//验证码5分钟过期
+                    return ajax('验证码已过期',32);
+                }
+            }else {
+                return ajax('验证码无效',33);
+            }
+            unset($val['code']);
+            Db::table('mp_goods_bsm')->insert($val);
+            Db::table('mp_verify')->where($whereCode)->delete();
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax();
     }
 
 

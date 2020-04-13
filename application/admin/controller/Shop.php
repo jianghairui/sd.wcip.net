@@ -1000,6 +1000,7 @@ LEFT JOIN `mp_goods` `g` ON `d`.`goods_id`=`g`.`id`
             $res = curl_post_data($url,array2xml($arr),true);
 
             $result = xml2array($res);
+            $this->refundLog($this->cmd,var_export($result,true));
             if($result && $result['return_code'] == 'SUCCESS') {
                 if($result['result_code'] == 'SUCCESS') {
                     $update_data = [
@@ -1017,6 +1018,7 @@ LEFT JOIN `mp_goods` `g` ON `d`.`goods_id`=`g`.`id`
         } catch (\Exception $e) {
             return ajax($e->getMessage(), -1);
         }
+
     }
 
     //删除订单

@@ -47,6 +47,15 @@ class Activity extends Base {
         }catch (\Exception $e) {
             die($e->getMessage());
         }
+        foreach ($list as &$v) {
+            $v['status'] = 1;
+            if(time() < $v['start_time']) {
+                $v['status'] = 0;
+            }
+            if(time() > $v['end_time']) {
+                $v['status'] = 2;
+            }
+        }
         return ajax($list);
     }
 
