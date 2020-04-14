@@ -765,7 +765,7 @@ LEFT JOIN `mp_goods` `g` ON `d`.`goods_id`=`g`.`id`
                 ->join("mp_order_detail d","o.id=d.order_id","left")
                 ->join("mp_goods g","d.goods_id=g.id","left")
                 ->where($where)
-                ->field("o.id,o.pay_order_sn,o.pay_price,o.total_price,o.carriage,o.receiver,o.tel,o.address,o.create_time,o.refund_apply,o.status,d.id AS order_detail_id,d.order_id,d.num,d.unit_price,d.goods_id,d.goods_name,d.attr,d.evaluate,g.pics")->select();
+                ->field("o.id,o.pay_order_sn,o.pay_price,o.total_price,o.carriage,o.receiver,o.tel,o.address,o.create_time,o.refund_apply,o.status,d.id AS order_detail_id,d.order_id,d.num,d.unit_price,d.use_vip_price,d.vip_price,d.goods_id,d.goods_name,d.attr,d.evaluate,g.pics")->select();
             if(!$list) {
                 return ajax('invalid order_id',4);
             }
@@ -789,7 +789,13 @@ LEFT JOIN `mp_goods` `g` ON `d`.`goods_id`=`g`.`id`
                 $data_child['goods_name'] = $li['goods_name'];
                 $data_child['num'] = $li['num'];
                 $data_child['unit_price'] = $li['unit_price'];
-                $data_child['total_price'] = sprintf ( "%1\$.2f",($li['unit_price'] * $li['num']));
+                $data_child['use_vip_price'] = $li['use_vip_price'];
+                $data_child['vip_price'] = $li['vip_price'];
+                if($li['use_vip_price']) {
+                    $data_child['total_price'] = sprintf ( "%1\$.2f",($li['vip_price'] * $li['num']));
+                }else {
+                    $data_child['total_price'] = sprintf ( "%1\$.2f",($li['unit_price'] * $li['num']));
+                }
                 $data_child['attr'] = $li['attr'];
                 $data_child['evaluate'] = $li['evaluate'];
                 $data_child['comment'] = Db::table('mp_goods_comment')->where('order_detail_id','=',$li['order_detail_id'])->value('comment');

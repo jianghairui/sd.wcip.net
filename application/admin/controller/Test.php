@@ -11,7 +11,7 @@ use think\Controller;
 use think\Db;
 class Test extends Base {
 
-    public function index() {
+    private function index() {
         $uid = input('param.uid',0);
         if(!in_array($uid,[1,2,3])) {
             die('非法操作');
@@ -50,6 +50,21 @@ class Test extends Base {
 
 
 
+    }
+
+    public function test() {
+
+        $start = microtime(true);
+        try {
+//            $note_ids = Db::table('mp_note')->column('id');
+//            foreach ($note_ids as $v) {
+//                Db::table('mp_note')->where('id','=',$v)->update(['uid'=>mt_rand(1,7)]);
+//            }
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        $end = microtime(true);
+        echo bcsub($end,$start,6);
     }
 
 

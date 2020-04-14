@@ -72,9 +72,9 @@ class Api extends Base
         $where = [];
         switch ($val['type']) {
             case 1:
-                $where[] = ['g.sample','=',1];break;//免费拿样
-            case 2:
                 $where[] = ['g.batch','=',1];break;//小批量
+            case 2:
+                $where[] = ['g.sample','=',1];break;//免费拿样
             case 3:
                 $where[] = ['g.mold','=',1];break;//免开模
             case 4:

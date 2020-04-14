@@ -272,6 +272,8 @@ class Shop extends Base {
                 }else {
                     return ajax($qiniu_move['msg'],-2);
                 }
+            }else {
+                $val['use_video'] = 0;
             }
 
             $image = input('post.pic_url',[]);
@@ -432,6 +434,8 @@ class Shop extends Base {
                 }else {
                     return ajax($video_move['msg'],-2);
                 }
+            }else {
+                $val['use_video'] = 0;
             }
 
             $old_pics = unserialize($exist['pics']);
