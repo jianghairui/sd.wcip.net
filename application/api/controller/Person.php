@@ -45,6 +45,9 @@ class Person extends Base {
                 ['status','=',1],
                 ['del','=',0]
             ];
+            if($role_exist['role']) {
+                $role_exist['nickname'] = $role_exist['org'];
+            }
             $role_exist['note_num'] = Db::table('mp_note')->where($whereNote)->count();
         } catch (\Exception $e) {
             return ajax($e->getMessage(), -1);
@@ -61,7 +64,8 @@ class Person extends Base {
         $curr_page = $curr_page ? $curr_page : 1;
         $perpage = $perpage ? $perpage : 10;
         $whereGoods = [
-            ['g.shop_id','=',$param['uid']]
+            ['g.shop_id','=',$param['uid']],
+            ['g.status','=',1]
         ];
         $order = ['g.id'=>'DESC'];
         try {

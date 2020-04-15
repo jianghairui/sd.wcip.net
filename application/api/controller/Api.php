@@ -69,7 +69,9 @@ class Api extends Base
         $perpage = input('post.perpage',10);
         $pcate_id = input('post.pcate_id',0);
         $cate_id = input('post.cate_id',0);
-        $where = [];
+        $where = [
+            ['g.status','=',1]
+        ];
         switch ($val['type']) {
             case 1:
                 $where[] = ['g.batch','=',1];break;//小批量

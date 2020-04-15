@@ -46,7 +46,9 @@ class Shop extends Base {
         $perpage = input('post.perpage',10);
         $pcate_id = input('post.pcate_id',0);
         $cate_id = input('post.cate_id',0);
-        $where = [];
+        $where = [
+            ['g.status','=',1]
+        ];
         switch ($val['type']) {
             case 1:
                 $where[] = ['g.batch','=',1];break;//小批量
@@ -126,7 +128,7 @@ class Shop extends Base {
         try {
             $info = Db::table('mp_goods')->alias('g')
                 ->join('mp_user u','g.shop_id=u.id','left')
-                ->field('g.*,u.org')
+                ->field('g.*,u.org,u.avatar')
                 ->where($where)
                 ->find();
             if(!$info) {

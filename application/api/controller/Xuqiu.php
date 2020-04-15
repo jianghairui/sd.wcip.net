@@ -30,12 +30,12 @@ class Xuqiu extends Base {
         $recommend = input('post.recommend');
         $whereRole = [];
         $whereRole[] = ['role','=',2];
-        if($recommend) {
-            $whereRole[] = ['recommend','=',1];
-        }
+//        if($recommend) {
+//            $whereRole[] = ['recommend','=',1];
+//        }
         try {
             $list = Db::table('mp_user_role')->where($whereRole)
-                ->field('id,uid,role,org,cover AS logo')
+                ->field('uid,role,org,cover AS logo')
                 ->limit(0,9)
                 ->select();
         } catch (\Exception $e) {
