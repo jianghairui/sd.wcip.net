@@ -28,9 +28,7 @@ class Note extends Base {
         if($search) {
             $where[] = ['n.title','like',"%{$search}%"];
         }
-
         if(!$this->myinfo['uid']) { $this->myinfo['uid'] = -1; }
-
         try {
             switch ($type) {
                 case 1:
@@ -364,6 +362,7 @@ WHERE c.note_id=?",[$val['note_id']]);
         $val['note_id'] = input('post.note_id');
         $val['uid'] = $this->myinfo['uid'];
         checkPost($val);
+        $val['create_time'] = time();
         try {
             $exist = Db::table('mp_note')->where('id',$val['note_id'])->find();
             if(!$exist) {
@@ -416,6 +415,7 @@ WHERE c.note_id=?",[$val['note_id']]);
         $val['to_uid'] = input('post.to_uid');
         $val['uid'] = $this->myinfo['uid'];
         checkPost($val);
+        $val['create_time'] = time();
         try {
             $user_exist = Db::table('mp_user')->where('id',$val['to_uid'])->find();
             if(!$user_exist) {
@@ -431,13 +431,13 @@ WHERE c.note_id=?",[$val['note_id']]);
             $exist = Db::table('mp_user_focus')->where($map)->find();
             if($exist) {
                 Db::table('mp_user_focus')->where($map)->delete();
-                Db::table('mp_user')->where('id',$val['to_uid'])->setDec('focus',1);
-                Db::table('mp_user')->where('id',$val['uid'])->setDec('ifocus',1);
+//                Db::table('mp_user')->where('id',$val['to_uid'])->setDec('focus',1);
+//                Db::table('mp_user')->where('id',$val['uid'])->setDec('ifocus',1);
                 return ajax(false);
             }else {
                 Db::table('mp_user_focus')->insert($val);
-                Db::table('mp_user')->where('id',$val['to_uid'])->setInc('focus',1);
-                Db::table('mp_user')->where('id',$val['uid'])->setInc('ifocus',1);
+//                Db::table('mp_user')->where('id',$val['to_uid'])->setInc('focus',1);
+//                Db::table('mp_user')->where('id',$val['uid'])->setInc('ifocus',1);
                 return ajax(true);
             }
         }catch (\Exception $e) {
@@ -467,7 +467,7 @@ WHERE c.note_id=?",[$val['note_id']]);
                         ];
                         $list = Db::table('mp_order_detail')->alias('d')
                             ->join('mp_goods g','d.goods_id=g.id','left')
-                            ->field('d.goods_id,d.goods_name,d.unit_price AS price,d.attr,g.poster')
+                            ->field('d.goods_id,d.goods_name,d.unit_price AS price,d.attr,g.pics,g.poster,g.sales')
                             ->where($whereGoods)
                             ->select();
                     }
@@ -477,12 +477,15 @@ WHERE c.note_id=?",[$val['note_id']]);
                         ['shop_id','=',$this->myinfo['uid']]
                     ];
                     $list = Db::table('mp_goods')
-                        ->field('id AS goods_id,name AS goods_name,price,"默认" AS attr,poster')
+                        ->field('id AS goods_id,name AS goods_name,price,"默认" AS attr,pics,poster')
                         ->where($whereGoods)
                         ->select();
                     break;
                 default:
                     $list = [];
+            }
+            foreach ($list as &$v) {
+                $v['poster'] = unserialize($v['pics'])[0];
             }
         } catch (\Exception $e) {
             return ajax($e->getMessage(), -1);

@@ -9,6 +9,7 @@ namespace app\admin\controller;
 use think\Db;
 use my\Kuaidiniao;
 class Shop extends Base {
+
 //商品列表
     public function goodsList() {
         $param['shop_id'] = input('param.shop_id','');
@@ -81,7 +82,9 @@ class Shop extends Base {
         }catch (\Exception $e) {
             die('SQL错误: ' . $e->getMessage());
         }
-
+        foreach ($list as &$v) {
+            $v['poster'] = unserialize($v['pics'])[0];
+        }
         $this->assign('shoplist',$shoplist);
         $this->assign('list',$list);
         $this->assign('pcate_list',$pcate_list);
@@ -269,6 +272,8 @@ class Shop extends Base {
                 }else {
                     return ajax($qiniu_move['msg'],-2);
                 }
+            }else {
+                $val['use_video'] = 0;
             }
 
             $image = input('post.pic_url',[]);
@@ -429,6 +434,8 @@ class Shop extends Base {
                 }else {
                     return ajax($video_move['msg'],-2);
                 }
+            }else {
+                $val['use_video'] = 0;
             }
 
             $old_pics = unserialize($exist['pics']);
@@ -1000,6 +1007,7 @@ LEFT JOIN `mp_goods` `g` ON `d`.`goods_id`=`g`.`id`
             $res = curl_post_data($url,array2xml($arr),true);
 
             $result = xml2array($res);
+            $this->refundLog($this->cmd,var_export($result,true));
             if($result && $result['return_code'] == 'SUCCESS') {
                 if($result['result_code'] == 'SUCCESS') {
                     $update_data = [
@@ -1017,6 +1025,7 @@ LEFT JOIN `mp_goods` `g` ON `d`.`goods_id`=`g`.`id`
         } catch (\Exception $e) {
             return ajax($e->getMessage(), -1);
         }
+
     }
 
     //删除订单

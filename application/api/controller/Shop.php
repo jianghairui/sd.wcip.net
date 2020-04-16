@@ -9,7 +9,21 @@ namespace app\api\controller;
 
 use think\Db;
 class Shop extends Base {
-
+    //获取轮播图列表
+    public function slideList() {
+        $where = [
+            ['status', '=', 1],
+            ['type', '=', 8]
+        ];
+        try {
+            $list = Db::table('mp_slideshow')->where($where)
+                ->field('id,title,url,pic')
+                ->order(['sort' => 'ASC'])->select();
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax($list);
+    }
     //商城主页顶部分类
     public function topCate() {
         try {
@@ -26,12 +40,15 @@ class Shop extends Base {
     }
 
     public function goodsList() {
+        $val['search'] = input('post.search');
         $val['type'] = input('post.type');
         $curr_page = input('post.page',1);
         $perpage = input('post.perpage',10);
         $pcate_id = input('post.pcate_id',0);
         $cate_id = input('post.cate_id',0);
-        $where = [];
+        $where = [
+            ['g.status','=',1]
+        ];
         switch ($val['type']) {
             case 1:
                 $where[] = ['g.batch','=',1];break;//小批量
@@ -43,23 +60,60 @@ class Shop extends Base {
                 $where[] = ['g.recommend','=',1];break;//爆款推荐
             default:;
         }
+        if($val['search']) {
+            $where[] = ['g.name','like',"%{$val['search']}%"];
+        }
         if($pcate_id) {
             $where[] = ['g.pcate_id','=',$pcate_id];
         }
         if($cate_id) {
             $where[] = ['g.cate_id','=',$cate_id];
         }
-        $order = ['id'=>'DESC'];
+        $order = ['g.id'=>'DESC'];
         try {
             $list = Db::table('mp_goods')->alias('g')
                 ->join('mp_user u','g.shop_id=u.id','left')
-                ->field('g.id,g.name,g.price,g.use_vip_price,g.vip_price,g.poster,u.org')
+                ->field('g.id,g.name,g.price,g.use_vip_price,g.vip_price,g.poster,g.pics,u.org')
                 ->where($where)
                 ->order($order)
                 ->limit(($curr_page-1)*$perpage,$perpage)
                 ->select();
         } catch (\Exception $e) {
             return ajax($e->getMessage(), -1);
+        }
+        foreach ($list as &$v) {
+            $v['poster'] = unserialize($v['pics'])[0];
+        }
+        return ajax($list);
+
+    }
+
+    public function tehuiList() {
+        $curr_page = input('post.page',1);
+        $perpage = input('post.perpage',10);
+        $recommend = input('post.recommend','');
+        $curr_page = $curr_page ? $curr_page : 1;
+        $perpage = $perpage ? $perpage : 10;
+        $where = [
+            ['g.use_vip_price','=',1]
+        ];
+        if($recommend !== '') {
+            $where[] = ['g.recommend','=',$recommend];
+        }
+        $order = ['g.id'=>'DESC'];
+        try {
+            $list = Db::table('mp_goods')->alias('g')
+                ->join('mp_user u','g.shop_id=u.id','left')
+                ->field('g.id,g.name,g.price,g.use_vip_price,g.vip_price,g.pics,u.org')
+                ->where($where)
+                ->order($order)
+                ->limit(($curr_page-1)*$perpage,$perpage)
+                ->select();
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        foreach ($list as &$v) {
+            $v['poster'] = unserialize($v['pics'])[0];
         }
         return ajax($list);
 
@@ -74,13 +128,23 @@ class Shop extends Base {
         try {
             $info = Db::table('mp_goods')->alias('g')
                 ->join('mp_user u','g.shop_id=u.id','left')
-                ->field('g.*,u.org')
+                ->field('g.*,u.org,u.avatar')
                 ->where($where)
                 ->find();
             if(!$info) {
                 return ajax('invalid goods_id',-4);
             }
             $info['pics'] = unserialize($info['pics']);
+            if($info['use_attr']) {
+                $whereAttr = [
+                    ['goods_id','=',$val['goods_id']],
+                    ['del','=',0]
+                ];
+                $attr_list = Db::table('mp_goods_attr')->where($whereAttr)->select();
+            }else {
+                $attr_list = [];
+            }
+            $info['attr_list'] = $attr_list;
         } catch (\Exception $e) {
             return ajax($e->getMessage(), -1);
         }
@@ -123,6 +187,7 @@ class Shop extends Base {
 
     //购物车列表
     public function cartList() {
+        $userinfo = $this->getUserInfo();
         try {
             $where = [
                 ['c.uid','=',$this->myinfo['uid']]
@@ -130,23 +195,23 @@ class Shop extends Base {
             $list = Db::table('mp_cart')->alias('c')
                 ->join("mp_goods g","c.goods_id=g.id","left")
                 ->join("mp_goods_attr a","c.attr_id=a.id","left")
-                ->field("c.id,c.uid,c.goods_id,c.num,c.use_attr,c.attr,c.attr_id,g.name,g.pics,g.price,g.carriage,g.stock,g.limit")
+                ->field("c.id,c.uid,c.goods_id,c.num,c.use_attr,c.attr,c.attr_id,g.name,g.pics,g.price,g.use_vip_price,g.vip_price,g.carriage,g.stock,g.limit,a.price AS attr_price,a.vip_price AS attr_vip_price")
                 ->where($where)->select();
             foreach ($list as &$v) {
                 $v['cover'] = unserialize($v['pics'])[0];
                 unset($v['pics']);
                 if($v['use_attr']) {
-                    $map_attr = [
-                        ['id','=',$v['attr_id']],
-                        ['goods_id','=',$v['goods_id']]
-                    ];
-                    $attr_exist = Db::table('mp_goods_attr')->where($map_attr)->find();
-
-                    $price = $attr_exist['price'];
+                    $price = $v['attr_price'];
+                    if($v['use_vip_price'] && $userinfo['vip']) {
+                        $price = $v['attr_vip_price'];
+                    }
                 }else {
                     $price = $v['price'];
+                    if($v['use_vip_price'] && $userinfo['vip']) {
+                        $price = $v['vip_price'];
+                    }
                 }
-                $v['price'] = $price;
+                $v['real_price'] = $price;
                 $v['total_price'] = $price * $v['num'];
                 $v['total_price'] = sprintf ( "%1\$.2f",$v['total_price']);
             }
@@ -250,6 +315,7 @@ class Shop extends Base {
     public function cartInc() {
         $val['cart_id'] = input('post.cart_id');
         checkPost($val);
+        $userinfo = $this->getUserInfo();
         try {
             $where = [
                 ['id','=',$val['cart_id']],
@@ -273,12 +339,20 @@ class Shop extends Base {
                 if($cart_exist['num'] > $attr_exist['stock']) {
                     return ajax('此规格库存不足',55);
                 }
-                $price = $attr_exist['price'];
+                if($goods_exist['use_vip_price'] && $userinfo['vip']) {
+                    $price = $attr_exist['vip_price'];
+                }else {
+                    $price = $attr_exist['price'];
+                }
             }else {
                 if($cart_exist['num'] > $goods_exist['stock']) {
                     return ajax('库存不足',52);
                 }
-                $price = $goods_exist['price'];
+                if($goods_exist['use_vip_price'] && $userinfo['vip']) {
+                    $price = $goods_exist['vip_price'];
+                }else {
+                    $price = $goods_exist['price'];
+                }
             }
             Db::table('mp_cart')->where($where)->setInc('num',1);
         } catch (\Exception $e) {
@@ -294,6 +368,7 @@ class Shop extends Base {
     public function cartDec() {
         $val['cart_id'] = input('post.cart_id');
         checkPost($val);
+        $userinfo = $this->getUserInfo();
         try {
             $where = [
                 ['id','=',$val['cart_id']],
@@ -314,9 +389,17 @@ class Shop extends Base {
                     ['goods_id','=',$cart_exist['goods_id']]
                 ];
                 $attr_exist = Db::table('mp_goods_attr')->where($map_attr)->find();
-                $price = $attr_exist['price'];
+                if($goods_exist['use_vip_price'] && $userinfo['vip']) {
+                    $price = $attr_exist['vip_price'];
+                }else {
+                    $price = $attr_exist['price'];
+                }
             }else {
-                $price = $goods_exist['price'];
+                if($goods_exist['use_vip_price'] && $userinfo['vip']) {
+                    $price = $goods_exist['vip_price'];
+                }else {
+                    $price = $goods_exist['price'];
+                }
             }
             Db::table('mp_cart')->where($where)->setDec('num',1);
         } catch (\Exception $e) {
@@ -634,6 +717,108 @@ class Shop extends Base {
         }
         return ajax($pay_order_sn);
 
+    }
+
+
+    //发送手机短信
+    public function sendSms() {
+        $val['tel'] = input('post.tel');
+        checkPost($val);
+        $sms = new \my\Sendsms();
+        $tel = $val['tel'];
+
+        if(!is_tel($tel)) {
+            return ajax('无效的手机号',6);
+        }
+        try {
+            $code = mt_rand(100000,999999);
+            $insert_data = [
+                'tel' => $tel,
+                'code' => $code,
+                'create_time' => time()
+            ];
+            $sms_data['tpl_code'] = 'SMS_174925606';
+            $sms_data['tel'] = $val['tel'];
+            $sms_data['param'] = [
+                'code' => $code
+            ];
+            $exist = Db::table('mp_verify')->where('tel','=',$tel)->find();
+            if($exist) {
+                if((time() - $exist['create_time']) < 60) {
+                    return ajax('1分钟内不可重复发送',11);
+                }
+                $res = $sms->send($sms_data);
+                if($res->Code === 'OK') {
+                    Db::table('mp_verify')->where('tel',$tel)->update($insert_data);
+                    return ajax();
+                }else {
+                    return ajax($res->Message,-1);
+                }
+            }else {
+                $res = $sms->send($sms_data);
+                if($res->Code === 'OK') {
+                    Db::table('mp_verify')->insert($insert_data);
+                    return ajax();
+                }else {
+                    return ajax($res->Message,-1);
+                }
+            }
+        }catch (\Exception $e) {
+            return ajax($e->getMessage(),-1);
+        }
+    }
+
+    //小批量、面楷模
+    public function bsmApply() {
+        $val['uid'] = $this->myinfo['uid'];
+        $val['goods_id'] = input('post.goods_id');
+        $val['company'] = input('post.company');
+        $val['name'] = input('post.name');
+        $val['tel'] = input('post.tel');
+        $val['email'] = input('post.email');
+        $val['code'] = input('post.code');
+        $val['type'] = input('post.type','');
+        checkPost($val);
+        $val['desc'] = input('post.desc');
+        $val['create_time'] = time();
+
+        if(!in_array($val['type'],[1,2,3])) {
+            return ajax('invalid type',-4);
+        }
+        if(!is_tel($val['tel'])) {
+            return ajax($val['tel'],6);
+        }
+        if(!is_email($val['email'])) {
+            return ajax($val['email'],7);
+        }
+        try {
+            $whereGoods = [
+                ['id','=',$val['goods_id']]
+            ];
+            $ip_exist = Db::table('mp_goods')->where($whereGoods)->find();
+            if(!$ip_exist) {
+                return ajax('invalid goods_id',-4);
+            }
+            // 检验短信验证码
+            $whereCode = [
+                ['tel','=',$val['tel']],
+                ['code','=',$val['code']]
+            ];
+            $code_exist = Db::table('mp_verify')->where($whereCode)->find();
+            if($code_exist) {
+                if((time() - $code_exist['create_time']) > 60*5) {//验证码5分钟过期
+                    return ajax('验证码已过期',32);
+                }
+            }else {
+                return ajax('验证码无效',33);
+            }
+            unset($val['code']);
+            Db::table('mp_goods_bsm')->insert($val);
+            Db::table('mp_verify')->where($whereCode)->delete();
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax();
     }
 
 

@@ -76,7 +76,7 @@ class User extends Base {
         try {
             $info = Db::table('mp_user')->alias('u')
                 ->join('mp_user_role r','u.id=r.uid','left')
-                ->field('u.*,r.cover,r.role AS tmp_role,r.org AS role_org,r.name,r.identity,r.id_front,r.id_back,r.tel as role_tel,r.role_check,r.license,r.province_code,r.city_code,r.region_code')
+                ->field('u.*,r.cover,r.role AS tmp_role,r.org AS role_org,r.name,r.identity,r.id_front,r.id_back,r.tel as role_tel,r.role_check,r.license,r.busine,r.province_code,r.city_code,r.region_code')
                 ->where($where)
                 ->find();
             $whereProvince = [
@@ -423,9 +423,8 @@ class User extends Base {
             $page['totalPage'] = ceil($count/$perpage);
             $list = Db::table('mp_vip_order')->alias('o')
                 ->join("mp_user u","o.uid=u.id","left")
-                ->join("mp_vip v","o.vip_id=v.id","left")
                 ->order(['o.create_time'=>'DESC'])
-                ->field("o.*,u.nickname,u.avatar,v.title")
+                ->field("o.*,u.nickname,u.avatar")
                 ->limit(($curr_page-1)*$perpage,$perpage)
                 ->select();
         }catch (\Exception $e) {
@@ -443,9 +442,9 @@ class User extends Base {
                 ['o.id','=',$id]
             ];
             $info = Db::table('mp_vip_order')->alias('o')
-                ->join("mp_vip v","o.vip_id=v.id","left")
+                ->join("mp_user u","o.uid=u.id","left")
                 ->where($where)
-                ->field("o.*,v.title,v.detail,v.pic")
+                ->field("o.*,u.nickname,u.avatar,u.vip,u.vip_time")
                 ->find();
         }catch (\Exception $e) {
             die($e->getMessage());

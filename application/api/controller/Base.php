@@ -121,6 +121,9 @@ class Base extends Controller {
             'Shop/purchase',
             'Shop/carttopurchase',
 
+            'My/getmynoteList',
+            'My/notemod',
+            'My/getmycollectednotelist',
             'My/modavatar',
             'My/modnickname',
             'My/modrealname',

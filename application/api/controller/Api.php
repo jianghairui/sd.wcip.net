@@ -13,11 +13,28 @@ use think\Exception;
 
 class Api extends Base
 {
+
     //获取轮播图列表
     public function slideList() {
         $where = [
             ['status', '=', 1],
             ['type', '=', 1]
+        ];
+        try {
+            $list = Db::table('mp_slideshow')->where($where)
+                ->field('id,title,url,pic')
+                ->order(['sort' => 'ASC'])->select();
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax($list);
+    }
+
+    //获取轮播图列表
+    public function slideList2() {
+        $where = [
+            ['status', '=', 1],
+            ['type', '=', 7]
         ];
         try {
             $list = Db::table('mp_slideshow')->where($where)
@@ -46,12 +63,15 @@ class Api extends Base
     }
 
     public function goodsList() {
+        $val['search'] = input('post.search');
         $val['type'] = input('post.type');
         $curr_page = input('post.page',1);
         $perpage = input('post.perpage',10);
         $pcate_id = input('post.pcate_id',0);
         $cate_id = input('post.cate_id',0);
-        $where = [];
+        $where = [
+            ['g.status','=',1]
+        ];
         switch ($val['type']) {
             case 1:
                 $where[] = ['g.batch','=',1];break;//小批量
@@ -63,13 +83,16 @@ class Api extends Base
                 $where[] = ['g.recommend','=',1];break;//爆款推荐
             default:;
         }
+        if($val['search']) {
+            $where[] = ['g.name','like',"%{$val['search']}%"];
+        }
         if($pcate_id) {
             $where[] = ['g.pcate_id','=',$pcate_id];
         }
         if($cate_id) {
             $where[] = ['g.cate_id','=',$cate_id];
         }
-        $order = ['id'=>'DESC'];
+        $order = ['g.id'=>'DESC'];
         try {
             $list = Db::table('mp_goods')->alias('g')
                 ->join('mp_user u','g.shop_id=u.id','left')
@@ -82,7 +105,7 @@ class Api extends Base
             return ajax($e->getMessage(), -1);
         }
         foreach ($list as &$v) {
-
+            $v['poster'] = unserialize($v['pics'])[0];
         }
         return ajax($list);
 

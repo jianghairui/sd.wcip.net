@@ -65,12 +65,15 @@ class Plat extends Base {
         if(!$val['pic']) {
             return ajax('请传入图片',-1);
         }
-        if($val['type'] == 1) {
-            $val['size'] = '750*750';
-        }else {
-            $val['size'] = '1920*600';
-        }
         try {
+            $whereType = [
+                ['id','=',$val['type']]
+            ];
+            $type_exist = Db::table('mp_slideshow_type')->where($whereType)->find();
+            if(!$type_exist) {
+                return ajax('invalid type',-4);
+            }
+            $val['size'] = $type_exist['size'];
             $qiniu_exist = $this->qiniuFileExist($val['pic']);
             if($qiniu_exist !== true) {
                 return ajax($qiniu_exist['msg'],-1);
@@ -116,12 +119,15 @@ class Plat extends Base {
         checkInput($val);
         $val['url'] = input('post.url');
         $val['pic'] = input('post.pic');
-        if($val['type'] == 1) {
-            $val['size'] = '750*750';
-        }else {
-            $val['size'] = '1920*600';
-        }
         try {
+            $whereType = [
+                ['id','=',$val['type']]
+            ];
+            $type_exist = Db::table('mp_slideshow_type')->where($whereType)->find();
+            if(!$type_exist) {
+                return ajax('invalid type',-4);
+            }
+            $val['size'] = $type_exist['size'];
             $exist = Db::table('mp_slideshow')->where('id',$val['id'])->find();
             if(!$exist) {
                 return ajax('非法操作',-1);

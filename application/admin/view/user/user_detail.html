@@ -64,7 +64,7 @@
                 </div>
             </div>
             <div class="row cl">
-                <label class="form-label col-xs-4 col-sm-3">申请角色状态：</label>
+                <label class="form-label col-xs-4 col-sm-3">角色状态：</label>
                 <div class="formControls col-xs-8 col-sm-9">
                     ({switch $info['tmp_role']}
                     {case 0}
@@ -123,13 +123,12 @@
         </div>
 
 
-
         <div class="col-md-6 col-sm-12">
             <div class="row cl" id="picsize">
                 <label class="form-label col-xs-4 col-sm-3"></label>
                 <div class="formControls col-xs-8 col-sm-9">
                 <span style="font-size: 16px">
-                    (建议尺寸: 702 * 300)
+                    (建议尺寸: 436 * 200)
                 </span>
                 </div>
             </div>
@@ -199,6 +198,13 @@
                     </ul>
                 </div>
             </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3">经营范围：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <textarea name="busine" cols="" rows="" class="textarea" maxlength="255" placeholder="" oninput="this.value.length<=255?$('#textlen2').text(this.value.length):$('#textlen2').text(255)" readonly>{$info.busine}</textarea>
+                    <p class="textarea-numberbar"><em class="textarea-length" id="textlen2">0</em>/255</p>
+                </div>
+            </div>
             {if $info['role'] || $info['tmp_role']}
             <div class="row cl">
                 <label class="form-label col-xs-3 col-sm-3">选择地区：</label>
@@ -231,6 +237,18 @@
                 </div>
             </div>
             {/if}
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"></label>
+                <div class="formControls col-xs-8 col-sm-9"></div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"></label>
+                <div class="formControls col-xs-8 col-sm-9"></div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"></label>
+                <div class="formControls col-xs-8 col-sm-9"></div>
+            </div>
             <input type="hidden" name="uid" value="{$info.id}">
             <input type="hidden" name="cover" id="cover" value="{$info.cover}">
         </div>
@@ -452,6 +470,9 @@
 
         var textlen1 = $("textarea[name='desc']").val().length;
         $("#textlen1").text(textlen1);
+
+        var textlen2 = $("textarea[name='busine']").val().length;
+        $("#textlen2").text(textlen2);
 
 
     });
