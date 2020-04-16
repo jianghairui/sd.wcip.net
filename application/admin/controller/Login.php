@@ -126,6 +126,10 @@ class Login extends Base {
         return ajax($val,1);
     }
 
+    public function frozen() {
+        return $this->fetch();
+    }
+
 
 
 

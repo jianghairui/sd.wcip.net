@@ -507,6 +507,7 @@ class Shop extends Base {
                 'tel' => $data['tel'],
                 'address' => $data['address'],
                 'create_time' => $time,
+                'deadline' => $time + config('order_deadline'),
             ];
 
             Db::startTrans();
@@ -531,7 +532,7 @@ class Shop extends Base {
                 'pay_price' => $insert_data['pay_price'],
                 'order_ids' => implode(',',[$order_id]),
                 'status' => 0,
-                'create_time' => time()
+                'create_time' => $time
             ];
 
             Db::table('mp_order_detail')->insert($order_detail);//订单商品详情
@@ -658,6 +659,7 @@ class Shop extends Base {
                     'tel' => $val['tel'],
                     'address' => $val['address'],
                     'create_time' => $time,
+                    'deadline' => $time + config('order_deadline'),
                 ];
                 $order_data_all[] = $order_data;
                 $insert_detail_all_arr[] = $insert_detail_all;
@@ -691,7 +693,7 @@ class Shop extends Base {
                 'pay_price' => $unite_order_price,
                 'order_ids' => implode(',',$order_ids),
                 'status' => 0,
-                'create_time' => time()
+                'create_time' => $time
             ];
             Db::table('mp_order_unite')->insert($order_unite);
 
