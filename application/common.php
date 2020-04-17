@@ -10,18 +10,22 @@
 // +----------------------------------------------------------------------
 use think\exception\HttpResponseException;
 // 应用公共文件
-function ajax($data = [], $code = 1, $httpCode = 200, $header = [])
+function ajax($data = [], $code = 1, $message = '', $header = [])
 {
     $ret = [
         'message' => config('code.' . $code),
         'code' => $code,
         'data' => $data,
     ];
+    if($message) {
+        $ret['message'] = $message;
+    }
     if (config('app_debug')) {
         $ret['cmd'] = request()->controller() . '/' . request()->action();
     }
 
     $header['X-Powered-By'] = config('app_name');
+    $httpCode = 200;
 //    $header['origin'] = json_encode(request()->subDomain());
     header('Access-Control-Allow-Origin: *');
     return json()->data($ret)->code($httpCode)->header($header);

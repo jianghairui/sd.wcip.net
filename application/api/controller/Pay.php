@@ -123,6 +123,9 @@ class Pay extends Base {
                 return ajax($order_id,4);
             }
             foreach ($order_list as $v) {
+                if(($v['create_time'] + config('order_deadline') - time() - config('order_deadline')/2) <= 0) {
+                    return ajax('订单已失效',63);
+                }
                 $pay_price += $v['pay_price'];
             }
             $pay_order_sn = create_unique_number('');
@@ -192,6 +195,9 @@ class Pay extends Base {
             $order_list = Db::table('mp_order')->where($whereOrder)->column('id');
             if(!$order_list || count($order_list) !== count($order_ids)) {
                 return ajax($order_ids,4);
+            }
+            if(($unite_exist['create_time'] + config('order_deadline') - time() - config('order_deadline')/2) <= 0) {
+                return ajax('订单已失效',63);
             }
             $app = Factory::payment($this->mp_config);
             $result = $app->order->unify([
