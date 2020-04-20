@@ -13,6 +13,7 @@ class Person extends Base {
     public function detail() {
         $param['uid'] = input('post.uid');
         checkPost($param);
+        if(!$this->myinfo['uid']) { $this->myinfo['uid'] = -1; }
         try {
             $whereRole = [
                 ['u.id','=',$param['uid']]

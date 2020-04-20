@@ -36,7 +36,19 @@ class Funding extends Base {
             ['del','=',0]
         ];
         if($param['status'] !== '') {
-            $where[] = ['status','=',$param['status']];
+            switch ($param['status']) {
+                case 0:
+                    $where[] = ['start_time','>',time()];
+                    break;
+                case 1:
+                    $where[] = ['start_time','<=',time()];
+                    $where[] = ['end_time','>=',time()];
+                    break;
+                case 2:
+                    $where[] = ['end_time','<',time()];
+                    break;
+                default:;
+            }
         }
         if($param['search']) {
             $where[] = ['title','like',"%{$param['search']}%"];
@@ -48,6 +60,15 @@ class Funding extends Base {
                 ->order(['id'=>'DESC'])->limit(($curr_page - 1)*$perpage,$perpage)->select();
         }catch (\Exception $e) {
             die($e->getMessage());
+        }
+        foreach ($list as &$v) {
+            $v['status'] = 1;
+            if(time() < $v['start_time']) {
+                $v['status'] = 0;
+            }
+            if(time() > $v['end_time']) {
+                $v['status'] = 2;
+            }
         }
         return ajax($list);
     }
@@ -75,6 +96,13 @@ class Funding extends Base {
             if(!$info) { return ajax('非法参数id',-4);}
         }catch (\Exception $e) {
             die($e->getMessage());
+        }
+        $info['status'] = 1;
+        if(time() < $info['start_time']) {
+            $info['status'] = 0;
+        }
+        if(time() > $info['end_time']) {
+            $info['status'] = 2;
         }
         return ajax($info);
     }

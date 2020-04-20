@@ -44,7 +44,7 @@ class Login extends Base {
                 }
             }else {
                 $insert = [
-                    'nickname' => gen_nickname(),
+                    'nickname' => randomkeys(10),
                     'create_time' => time(),
                     'last_login_time' => time(),
                     'openid' => $ret['openid'],
@@ -212,17 +212,18 @@ class Login extends Base {
             }else {
                 return ajax('验证码无效',33);
             }
+
             $whereUser = [
                 ['tel','=',$val['tel']]
             ];
             $user_exist = Db::table('mp_user')->where($whereUser)->find();
             if($user_exist) {
                 //用户存在,检测手机号是否绑定
-                if($user_exist['mp_openid']) {
+                if($user_exist['mp_openid'] && $user_exist['mp_openid'] !== $this->myinfo['openid']) {
                     return ajax('此手机号已关联其他微信号',31);
                 }else {
                     $update_user_data = [
-                        'mp_openid' => $val['mp_openid'],
+                        'mp_openid' => $this->myinfo['openid'],
                         'last_login_time' => $this->myinfo['last_login_time'],
                         'login_type' => 1
                     ];
@@ -263,6 +264,7 @@ class Login extends Base {
             }
         } catch (\Exception $e) {
             Db::rollback();
+            $this->log($this->cmd,$e->getMessage());
             return ajax($e->getMessage(), -1);
         }
         return ajax();

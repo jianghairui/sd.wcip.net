@@ -34,10 +34,23 @@ class Activity extends Base {
         $perpage = input('post.perpage',10);
 
         $where = [
-            ['del','=',0]
+            ['show','=',1],
+            ['del','=',0],
         ];
         if($param['status'] !== '') {
-            $where[] = ['status','=',$param['status']];
+            switch ($param['status']) {
+                case 0:
+                    $where[] = ['start_time','>',time()];
+                break;
+                case 1:
+                    $where[] = ['start_time','<=',time()];
+                    $where[] = ['end_time','>=',time()];
+                break;
+                case 2:
+                    $where[] = ['end_time','<',time()];
+                break;
+                default:;
+            }
         }
         try {
             $list = Db::table('mp_activity')
@@ -73,6 +86,13 @@ class Activity extends Base {
             }
         } catch (\Exception $e) {
             return ajax($e->getMessage(), -1);
+        }
+        $info['status'] = 1;
+        if(time() < $info['start_time']) {
+            $info['status'] = 0;
+        }
+        if(time() > $info['end_time']) {
+            $info['status'] = 2;
         }
         return ajax($info);
 

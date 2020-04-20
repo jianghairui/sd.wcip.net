@@ -28,16 +28,19 @@ class My extends Base {
                     ['uid','=',$info['uid']],
                     ['status','=',1]
                 ];
+                $score = $info['score'];
                 $note_num = Db::table('mp_note')->where($whereNote)->count();
                 $whereSub = [['uid','=',$info['uid']]];
                 $subscribe = Db::table('mp_user_focus')->where($whereSub)->count();
                 $whereFans = [['to_uid','=',$info['uid']]];
                 $focus = Db::table('mp_user_focus')->where($whereFans)->count();
             }else {
+                $score = 0;
                 $note_num = 0;
                 $subscribe = 0;
                 $focus = 0;
             }
+            $info['score'] = $score;
             $info['note_num'] = $note_num;
             $info['focus'] = $focus;
             $info['subscribe'] = $subscribe;
@@ -465,6 +468,7 @@ class My extends Base {
     /*------ 众筹订单管理 START ------*/
     //众筹订单列表
     public function fundingOrderList() {
+        if(!$this->myinfo['uid']) { $this->myinfo['uid'] = -1; }
         $curr_page = input('post.page',1);
         $perpage = input('post.perpage',10);
         $status = input('post.status','');
@@ -495,6 +499,7 @@ class My extends Base {
     }
     //众筹售后列表
     public function fundingRefundList() {
+        if(!$this->myinfo['uid']) { $this->myinfo['uid'] = -1; }
         $curr_page = input('post.page',1);
         $perpage = input('post.perpage',10);
         $type = input('post.type','');
@@ -630,6 +635,7 @@ class My extends Base {
     /*------ 商品订单管理 START------*/
     //我的订单列表
     public function orderList() {
+        if(!$this->myinfo['uid']) { $this->myinfo['uid'] = -1; }
         $curr_page = input('post.page',1);
         $perpage = input('post.perpage',10);
         $status = input('post.status','');
@@ -692,6 +698,7 @@ LEFT JOIN `mp_goods` `g` ON `d`.`goods_id`=`g`.`id`
     }
     //我的售后列表
     public function refundList() {
+        if(!$this->myinfo['uid']) { $this->myinfo['uid'] = -1; }
         $curr_page = input('post.page',1);
         $perpage = input('post.perpage',10);
         $type = input('post.type',1);
@@ -969,6 +976,7 @@ LEFT JOIN `mp_goods` `g` ON `d`.`goods_id`=`g`.`id`
     /*------收货地址管理 START------*/
     //我的地址列表
     public function addressList() {
+        if(!$this->myinfo['uid']) { $this->myinfo['uid'] = -1; }
         $uid = $this->myinfo['uid'];
         try {
             $where = [

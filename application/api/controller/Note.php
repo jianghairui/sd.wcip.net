@@ -18,8 +18,6 @@ class Note extends Base {
         $perpage = input('perpage',10);
         $curr_page = $curr_page ? $curr_page : 1;
         $perpage = $perpage ? $perpage : 10;
-
-//        return ajax();
         $where = [
             ['n.status','=',1],
             ['n.del','=',0],
@@ -188,18 +186,12 @@ class Note extends Base {
                 $info['ifocus'] = false;
             }
             $whereComment = [
-                ['to_cid','=',0],
-                ['note_id','=',$val['note_id']]
+                ['c.to_cid','=',0],
+                ['c.note_id','=',$val['note_id']]
             ];
-            $info['comment_count'] =
-                Db::table('mp_note_comment')->alias('c')
+            $info['comment_count'] = Db::table('mp_note_comment')->alias('c')
                     ->join('mp_user u','c.uid=u.id','left')
                     ->where($whereComment)->count();
-            $info['comment_list'] = Db::table('mp_note_comment')->alias('c')
-                ->join('mp_user u','c.uid=u.id','left')
-                ->where($whereComment)
-                ->field('c.*,u.nickname,u.avatar')
-                ->limit(0,2)->select();
         }catch (\Exception $e) {
             return ajax($e->getMessage(),-1);
         }

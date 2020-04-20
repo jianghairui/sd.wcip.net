@@ -188,6 +188,7 @@ class Shop extends Base {
     //购物车列表
     public function cartList() {
         $userinfo = $this->getUserInfo();
+        if(!$this->myinfo['uid']) { $this->myinfo['uid'] = -1; }
         try {
             $where = [
                 ['c.uid','=',$this->myinfo['uid']]
