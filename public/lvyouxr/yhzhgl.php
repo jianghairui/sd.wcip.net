@@ -1,9 +1,9 @@
 <?php
 
 session_start();
-if($_SESSION['cx']!="��������Ա")
+if($_SESSION['cx']!="超级管理员")
 {
-	echo "<script>javascript:alert('�Բ�����û�и�Ȩ��');history.back();</script>";
+	echo "<script>javascript:alert('对不起，您没有该权限');history.back();</script>";
 	exit;
 }
 
@@ -21,11 +21,11 @@ include_once 'conn.php';
 	$sql="select * from allusers where username='$username' and pwd='$pwd'";
 		
 		$query=mysqli_query($sql);
-		$rowscount=mysqli_num_rows($query);
+		$rowscount=mysql_num_rows($query);
 		if($rowscount>0)
 			{
 					
-					echo "<script language='javascript'>alert('���û����Ѿ�����,�뻻�����û�����');history.back();</script>";
+					echo "<script language='javascript'>alert('该用户名已经存在,请换其他用户名！');history.back();</script>";
 			}
 			else
 			{
@@ -35,7 +35,7 @@ include_once 'conn.php';
 
 					$sql="insert into allusers(username,pwd,cx) values('$username','$pwd','$cx')";
 					mysqli_query($sql);
-					echo "<script language='javascript'>alert('�����ɹ���');location.href='yhzhgl.php';</script>";
+					echo "<script language='javascript'>alert('操作成功！');location.href='yhzhgl.php';</script>";
 			}
 	 }
 	 
@@ -47,35 +47,35 @@ include_once 'conn.php';
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
-<title>�ޱ����ĵ�</title>
+<title>无标题文档</title>
 </head>
 
 <body>
-<p>����¹���Ա��</p>
+<p>添加新管理员：</p>
 <script language="javascript">
 	function check()
 	{
 		if(document.form1.username.value=="")
 		{
-			alert("�������û���");
+			alert("请输入用户名");
 			document.form1.username.focus();
 			return false;
 		}
 		if(document.form1.pwd1.value=="")
 		{
-			alert("����������");
+			alert("请输入密码");
 			document.form1.pwd1.focus();
 			return false;
 		}
 		if(document.form1.pwd2.value=="")
 		{
-			alert("������ȷ������");
+			alert("请输入确认密码");
 			document.form1.pwd2.focus();
 			return false;
 		}
 		if(document.form1.pwd1.value!=document.form1.pwd2.value)
 		{
-			alert("�������벻һ�£�������");
+			alert("两次密码不一致，请重试");
 			document.form1.pwd1.value="";
 			document.form1.pwd2.value="";
 			document.form1.pwd1.focus();
@@ -85,50 +85,50 @@ include_once 'conn.php';
 </script>
 <form id="form1" name="form1" method="post" action="">
 <table width="100%" border="1" align="center" cellpadding="3" cellspacing="1" bordercolor="#00FFFF" style="border-collapse:collapse">    <tr>
-      <td>�û�����</td>
+      <td>用户名：</td>
       <td><input name="username" type="text" id="username" />
       *
       <input name="addnew" type="hidden" id="addnew" value="1" /></td>
     </tr>
     <tr>
-      <td>���룺</td>
+      <td>密码：</td>
       <td><input name="pwd1" type="password" id="pwd1" />
       *</td>
     </tr>
     <tr>
-      <td>ȷ�����룺</td>
+      <td>确认密码：</td>
       <td><input name="pwd2" type="password" id="pwd2" />
       *</td>
     </tr>
     
     <tr>
-      <td>Ȩ��:</td>
-      <td><input name="cx" type="radio" value="��ͨ����Ա" checked="checked" />
-      ��ͨ����Ա
-        <input type="radio" name="cx" value="��������Ա" />
-      ��������Ա</td>
+      <td>权限:</td>
+      <td><input name="cx" type="radio" value="普通管理员" checked="checked" />
+      普通管理员
+        <input type="radio" name="cx" value="超级管理员" />
+      超级管理员</td>
     </tr>
     <tr>
       <td>&nbsp;</td>
-      <td><input type="submit" name="Submit" value="�ύ" onClick="return check();" />
-      <input type="reset" name="Submit2" value="����" /></td>
+      <td><input type="submit" name="Submit" value="提交" onClick="return check();" />
+      <input type="reset" name="Submit2" value="重置" /></td>
     </tr>
   </table>
 </form>
-<p>���й���Ա�б�</p>
+<p>已有管理员列表：</p>
 <table width="100%" border="1" align="center" cellpadding="3" cellspacing="1" bordercolor="#00FFFF" style="border-collapse:collapse">  
   <tr>
-    <td bgcolor="A4B6D7">���</td>
-    <td bgcolor="A4B6D7">�û���</td>
-    <td bgcolor="A4B6D7">����</td>
-    <td bgcolor="A4B6D7">Ȩ��</td>
-    <td bgcolor="A4B6D7">���ʱ��</td>
-    <td bgcolor="A4B6D7">����</td>
+    <td bgcolor="A4B6D7">序号</td>
+    <td bgcolor="A4B6D7">用户名</td>
+    <td bgcolor="A4B6D7">密码</td>
+    <td bgcolor="A4B6D7">权限</td>
+    <td bgcolor="A4B6D7">添加时间</td>
+    <td bgcolor="A4B6D7">操作</td>
   </tr>
   <?php
 	  $sql="select * from allusers order by id desc";
 	  $query=mysqli_query($sql);
-	  $rowscount=mysqli_num_rows($query);
+	  $rowscount=mysql_num_rows($query);
 	 for($i=0;$i<$rowscount;$i++)
 	 {
   ?>
@@ -137,20 +137,20 @@ include_once 'conn.php';
 		echo $i+1;
 	?></td>
     <td><?php
-		echo mysqli_result($query,$i,"username");
+		echo mysql_result($query,$i,"username");
 	?></td>
     <td><?php
-		echo mysqli_result($query,$i,"pwd");
+		echo mysql_result($query,$i,"pwd");
 	?></td>
     <td><?php
-		echo mysqli_result($query,$i,"cx");
+		echo mysql_result($query,$i,"cx");
 	?></td>
     <td><?php
-		echo mysqli_result($query,$i,"addtime");
+		echo mysql_result($query,$i,"addtime");
 	?></td>
     <td><a href="del.php?id=<?php
-		echo mysqli_result($query,$i,"id");
-	?>&tablename=allusers" onClick="return confirm('���Ҫɾ����')">ɾ��</a> </td>
+		echo mysql_result($query,$i,"id");
+	?>&tablename=allusers" onClick="return confirm('真的要删除？')">删除</a> </td>
   </tr>
   <?php
   	}

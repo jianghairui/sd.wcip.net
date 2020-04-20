@@ -5,7 +5,7 @@ include_once 'checkA.php';
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
-<title>芒果旅游网站</title>
+<title>鑺掓灉鏃呮父缃戠珯</title>
 </head>
 
 <frameset rows="61,*,24" cols="*" framespacing="0" frameborder="no" border="0">

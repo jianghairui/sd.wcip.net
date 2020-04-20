@@ -6,7 +6,7 @@ session_start();
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
-<title>â��������վ</title>
+<title>芒果旅游网站</title>
 <style type="text/css">
 <!--
 body {
@@ -30,15 +30,15 @@ body {
         <td width="29" height="24"><img src="images/main_45.gif" width="29" height="24" /></td>
         <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
           <tr>
-            <td width="369"><span class="STYLE1">�汾 <?php echo date('Y', strtotime(date("Y-m-d")));?>V1.0 </span></td>
-            <td width="814" class="STYLE1">��ǰ�û�:<?php
+            <td width="369"><span class="STYLE1">版本 <?php echo date('Y', strtotime(date("Y-m-d")));?>V1.0 </span></td>
+            <td width="814" class="STYLE1">当前用户:<?php
 			echo $_SESSION['username'];
 			?>
-            Ȩ�ޣ�
+            权限：
               <?php
 			echo $_SESSION['cx'];
 			?></td>
-            <td width="185" nowrap="nowrap" class="STYLE1"><div align="center"><img src="images/main_51.gif" width="12" height="12" /> �����������뼼����Ա��ϵ</div></td>
+            <td width="185" nowrap="nowrap" class="STYLE1"><div align="center"><img src="images/main_51.gif" width="12" height="12" /> 如有疑问请与技术人员联系</div></td>
           </tr>
         </table></td>
         <td width="14"><img src="images/main_49.gif" width="14" height="24" /></td>

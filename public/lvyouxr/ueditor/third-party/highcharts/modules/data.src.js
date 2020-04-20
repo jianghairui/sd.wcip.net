@@ -1,7 +1,7 @@
 /**
  * @license Data plugin for Highcharts
  *
- * (c) 2012-2013 Torstein Hønsi
+ * (c) 2012-2013 Torstein H酶nsi
  * Last revision 2013-06-07
  *
  * License: www.highcharts.com/license

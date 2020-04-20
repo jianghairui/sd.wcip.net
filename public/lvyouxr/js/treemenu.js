@@ -270,7 +270,7 @@ function Item(itemDescription, hreference, itemLink, itemImg) // Constructor
     this.navObj = 0;  //initialized in render()
     this.iconImg = 0; //initialized in render()
 
-    // iconSrc¿¡ ÁöÁ¤µÇ´Â ÀÌ¹ÌÁö ÆÄÀÏÀ» °¢ ¾ÆÀÌÅÛ¿¡ ¸Â°Ô ÁöÁ¤ÇÒ ¼ö ÀÖµµ·Ï ÇÑ´Ù (¸ñÇ¥)
+    // iconSrcä¿Š ç˜¤æ²¥ç™»ç»° æå›ºç˜¤ é¢‡è€é˜‘ é˜¿ é…’æè¢ä¿Š å˜éœ¸ ç˜¤æ²¥ä¸” è ä¹æ¡£åºŸ èŒ„ä¿ƒ (æ ¼é’)
     this.iconSrc = itemImg;
 
     // methods

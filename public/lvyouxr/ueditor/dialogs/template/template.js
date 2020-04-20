@@ -2,7 +2,7 @@
  * Created with JetBrains PhpStorm.
  * User: xuheng
  * Date: 12-8-8
- * Time: 下午2:09
+ * Time: 涓嬪崍2:09
  * To change this template use File | Settings | File Templates.
  */
 (function () {

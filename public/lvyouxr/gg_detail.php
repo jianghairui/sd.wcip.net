@@ -6,7 +6,7 @@ mysqli_query("update xinwentongzhi set dianjilv=dianjilv+1 where id=$id");
 ?>
 <html>
 <head>
-<title>â��������վ</title>
+<title>芒果旅游网站</title>
 <LINK href="qtimages/style.css" type=text/css rel=stylesheet>
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312">
 <style type="text/css">
@@ -36,7 +36,7 @@ mysqli_query("update xinwentongzhi set dianjilv=dianjilv+1 where id=$id");
                   <tr>
                     <td width="785" height="40" background="qtimages/1_02_02_02_01.jpg"><table width="100%" height="19" border="0" cellpadding="0" cellspacing="0">
                       <tr>
-                        <td width="12%" align="center" valign="bottom"><span class="STYLE4">������ϸ</span></td>
+                        <td width="12%" align="center" valign="bottom"><span class="STYLE4">内容详细</span></td>
                         <td width="74%" valign="bottom">&nbsp;</td>
                         <td width="14%" valign="bottom" class="STYLE4"></td>
                       </tr>
@@ -50,7 +50,7 @@ mysqli_query("update xinwentongzhi set dianjilv=dianjilv+1 where id=$id");
                           <?php 
 					$sql="select * from xinwentongzhi where id=".$id;
 					$query=mysqli_query($sql);
-					 $rowscount=mysqli_num_rows($query);
+					 $rowscount=mysql_num_rows($query);
 					  if($rowscount==0)
 					  {}
 					  else
@@ -59,13 +59,13 @@ mysqli_query("update xinwentongzhi set dianjilv=dianjilv+1 where id=$id");
 </p>                          
                         <table width="97%" border="1" align="center" cellpadding="3" cellspacing="1" bordercolor="#67B41A" style="border-collapse:collapse">
                             <tr>
-                              <td height="33" align="center"><span class="STYLE2"><?php echo mysqli_result($query,0,"biaoti"); ?> (�����<?php echo mysqli_result($query,0,"dianjilv"); ?>��)</span></td>
+                              <td height="33" align="center"><span class="STYLE2"><?php echo mysql_result($query,0,"biaoti"); ?> (被点击<?php echo mysql_result($query,0,"dianjilv"); ?>次)</span></td>
                             </tr>
                             <tr>
-                              <td height="104"><?php echo mysqli_result($query,0,"neirong");?></td>
+                              <td height="104"><?php echo mysql_result($query,0,"neirong");?></td>
                             </tr>
                             <tr>
-                              <td align="right"><a href="#" onClick="javascript:history.back();">����</a></td>
+                              <td align="right"><a href="#" onClick="javascript:history.back();">返回</a></td>
                             </tr>
                           </table>
                           <?php

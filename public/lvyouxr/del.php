@@ -1,5 +1,5 @@
 <?php
-//��֤��½��Ϣ
+//验证登陆信息
 
 include_once 'conn.php';
 //if($_POST['submit']){
@@ -11,7 +11,7 @@ include_once 'conn.php';
 	//echo $sql;
 	 	mysqli_query($sql);
 		$comewhere=$_SERVER['HTTP_REFERER'];
-		echo "<script language='javascript'>alert('ɾ���ɹ���');location.href='$comewhere';</script>";
+		echo "<script language='javascript'>alert('删除成功！');location.href='$comewhere';</script>";
 	
 //}
 ?>

@@ -1,6 +1,6 @@
-﻿body {
+锘縝ody {
 	background-color: #FFFFFF;
-	font-family:"宋体";
+	font-family:"瀹嬩綋";
 	font-size: 12px;
 	line-height: 16px;
 }
@@ -17,14 +17,14 @@ A:hover {
 	text-decoration: none;
 }
 td {
-    font-family:"宋体";
+    font-family:"瀹嬩綋";
 	font-size: 12px;
 	color: #2f2f2f;
 	line-height: 16px;
 }
-/* 后台管理导航-------------------------------------- */
+/* 鍚庡彴绠＄悊瀵艰埅-------------------------------------- */
 td.SystemLeft {
-    font-family:"宋体";
+    font-family:"瀹嬩綋";
 	font-size: 12px;
 	color: #ffffff;
 }
@@ -59,7 +59,7 @@ textarea.ConstSet {
 	border-right: #333333 1px ridge; 
 	border-top: #ffffff 1px ridge; 
 	border-bottom: #1c1c1c 1px ridge; 
-    font-family:"宋体";
+    font-family:"瀹嬩綋";
 	font-size: 12px;
     color: #1c1c1c; 
 	background-color: #EBF2F9; 
@@ -74,58 +74,4 @@ textarea.ConstSet {
 	color: #2f2f2f;
 }
 
-/* 后台管理类别树-------------------------------------- */
-.SortFolderOpen {
-	background-image: url(Sort_Folder_Close.gif);
-	background-repeat: no-repeat;
-	height: 16px;
-	left: 16px;
-	padding-left: 16px;
-	cursor: hand;
-}
-.SortFolderClose {
-	background-image: url(Sort_Folder_Open.gif);
-	background-repeat: no-repeat;
-	height: 16px;
-	left: 16px;
-	padding-left: 16px;
-	cursor: hand;
-}
-.SortEndFolderOpen {
-	background-image: url(SortEnd_Folder_Close.gif);
-	background-repeat: no-repeat;
-	height: 16px;
-	left: 16px;
-	padding-left: 16px;
-	cursor: hand;
-}
-.SortEndFolderClose {
-	background-image: url(SortEnd_Folder_Open.gif);
-	background-repeat: no-repeat;
-	height: 16px;
-	left: 16px;
-	padding-left: 16px;
-	cursor: hand;
-}
-.SortListline {
-	padding-left: 16px;
-	background-image: url(Sort_Listline.gif);
-	background-repeat: repeat-y;
-}
-.SortEndListline {
-	padding-left: 16px;
-}
-.SortFile {
-	background-image: url(Sort_File.gif);
-	background-repeat: no-repeat;
-	height: 16px;
-	cursor: hand;
-	padding-left: 16px;
-}
-.SortFileEnd {
-	background-image: url(Sort_File_End.gif);
-	background-repeat: no-repeat;
-	height: 16px;
-	cursor: hand;
-	padding-left: 16px;
-}
+/* 鍚庡彴绠＄悊绫诲埆鏍

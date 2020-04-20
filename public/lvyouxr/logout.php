@@ -1,8 +1,8 @@
 <?php
-//×¢ÏúµÇÂ¼
+//æ³¨é”€ç™»å½•
 session_start();
 $_SESSION['username']="";
 $_SESSION['cx']="";
 
-echo "<script language='javascript'>alert('×¢ÏúµÇÂ¼³É¹¦£¡');location='index.php';</script>";
+echo "<script language='javascript'>alert('æ³¨é”€ç™»å½•æˆåŠŸï¼');location='index.php';</script>";
 ?>

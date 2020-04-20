@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
-<title>ÎŞ±êÌâÎÄµµ</title>
+<title>æ— æ ‡é¢˜æ–‡æ¡£</title>
 <style type="text/css">
 <!--
 body {
@@ -39,17 +39,17 @@ intMinutes = today.getMinutes();
 intSeconds = today.getSeconds();
 if (intHours == 0) {
 hours = "12:";
-xfile = "PM";//ÎçÒ¹
+xfile = "PM";//åˆå¤œ
 } else if (intHours < 12) {
 hours = intHours+":";
-xfile = "AM";//ÉÏÎç
+xfile = "AM";//ä¸Šåˆ
 } else if (intHours == 12) {
 hours = "12:";
-xfile = "PM";//ÕıÎç
+xfile = "PM";//æ­£åˆ
 } else {
 intHours = intHours - 12
 hours = intHours + ":";
-xfile = "PM";//ÏÂÎç
+xfile = "PM";//ä¸‹åˆ
 }
 if (intHours < 10) {
 hours = "0"+intHours+":";
@@ -74,7 +74,7 @@ var color, size, face, out;
 timeString = "<font style='font-size:14px;'>";
 timeString += ye+"-"+mo+"-"+da+"  ";
 timeString += hours+minutes+seconds+" "+xfile+"&nbsp;&nbsp;&nbsp;";
-//timeString +="<BR>ÍøÄÉ¿Æ¼¼ÓĞÏŞ¹«Ë¾&nbsp;&nbsp;"
+//timeString +="<BR>ç½‘çº³ç§‘æŠ€æœ‰é™å…¬å¸&nbsp;&nbsp;"
 Clock.innerHTML = timeString;
 window.setTimeout("tick();", 100);
 }
@@ -104,7 +104,7 @@ window.onload = tick;
         <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
           <tr>
             <td width="92%" height="23" valign="bottom">&nbsp;</td>
-            <td width="8%" valign="bottom"><a href="logout.php" target="_parent">ÍË³ö</a></td>
+            <td width="8%" valign="bottom"><a href="logout.php" target="_parent">é€€å‡º</a></td>
           </tr>
         </table></td>
         <td width="200" background="images/main_11.gif"><table width="100%" border="0" cellspacing="0" cellpadding="0">

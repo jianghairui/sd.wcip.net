@@ -8,7 +8,7 @@
           <tr>
             <td width="993" height="250" background="qtimages/33.jpg"><table width="70%" height="51" border="0" align="center">
               <tr>
-                <td align="left"><div style="font-family:кнлЕ; color:#FFFFFF; filter:Glow(Color=#000000,Strength=2); WIDTH: 100%; FONT-WEIGHT: bold; FONT-SIZE: 19pt; margin-top:5pt">
+                <td align="left"><div style="font-family:Е╝▀Д╫⌠; color:#FFFFFF; filter:Glow(Color=#000000,Strength=2); WIDTH: 100%; FONT-WEIGHT: bold; FONT-SIZE: 19pt; margin-top:5pt">
                     <div align="left" class="STYLE5 STYLE1"> </div>
                 </div></td>
               </tr>
@@ -17,15 +17,15 @@
           <tr>
             <td width="993" height="28" background="qtimages/1_01_03.jpg"><table width="98%" border="0" align="center" cellpadding="0" cellspacing="0">
               <tr>
-                <td align="center"><a href="index.php"><span class="STYLE4">йврЁ</span></a></td>
-                <td align="center"><a href="news.php?lb=у╬дзпбне"><span class="STYLE4">у╬дзпбне</span></a></td>
-                <td align="center"><a href="userreg.php"><span class="STYLE4">сц╩╖в╒╡А</span></a></td>
-                <td align="center"><a href="dx_detail.php?lb=о╣мЁ╪Р╫И"><span class="STYLE4">о╣мЁ╪Р╫И</span></a></td>
-                <td align="center"><a href="lyblist.php"><span class="STYLE4">бцснбшлЁ</span></a></td>
-                <td align="center"><a href="lvyouxianlulist.php"><span class="STYLE4">бцсноъб╥</span></a></td>
-                <td align="center"><a href="hangbanxinxilist.php"><span class="STYLE4">╨╫╟Юпео╒</span></a></td>
-                <td align="center"><a href="jiudianxinxilist.php"><span class="STYLE4">╬ф╣Йпео╒</span></a></td>
-                <td align="center"><a href="toupiao.php"><span class="STYLE4">тзоъм╤ф╠</span></a></td>
+                <td align="center"><a href="index.php"><span class="STYLE4">И╕√И║╣</span></a></td>
+                <td align="center"><a href="news.php?lb=Г╚≥Е├┘Ф√╟И≈╩"><span class="STYLE4">Г╚≥Е├┘Ф√╟И≈╩</span></a></td>
+                <td align="center"><a href="userreg.php"><span class="STYLE4">Г■╗Ф┬╥ФЁ╗Е├▄</span></a></td>
+                <td align="center"><a href="dx_detail.php?lb=ГЁ╩Г╩÷Г╝─Д╩▀"><span class="STYLE4">ГЁ╩Г╩÷Г╝─Д╩▀</span></a></td>
+                <td align="center"><a href="lyblist.php"><span class="STYLE4">Ф≈┘Ф╦╦Х╝╨Е²⌡</span></a></td>
+                <td align="center"><a href="lvyouxianlulist.php"><span class="STYLE4">Ф≈┘Ф╦╦Г╨©Х╥╞</span></a></td>
+                <td align="center"><a href="hangbanxinxilist.php"><span class="STYLE4">Х┬╙Г▐╜Д©║Ф│╞</span></a></td>
+                <td align="center"><a href="jiudianxinxilist.php"><span class="STYLE4">И┘▓Е╨≈Д©║Ф│╞</span></a></td>
+                <td align="center"><a href="toupiao.php"><span class="STYLE4">Е°╗Г╨©Ф┼∙Г╔╗</span></a></td>
               </tr>
             </table></td>
           </tr>

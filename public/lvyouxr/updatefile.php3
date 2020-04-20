@@ -2,16 +2,16 @@
 <head> 
 <meta http-equiv="Content-Type" content="text/html; 
 charset=gb2312"> 
-<title>´¦ÀíÉÏÔØÎÄ¼þ</title> 
+<title>å¤„ç†ä¸Šè½½æ–‡ä»¶</title> 
 </head> 
 <body> 
 <? 
 copy($userfile, "newfilename"); 
-echo $userfile." - ÓÃ»§ÉÏ´«µ½·þÎñÆ÷ÉÏµÄÎÄ¼þÁÙÊ±´æ·ÅµÄÃû³Æ<br>"; 
-echo $userfile_name." - ÔÚÓÃ»§»úÆ÷ÉÏ¸ÃÎÄ¼þµÄÔ­Ê¼Ãû³Æ<br>"; 
-echo $userfile_size." - ÉÏ´«ÎÄ¼þµÄÊµ¼Ê×Ö½ÚÊý<br>"; 
-echo $userfile_type." - Èç¹ûÓÃ»§µÄä¯ÀÀÆ÷Ìá¹©ÁËÕâ¸öÐÅÏ¢µÄ»°£¬ 
-Ëü±íÊ¾mimeµÄÀàÐÍ¡£ÀýÈç 
+echo $userfile." - ç”¨æˆ·ä¸Šä¼ åˆ°æœåŠ¡å™¨ä¸Šçš„æ–‡ä»¶ä¸´æ—¶å­˜æ”¾çš„åç§°<br>"; 
+echo $userfile_name." - åœ¨ç”¨æˆ·æœºå™¨ä¸Šè¯¥æ–‡ä»¶çš„åŽŸå§‹åç§°<br>"; 
+echo $userfile_size." - ä¸Šä¼ æ–‡ä»¶çš„å®žé™…å­—èŠ‚æ•°<br>"; 
+echo $userfile_type." - å¦‚æžœç”¨æˆ·çš„æµè§ˆå™¨æä¾›äº†è¿™ä¸ªä¿¡æ¯çš„è¯ï¼Œ 
+å®ƒè¡¨ç¤ºmimeçš„ç±»åž‹ã€‚ä¾‹å¦‚ 
 image/gif<br>"; 
 ?> 
 </body> 

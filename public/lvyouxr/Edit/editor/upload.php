@@ -1,24 +1,24 @@
 <?php
 /**
-*ĞÂÀËÔÚÏß±à¼­Æ÷PHP°æ
+*æ–°æµªåœ¨çº¿ç¼–è¾‘å™¨PHPç‰ˆ
 *
 *gently
-*2007Äê11ÔÂ2ÈÕ
-*²©¿Í£ºhttp://www.zendstudio.net/
+*2007å¹´11æœˆ2æ—¥
+*åšå®¢ï¼šhttp://www.zendstudio.net/
 *
 **/
 if($_GET['action']=='upload'){
-	$fileType=array('jpg','gif','bmp','png');//ÔÊĞíÉÏ´«µÄÎÄ¼şÀàĞÍ
+	$fileType=array('jpg','gif','bmp','png');//å…è®¸ä¸Šä¼ çš„æ–‡ä»¶ç±»å‹
 	$upfileDir='uploadfile/';
-	$maxSize=800; //µ¥Î»£ºKB
+	$maxSize=800; //å•ä½ï¼šKB
 	if(!in_array(substr($_FILES['file1']['name'],-3,3),$fileType))
-		die("<script>alert('²»ÔÊĞíÉÏ´«¸ÃÀàĞÍµÄÎÄ¼ş£¡-808');window.parent.\$('divProcessing').style.display='none';history.back();</script>");
+		die("<script>alert('ä¸å…è®¸ä¸Šä¼ è¯¥ç±»å‹çš„æ–‡ä»¶ï¼-808');window.parent.\$('divProcessing').style.display='none';history.back();</script>");
 	if(strpos($_FILES['file1']['type'],'image')===false)
-		die("<script>alert('²»ÔÊĞíÉÏ´«¸ÃÀàĞÍµÄÎÄ¼ş£¡');window.parent.\$('divProcessing').style.display='none';history.back();</script>");
+		die("<script>alert('ä¸å…è®¸ä¸Šä¼ è¯¥ç±»å‹çš„æ–‡ä»¶ï¼');window.parent.\$('divProcessing').style.display='none';history.back();</script>");
 	if($_FILES['file1']['size']> $maxSize*1024)
-		die( "<script>alert('ÎÄ¼ş¹ı´ó£¡');window.parent.\$('divProcessing').style.display='none';history.back();</script>");
+		die( "<script>alert('æ–‡ä»¶è¿‡å¤§ï¼');window.parent.\$('divProcessing').style.display='none';history.back();</script>");
 	if($_FILES['file1']['error'] !=0)
-		die("<script>alert('Î´Öª´íÎó£¬ÎÄ¼şÉÏ´«Ê§°Ü£¡');window.parent.$('divProcessing').style.display='none';history.back();</script>");
+		die("<script>alert('æœªçŸ¥é”™è¯¯ï¼Œæ–‡ä»¶ä¸Šä¼ å¤±è´¥ï¼');window.parent.$('divProcessing').style.display='none';history.back();</script>");
 	$targetDir=dirname(__FILE__).'/../../'.$upfileDir;
 	$targetFile=date('Ymd').time().substr($_FILES['file1']['name'],-4,4);
 	$realFile=$targetDir.$targetFile;

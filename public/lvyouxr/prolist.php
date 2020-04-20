@@ -5,7 +5,7 @@ $lb=$_GET["lb"];
 ?>
 <html>
 <head>
-<title>â��������վ</title>
+<title>芒果旅游网站</title>
 <link href="qtimages/StyleSheet.css" rel="stylesheet" type="text/css">
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312">
 <style type="text/css">
@@ -74,7 +74,7 @@ $lb=$_GET["lb"];
                   <tr>
                     <td width="676" height="34" background="qtimages/img_02_03_02_01.gif"><table width="100%" border="0" cellpadding="0" cellspacing="0">
                       <tr>
-                        <td width="28%" align="center"><strong><font color="#198A95">��ǰλ�ã�</font><a href="index.php"><font color="#198A95">��ҳ</font></a> <font color="#198A95">&gt;&gt; ��Ʒչʾ </font></strong></td>
+                        <td width="28%" align="center"><strong><font color="#198A95">当前位置：</font><a href="index.php"><font color="#198A95">首页</font></a> <font color="#198A95">&gt;&gt; 菜品展示 </font></strong></td>
                         <td width="72%">&nbsp;</td>
                       </tr>
                     </table></td>
@@ -86,20 +86,20 @@ $lb=$_GET["lb"];
 
                       <tr>
                         <td height="104"><form id="form1" name="form1" method="post" action="">
-                          ����:���:
+                          搜索:编号:
                           <input name="bh" type="text" id="bh" />
-                          ����:
+                          名称:
   <input name="mc" type="text" id="mc" />
-  <input type="submit" name="Submit" value="����" />
+  <input type="submit" name="Submit" value="查找" />
                         </form>
                           <table width="100%" border="1" align="center" cellpadding="3" cellspacing="1" bordercolor="#00FFFF" style="border-collapse:collapse">
                             <tr>
-                              <td bgcolor='#EBE2FE'>���</td>
-                              <td bgcolor='#EBE2FE'>����</td>
-                              <td bgcolor='#EBE2FE'>���</td>
-                              <td bgcolor='#EBE2FE'>ͼƬ</td>
-                              <td bgcolor='#EBE2FE'>�۸�</td>
-                              <td width="70" align="center" bgcolor="#EBE2FE">����</td>
+                              <td bgcolor='#EBE2FE'>编号</td>
+                              <td bgcolor='#EBE2FE'>名称</td>
+                              <td bgcolor='#EBE2FE'>类别</td>
+                              <td bgcolor='#EBE2FE'>图片</td>
+                              <td bgcolor='#EBE2FE'>价格</td>
+                              <td width="70" align="center" bgcolor="#EBE2FE">操作</td>
                             </tr>
                             <?php 
     $sql="select * from shangpinxinxi where 1=1";
@@ -116,12 +116,12 @@ $lb=$_GET["lb"];
   $sql=$sql." order by id desc";
   
 $query=mysqli_query($sql);
-  $rowscount=mysqli_num_rows($query);
+  $rowscount=mysql_num_rows($query);
   if($rowscount==0)
   {}
   else
   {
-  $pagelarge=4;//ÿҳ������
+  $pagelarge=4;//每页行数；
   $pagecurrent=$_GET["pagecurrent"];
   if($rowscount%$pagelarge==0)
   {
@@ -157,31 +157,31 @@ if($pagecurrent>$pagecount)
 {
   ?>
                             <tr>
-                              <td><?php echo mysqli_result($query,$i,bianhao);?></td>
-                              <td><?php echo mysqli_result($query,$i,mingcheng);?></td>
-                              <td><?php echo mysqli_result($query,$i,leibie);?></td>
-                              <td width='80'><a href="<?php echo mysqli_result($query,$i,tupian) ?>" target='_blank'><img src='<?php echo mysqli_result($query,$i,tupian) ?>' width='80' height='88' border='0'></a></td>
-                              <td><?php echo mysqli_result($query,$i,jiage);?></td>
+                              <td><?php echo mysql_result($query,$i,bianhao);?></td>
+                              <td><?php echo mysql_result($query,$i,mingcheng);?></td>
+                              <td><?php echo mysql_result($query,$i,leibie);?></td>
+                              <td width='80'><a href="<?php echo mysql_result($query,$i,tupian) ?>" target='_blank'><img src='<?php echo mysql_result($query,$i,tupian) ?>' width='80' height='88' border='0'></a></td>
+                              <td><?php echo mysql_result($query,$i,jiage);?></td>
                               <td width="70" align="center"><a href="pro_detail.php?id=<?php
-		echo mysqli_result($query,$i,"id");
-	?>">��ϸ</a></td>
+		echo mysql_result($query,$i,"id");
+	?>">详细</a></td>
                             </tr>
                             <?php
 	}
 }
 ?>
                           </table>
-                          <p>�������ݹ�
+                          <p>以上数据共
                               <?php
 		echo $rowscount;
 	?>
-                            ��,
-                            <input type="button" name="Submit2" onclick="javascript:window.print();" value="��ӡ��ҳ" />
+                            条,
+                            <input type="button" name="Submit2" onclick="javascript:window.print();" value="打印本页" />
                           </p>
-                          <p align="center"><a href="prolist.php?pagecurrent=1">��ҳ</a>, <a href="prolist.php?pagecurrent=<?php echo $pagecurrent-1;?>">ǰһҳ</a> ,<a href="prolist.php?pagecurrent=<?php echo $pagecurrent+1;?>">��һҳ</a>, <a href="prolist.php?pagecurrent=<?php echo $pagecount;?>">ĩҳ</a>, ��ǰ��<?php echo $pagecurrent;?>ҳ,��<?php echo $pagecount;?>ҳ </p></td>
+                          <p align="center"><a href="prolist.php?pagecurrent=1">首页</a>, <a href="prolist.php?pagecurrent=<?php echo $pagecurrent-1;?>">前一页</a> ,<a href="prolist.php?pagecurrent=<?php echo $pagecurrent+1;?>">后一页</a>, <a href="prolist.php?pagecurrent=<?php echo $pagecount;?>">末页</a>, 当前第<?php echo $pagecurrent;?>页,共<?php echo $pagecount;?>页 </p></td>
                       </tr>
                       <tr>
-                        <td align="right"><a href="#" onClick="javascript:history.back();">����</a></td>
+                        <td align="right"><a href="#" onClick="javascript:history.back();">返回</a></td>
                       </tr>
                     </table>
 					

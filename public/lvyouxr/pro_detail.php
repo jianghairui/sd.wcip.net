@@ -5,7 +5,7 @@ $id=$_GET["id"];
 ?>
 <html>
 <head>
-<title>â��������վ</title>
+<title>芒果旅游网站</title>
 <link href="qtimages/StyleSheet.css" rel="stylesheet" type="text/css">
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312">
 <style type="text/css">
@@ -74,7 +74,7 @@ $id=$_GET["id"];
                   <tr>
                     <td width="676" height="34" background="qtimages/img_02_03_02_01.gif"><table width="100%" border="0" cellpadding="0" cellspacing="0">
                       <tr>
-                        <td width="28%" align="center"><strong><font color="#198A95">��ǰλ�ã�</font><a href="index.php"><font color="#198A95">��ҳ</font></a> <font color="#198A95">&gt;&gt; ��Ʒչʾ </font></strong></td>
+                        <td width="28%" align="center"><strong><font color="#198A95">当前位置：</font><a href="index.php"><font color="#198A95">首页</font></a> <font color="#198A95">&gt;&gt; 菜品展示 </font></strong></td>
                         <td width="72%">&nbsp;</td>
                       </tr>
                     </table></td>
@@ -88,49 +88,49 @@ $id=$_GET["id"];
                         <td height="104"><?php
 $sql="select * from shangpinxinxi where id=".$id;
 $query=mysqli_query($sql);
-$rowscount=mysqli_num_rows($query);
+$rowscount=mysql_num_rows($query);
 if($rowscount>0)
 {
 ?>
                           <form id="form1" name="form1" method="post" action="">
                             <table width="100%" border="1" align="center" cellpadding="3" cellspacing="1" bordercolor="#00FFFF" style="border-collapse:collapse">
                               <tr>
-                                <td width="13%" height="37">��ţ�</td>
-                                <td width="40%"><?php echo mysqli_result($query,0,bianhao);?></td>
-                                <td width="47%" rowspan="5" align="center"><a href="<?php echo mysqli_result($query,0,tupian);?>" target="_blank"><img src="<?php echo mysqli_result($query,0,tupian);?>" width="223" height="197" border="0"></a></td>
+                                <td width="13%" height="37">编号：</td>
+                                <td width="40%"><?php echo mysql_result($query,0,bianhao);?></td>
+                                <td width="47%" rowspan="5" align="center"><a href="<?php echo mysql_result($query,0,tupian);?>" target="_blank"><img src="<?php echo mysql_result($query,0,tupian);?>" width="223" height="197" border="0"></a></td>
                               </tr>
                               <tr>
-                                <td height="41">���ƣ�</td>
-                                <td><?php echo mysqli_result($query,0,mingcheng);?></td>
+                                <td height="41">名称：</td>
+                                <td><?php echo mysql_result($query,0,mingcheng);?></td>
                                 </tr>
                               <tr>
-                                <td height="42">���</td>
-                                <td><?php echo mysqli_result($query,0,leibie);?></td>
+                                <td height="42">类别：</td>
+                                <td><?php echo mysql_result($query,0,leibie);?></td>
                                 </tr>
                               
                               <tr>
-                                <td height="43">�����ˣ�</td>
-                                <td><?php echo mysqli_result($query,0,faburen);?></td>
+                                <td height="43">发布人：</td>
+                                <td><?php echo mysql_result($query,0,faburen);?></td>
                                 </tr>
                               <tr>
-                                <td height="36">�۸�</td>
-                                <td><?php echo mysqli_result($query,0,jiage);?></td>
+                                <td height="36">价格：</td>
+                                <td><?php echo mysql_result($query,0,jiage);?></td>
                                 </tr>
                               <tr>
-                                <td height="154">��飺</td>
-                                <td colspan="2"><?php echo mysqli_result($query,0,jianjie);?></td>
+                                <td height="154">简介：</td>
+                                <td colspan="2"><?php echo mysql_result($query,0,jianjie);?></td>
                                 </tr>
                             </table>
                           </form>
 </td>
                       </tr>
                       <tr>
-                        <td height="34" align="center"><form name="form3" method="post" action="gwc.php?bh=<?php echo mysqli_result($query,0,bianhao);?>&mc=<?php echo mysqli_result($query,0,mingcheng);?>&jg=<?php echo mysqli_result($query,0,jiage);?>">
-                          ��Ҫ����                          
- ����
+                        <td height="34" align="center"><form name="form3" method="post" action="gwc.php?bh=<?php echo mysql_result($query,0,bianhao);?>&mc=<?php echo mysql_result($query,0,mingcheng);?>&jg=<?php echo mysql_result($query,0,jiage);?>">
+                          我要订餐                          
+ 数量
                           <input name="shuliang" type="text" id="shuliang" value="1" size="5">
-                          <input type="submit" name="Submit" value="ȷ�϶���">
-                          <a href="#" onClick="javascript:history.back();">����</a>
+                          <input type="submit" name="Submit" value="确认订餐">
+                          <a href="#" onClick="javascript:history.back();">返回</a>
                                                 </form>
                         </td>
                         <form name="form2" method="post" action="">

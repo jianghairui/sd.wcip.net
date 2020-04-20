@@ -3,57 +3,57 @@ var city=new Array();
 var county=new Array();
 var bj=new Array();
 
-city[0]= new Array("10","Ò¶");
-city[1]= new Array("20","¹ûÊµ");
-city[2]= new Array("30","¸ù¾¥");
-city[3]= new Array("40","Ê÷Æ¤");
+city[0]= new Array("10","å¶");
+city[1]= new Array("20","æœå®");
+city[2]= new Array("30","æ ¹èŒ");
+city[3]= new Array("40","æ ‘çš®");
 
 
 
-county[0]= new Array("1001","Ğ¡Ò¶");
-county[1]= new Array("1002","Ò¶°ßÉúĞ¡Á£");
+county[0]= new Array("1001","å°å¶");
+county[1]= new Array("1002","å¶æ–‘ç”Ÿå°ç²’");
 
-county[2]= new Array("2001","¸ÉËõV¸¯ÀÃ");
+county[2]= new Array("2001","å¹²ç¼©Vè…çƒ‚");
 
-county[3]= new Array("2002","ÍÑÂäVÔçÂä");
+county[3]= new Array("2002","è„±è½Væ—©è½");
 
-county[4]= new Array("3001","¸ù¾¥");
+county[4]= new Array("3001","æ ¹èŒ");
 
-county[5]= new Array("4001","´ÖÔïV¿ªÁÑ");
+county[5]= new Array("4001","ç²—ç‡¥Vå¼€è£‚");
 
 
-bj[0]= new Array("100101","Ò¶Æ¬±ä»Æ»ò»Æ°ÙÉ«");
-bj[1]= new Array("100102","¶¥¶ËÒ¶Æ¬½¹»Æ");
-bj[2]= new Array("100201","»ÆÉ«Ğ¡æß");
-bj[3]= new Array("100202","»ÆºÖÉ«½Ç°ß");
-bj[4]= new Array("200101","Ğâ°ß");
-bj[5]= new Array("200102","µ­»ÆÉ«Ë®×Õ×´°ß¿é");
-bj[6]= new Array("200103","Ç³ºÖÉ«ÌõÎÆ");
-bj[7]= new Array("200104","ÊªÈó×´Ğ¡°ßµã");
-bj[8]= new Array("200105","¡°T¡±×ÖĞÎ¿ªÁÑ");
+bj[0]= new Array("100101","å¶ç‰‡å˜é»„æˆ–é»„ç™¾è‰²");
+bj[1]= new Array("100102","é¡¶ç«¯å¶ç‰‡ç„¦é»„");
+bj[2]= new Array("100201","é»„è‰²å°å­¢");
+bj[3]= new Array("100202","é»„è¤è‰²è§’æ–‘");
+bj[4]= new Array("200101","é”ˆæ–‘");
+bj[5]= new Array("200102","æ·¡é»„è‰²æ°´æ¸çŠ¶æ–‘å—");
+bj[6]= new Array("200103","æµ…è¤è‰²æ¡çº¹");
+bj[7]= new Array("200104","æ¹¿æ¶¦çŠ¶å°æ–‘ç‚¹");
+bj[8]= new Array("200105","â€œTâ€å­—å½¢å¼€è£‚");
 
-bj[9]= new Array("200201","»ÆºÖÉ«°ß¿é");
-bj[10]= new Array("200202","Ô²ĞÎ°¼Ïİ²¡°ß");
-bj[11]= new Array("200203","µ­»ÆÉ«Ë®×Õ×´°ßµã");
+bj[9]= new Array("200201","é»„è¤è‰²æ–‘å—");
+bj[10]= new Array("200202","åœ†å½¢å‡¹é™·ç—…æ–‘");
+bj[11]= new Array("200203","æ·¡é»„è‰²æ°´æ¸çŠ¶æ–‘ç‚¹");
 
-bj[12]= new Array("300101","Ë®×Õ×´ºÖÉ«²¡°ß");
-bj[13]= new Array("300102","°©Áö£¨ÇòĞÎ»ò±âÇòĞÎ£©");
-bj[14]= new Array("300103","²¡ÁöÇà»ÒÉ«»òÈâºìÉ«");
-bj[15]= new Array("300104","Æ¤É«·¢°µ£¬ÎŞ¹âÔó£¬Æ¤²ã·¢ºÖÉ«»òºÚºÖÉ«");
+bj[12]= new Array("300101","æ°´æ¸çŠ¶è¤è‰²ç—…æ–‘");
+bj[13]= new Array("300102","ç™Œç˜¤ï¼ˆçƒå½¢æˆ–æ‰çƒå½¢ï¼‰");
+bj[14]= new Array("300103","ç—…ç˜¤é’ç°è‰²æˆ–è‚‰çº¢è‰²");
+bj[15]= new Array("300104","çš®è‰²å‘æš—ï¼Œæ— å…‰æ³½ï¼Œçš®å±‚å‘è¤è‰²æˆ–é»‘è¤è‰²");
 
-bj[16]= new Array("400101","Ê÷Æ¤Ò×ÍÑÂä");
+bj[16]= new Array("400101","æ ‘çš®æ˜“è„±è½");
 function innit_area(f_obj){
-	//Éú³ÉÒ»¼¶Ä¿Â¼
+	//ç”Ÿæˆä¸€çº§ç›®å½•
 	f_obj.length=0;
-	f_obj.options[f_obj.length]=new Option("ÇëÑ¡Ôñ...","0");
+	f_obj.options[f_obj.length]=new Option("è¯·é€‰æ‹©...","0");
 	for(i=0;i<city.length;i++){
 		f_obj.options[f_obj.length]=new Option(city[i][1],city[i][0]);
 	}
 }
 function change_area(f_obj,s_obj){
-	//Éú³É¶ş¼¶Ä¿Â¼
+	//ç”ŸæˆäºŒçº§ç›®å½•
 	s_obj.length=0;
-	s_obj.options[s_obj.length]=new Option("ÇëÑ¡Ôñ...","0");
+	s_obj.options[s_obj.length]=new Option("è¯·é€‰æ‹©...","0");
 	if (f_obj.value!=0  ){
 		for(i=0;i<county.length;i++){
 			if (county[i][0].substring(0,2)==f_obj.value){
@@ -64,9 +64,9 @@ function change_area(f_obj,s_obj){
 }
 
 function change_area3(f_obj,s_obj){
-	//Éú³É¶ş¼¶Ä¿Â¼
+	//ç”ŸæˆäºŒçº§ç›®å½•
 	s_obj.length=0;
-	s_obj.options[s_obj.length]=new Option("ÇëÑ¡Ôñ...","0");
+	s_obj.options[s_obj.length]=new Option("è¯·é€‰æ‹©...","0");
 	if (f_obj.value!=0  ){
 		for(i=0;i<bj.length;i++){
 			if (bj[i][0].substring(0,4)==f_obj.value){

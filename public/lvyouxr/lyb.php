@@ -2,7 +2,7 @@
 session_start();
 if($_SESSION["username"]=="")
 {
-	echo "<script>javascript:alert('�Բ��������ȵ�½��');location.href='index.php';</script>";
+	echo "<script>javascript:alert('对不起，请您先登陆！');location.href='index.php';</script>";
 	exit;
 }
 include_once 'conn.php';
@@ -14,12 +14,12 @@ if ($addnew=="1" )
 	$zhanghao=$_POST["zhanghao"];$zhaopian=$_POST["zhaopian"];$xingming=$_POST["xingming"];$liuyan=$_POST["liuyan"];
 	$sql="insert into liuyanban(zhanghao,zhaopian,xingming,liuyan) values('$zhanghao','$zhaopian','$xingming','$liuyan') ";
 	mysqli_query($sql);
-	echo "<script>javascript:alert('���Գɹ�!');location.href='lyblist.php';</script>";
+	echo "<script>javascript:alert('留言成功!');location.href='lyblist.php';</script>";
 }
 ?>
 <html>
 <head>
-<title>â��������վ</title>
+<title>芒果旅游网站</title>
 <LINK href="qtimages/style.css" type=text/css rel=stylesheet>
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312">
 <style type="text/css">
@@ -36,7 +36,7 @@ if ($addnew=="1" )
 <script language="javascript">
 	function check()
 {
-	if(document.form1.zhanghao.value==""){alert("�������˺�");document.form1.zhanghao.focus();return false;}if(document.form1.xingming.value==""){alert("����������");document.form1.xingming.focus();return false;}if(document.form1.liuyan.value==""){alert("����������");document.form1.liuyan.focus();return false;}
+	if(document.form1.zhanghao.value==""){alert("请输入账号");document.form1.zhanghao.focus();return false;}if(document.form1.xingming.value==""){alert("请输入姓名");document.form1.xingming.focus();return false;}if(document.form1.liuyan.value==""){alert("请输入留言");document.form1.liuyan.focus();return false;}
 }
 	function gow()
 	{
@@ -59,9 +59,9 @@ if ($addnew=="1" )
                   <tr>
                     <td width="785" height="40" background="qtimages/1_02_02_02_01.jpg"><table width="100%" height="19" border="0" cellpadding="0" cellspacing="0">
                       <tr>
-                        <td width="12%" align="center" valign="bottom"><span class="STYLE4">���԰�</span></td>
+                        <td width="12%" align="center" valign="bottom"><span class="STYLE4">留言板</span></td>
                         <td width="74%" valign="bottom">&nbsp;</td>
-                        <td width="14%" valign="bottom" ><a href="lyblist.php"><font class="STYLE4">�鿴��������</a></a></td>
+                        <td width="14%" valign="bottom" ><a href="lyblist.php"><font class="STYLE4">查看已有留言</a></a></td>
                       </tr>
                     </table></td>
                   </tr>
@@ -72,30 +72,30 @@ if ($addnew=="1" )
                         <td width="737" height="176" valign="top"><form name="form1" method="post" action="">
                           <table width="96%" border="1" align="left" cellpadding="3" cellspacing="1" bordercolor="#67B41A" style="border-collapse:collapse">
                             <tr>
-                              <td>�˺ţ�</td>
+                              <td>账号：</td>
                               <td><input name='zhanghao' type='text' id='zhanghao' value='<?php echo $_SESSION["username"];?>' />
                                 &nbsp;*</td>
                             </tr>
                             <tr>
-                              <td>��Ƭ��</td>
+                              <td>照片：</td>
                               <td><input name='zhaopian' type='hidden' id='zhaopian' value='<?php echo $_SESSION["zp"];?>' />
                                   <img src="<?php echo $_SESSION["zp"];?>" width="131" height="102"></td>
                             </tr>
                             <tr>
-                              <td>������</td>
+                              <td>姓名：</td>
                               <td><input name='xingming' type='text' id='xingming' value='<?php echo $_SESSION["xm"];?>' />
                                 &nbsp;*</td>
                             </tr>
                             <tr>
-                              <td>���ԣ�</td>
+                              <td>留言：</td>
                               <td><textarea name='liuyan' cols='50' rows='8' id='liuyan'></textarea>
                                 &nbsp;*</td>
                             </tr>
                             <tr>
                               <td>&nbsp;</td>
                               <td><input type="hidden" name="addnew" value="1" />
-                                  <input type="submit" name="Submit" value="���" onClick="return check();" style=" height:19px; border:solid 1px #000000; color:#666666"/>
-                                  <input type="reset" name="Submit2" value="����" style=" height:19px; border:solid 1px #000000; color:#666666"/></td>
+                                  <input type="submit" name="Submit" value="添加" onClick="return check();" style=" height:19px; border:solid 1px #000000; color:#666666"/>
+                                  <input type="reset" name="Submit2" value="重置" style=" height:19px; border:solid 1px #000000; color:#666666"/></td>
                             </tr>
                           </table>
                                                 </form>

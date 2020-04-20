@@ -1,8 +1,8 @@
 (function () {
     var parent = window.parent;
-    //dialog对象
+    //dialog瀵硅薄
     dialog = parent.$EDITORUI[window.frameElement.id.replace( /_iframe$/, '' )];
-    //当前打开dialog的编辑器实例
+    //褰撳墠鎵撳紑dialog鐨勭紪杈戝櫒瀹炰緥
     editor = dialog.editor;
 
     UE = parent.UE;
@@ -18,7 +18,7 @@
     $G = function ( id ) {
         return document.getElementById( id )
     };
-    //focus元素
+    //focus鍏冪礌
     $focus = function ( node ) {
         setTimeout( function () {
             if ( browser.ie ) {
@@ -41,41 +41,4 @@
         domUtils.on(window,'load',function () {
 
             var langImgPath = editor.options.langPath + editor.options.lang + "/images/";
-            //针对静态资源
-            for ( var i in lang["static"] ) {
-                var dom = $G( i );
-                if(!dom) continue;
-                var tagName = dom.tagName,
-                    content = lang["static"][i];
-                if(content.src){
-                    //clone
-                    content = utils.extend({},content,false);
-                    content.src = langImgPath + content.src;
-                }
-                if(content.style){
-                    content = utils.extend({},content,false);
-                    content.style = content.style.replace(/url\s*\(/g,"url(" + langImgPath)
-                }
-                switch ( tagName.toLowerCase() ) {
-                    case "var":
-                        dom.parentNode.replaceChild( document.createTextNode( content ), dom );
-                        break;
-                    case "select":
-                        var ops = dom.options;
-                        for ( var j = 0, oj; oj = ops[j]; ) {
-                            oj.innerHTML = content.options[j++];
-                        }
-                        for ( var p in content ) {
-                            p != "options" && dom.setAttribute( p, content[p] );
-                        }
-                        break;
-                    default :
-                        domUtils.setAttributes( dom, content);
-                }
-            }
-        } );
-    }
-
-
-})();
-
+            //閽堝

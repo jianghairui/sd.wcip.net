@@ -3,7 +3,7 @@ error_reporting(E_ALL &~ E_NOTICE);
 session_start();
 if($_SESSION["username"]=="")
 {
-	echo "<script>javascript:alert('�Բ��������ȵ�½��');location.href='index.php';</script>";
+	echo "<script>javascript:alert('对不起，请您先登陆！');location.href='index.php';</script>";
 	exit;
 }
 include_once 'conn.php';
@@ -11,7 +11,7 @@ include_once 'conn.php';
 ?>
 <html>
 <head>
-<title>â��������վ</title>
+<title>芒果旅游网站</title>
 <LINK href="qtimages/style.css" type=text/css rel=stylesheet>
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312">
 <style type="text/css">
@@ -41,9 +41,9 @@ include_once 'conn.php';
                   <tr>
                     <td width="785" height="40" background="qtimages/1_02_02_02_01.jpg"><table width="100%" height="19" border="0" cellpadding="0" cellspacing="0">
                       <tr>
-                        <td width="12%" align="center" valign="bottom"><span class="STYLE4">���԰�</span></td>
+                        <td width="12%" align="center" valign="bottom"><span class="STYLE4">留言板</span></td>
                         <td width="74%" valign="bottom">&nbsp;</td>
-                        <td width="14%" valign="bottom" ><a href="lyb.php"><font class="STYLE4">��ҲҪ����</a></a></td>
+                        <td width="14%" valign="bottom" ><a href="lyb.php"><font class="STYLE4">我也要留言</a></a></td>
                       </tr>
                     </table></td>
                   </tr>
@@ -56,12 +56,12 @@ include_once 'conn.php';
 					$sql="select * from liuyanban where 1=1";
 					$sql=$sql." order by id desc";
   					$query=mysqli_query($sql);
-	 				 $rowscount=mysqli_num_rows($query);
+	 				 $rowscount=mysql_num_rows($query);
 					 if($rowscount==0)
   {}
   else
   {
-  $pagelarge=5;//ÿҳ������
+  $pagelarge=5;//每页行数；
   $pagecurrent=$_GET["pagecurrent"];
   if($rowscount%$pagelarge==0)
   {
@@ -98,29 +98,29 @@ if($pagecurrent>$pagecount)
 					 ?>
                           <tr>
                             <td width="11" rowspan="3" valign="top" bgcolor="#FFFFFF"><!--DWLayoutEmptyCell-->&nbsp;</td>
-                            <td width="85" rowspan="3" align="center" valign="middle" bgcolor="#FFFFFF"><img width='70'height='70' src=<?php echo mysqli_result($query,$i,"zhaopian");?> border=0> </td>
-                            <td height="20" colspan="2" align="left" valign="middle" bgcolor="#FFFFFF">&nbsp; &nbsp; ������:<?php echo mysqli_result($query,$i,"addtime");?> &nbsp;</td>
+                            <td width="85" rowspan="3" align="center" valign="middle" bgcolor="#FFFFFF"><img width='70'height='70' src=<?php echo mysql_result($query,$i,"zhaopian");?> border=0> </td>
+                            <td height="20" colspan="2" align="left" valign="middle" bgcolor="#FFFFFF">&nbsp; &nbsp; 留言于:<?php echo mysql_result($query,$i,"addtime");?> &nbsp;</td>
                             <td width="12" rowspan="3" valign="top" bgcolor="#FFFFFF" style="width: 10px"><!--DWLayoutEmptyCell-->&nbsp;</td>
                           </tr>
                           <tr>
-                            <td height="78" align="left" valign="top" bgcolor="#FFFFFF">&nbsp;<?php echo mysqli_result($query,$i,"liuyan");?></td>
-                            <td align="left" valign="top" bgcolor="#FFFFFF"><p>�ظ���</p>
-                                <p><?php echo mysqli_result($query,$i,"huifu");?></p></td>
+                            <td height="78" align="left" valign="top" bgcolor="#FFFFFF">&nbsp;<?php echo mysql_result($query,$i,"liuyan");?></td>
+                            <td align="left" valign="top" bgcolor="#FFFFFF"><p>回复：</p>
+                                <p><?php echo mysql_result($query,$i,"huifu");?></p></td>
                           </tr>
                           <tr>
-                            <td colspan="2" align="left" valign="middle" bgcolor="#FFFFFF" style="height: 25px">&nbsp; &nbsp;�˺ţ�<?php echo mysqli_result($query,$i,"zhanghao");?> &nbsp; &nbsp;������<?php echo mysqli_result($query,$i,"xingming");?>&nbsp;&nbsp;</td>
+                            <td colspan="2" align="left" valign="middle" bgcolor="#FFFFFF" style="height: 25px">&nbsp; &nbsp;账号：<?php echo mysql_result($query,$i,"zhanghao");?> &nbsp; &nbsp;姓名：<?php echo mysql_result($query,$i,"xingming");?>&nbsp;&nbsp;</td>
                           </tr>
                           <?php
 						  }
   	}
   ?>
                         </table>
-                          <p align="center"><a href="lyblist.php?pagecurrent=1">��ҳ</a>, <a href="lyblist.php?pagecurrent=<?php echo $pagecurrent-1;?>">ǰһҳ</a> ,<a href="lyblist.php?pagecurrent=<?php echo $pagecurrent+1;?>">��һҳ</a>, <a href="lyblist.php?pagecurrent=<?php echo $pagecount;?>">ĩҳ</a>, ��ǰ��<?php echo $pagecurrent;?>ҳ,��<?php echo $pagecount;?>ҳ �������ݹ�
+                          <p align="center"><a href="lyblist.php?pagecurrent=1">首页</a>, <a href="lyblist.php?pagecurrent=<?php echo $pagecurrent-1;?>">前一页</a> ,<a href="lyblist.php?pagecurrent=<?php echo $pagecurrent+1;?>">后一页</a>, <a href="lyblist.php?pagecurrent=<?php echo $pagecount;?>">末页</a>, 当前第<?php echo $pagecurrent;?>页,共<?php echo $pagecount;?>页 以上数据共
                             <?php
 		echo $rowscount;
 	?>
-                            ��,
-  <input type="button" name="Submit2" onClick="javascript:window.print();" value="��ӡ��ҳ" style=" height:19px; border:solid 1px #000000; color:#666666" />
+                            条,
+  <input type="button" name="Submit2" onClick="javascript:window.print();" value="打印本页" style=" height:19px; border:solid 1px #000000; color:#666666" />
                           </p>                          <p align="center">&nbsp;</p>                          
                           </td>
                         <td width="29" background="qtimages/1_02_02_02_02_03.jpg">&nbsp;</td>

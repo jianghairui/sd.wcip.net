@@ -4,7 +4,7 @@ include_once 'conn.php';
 ?>
 <html>
 <head>
-<title>â��������վ</title>
+<title>芒果旅游网站</title>
 <LINK href="qtimages/style.css" type=text/css rel=stylesheet>
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312">
 <style type="text/css">
@@ -49,12 +49,12 @@ var texts="";
 <?php
 $sql="select id,biaoti,shouyetupian,id from xinwentongzhi where shouyetupian<>'' order by id desc";
 $query=mysqli_query($sql);
-$rowscount=mysqli_num_rows($query);
+$rowscount=mysql_num_rows($query);
 for($i=0;$i<5;$i++)
 {
-	$pics=$pics.mysqli_result($query,$i,"shouyetupian")."|";
-	$links=$links."gg_detail.php?id=".mysqli_result($query,$i,"id")."|";
-	$texts=$texts.mysqli_result($query,$i,"biaoti")."|";
+	$pics=$pics.mysql_result($query,$i,"shouyetupian")."|";
+	$links=$links."gg_detail.php?id=".mysql_result($query,$i,"id")."|";
+	$texts=$texts.mysql_result($query,$i,"biaoti")."|";
 }
 $pics=substr($pics,0,strlen($pics)-1);
 $links=substr($links,0,strlen($links)-1);
@@ -80,9 +80,9 @@ document.write('<embed src="qtimages/pixviewer.swf" wmode="opaque" FlashVars="pi
                       <tr>
                         <td width="519" height="35" background="qtimages/1_02_02_01_02_01.jpg"><table width="100%" height="19" border="0" cellpadding="0" cellspacing="0">
                           <tr>
-                            <td width="16%" align="center" valign="bottom"><span class="STYLE1">վ������</span></td>
+                            <td width="16%" align="center" valign="bottom"><span class="STYLE1">站内新闻</span></td>
                             <td width="70%" valign="bottom">&nbsp;</td>
-                            <td width="14%" valign="bottom" ><a href="news.php?lb=վ������"><font class="STYLE1">&gt;&gt; ����</font></a> </td>
+                            <td width="14%" valign="bottom" ><a href="news.php?lb=站内新闻"><font class="STYLE1">&gt;&gt; 更多</font></a> </td>
                           </tr>
                         </table></td>
                       </tr>
@@ -92,9 +92,9 @@ document.write('<embed src="qtimages/pixviewer.swf" wmode="opaque" FlashVars="pi
                             <td width="10">&nbsp;</td>
                             <td width="491" height="230" valign="top"><table width="98%" border="0" align="center" cellpadding="0" cellspacing="0" class="newsline">
                               <?php 
-					  $sql="select biaoti,id,addtime from xinwentongzhi where leibie='վ������' order by id desc limit 5";
+					  $sql="select biaoti,id,addtime from xinwentongzhi where leibie='站内新闻' order by id desc limit 5";
 					  $query=mysqli_query($sql);
-					  $rowscount=mysqli_num_rows($query);
+					  $rowscount=mysql_num_rows($query);
 					  if($rowscount>0)
 					  {
 					  	for($i=0;$i<$rowscount;$i++)
@@ -106,8 +106,8 @@ document.write('<embed src="qtimages/pixviewer.swf" wmode="opaque" FlashVars="pi
 						?>
                               <tr height="25">
                                 <td width="5%" height="28" align="center"><img src="qtimages/1.jpg" width="9" height="9"></td>
-                                <td width="71%" class="newslist"><a href="gg_detail.php?id=<?php echo mysqli_result($query,$i,"id");?>"><?php echo mysqli_result($query,$i,"biaoti");?></a></td>
-                                <td width="26%" class="newslist"><?php echo mysqli_result($query,$i,"addtime");?></td>
+                                <td width="71%" class="newslist"><a href="gg_detail.php?id=<?php echo mysql_result($query,$i,"id");?>"><?php echo mysql_result($query,$i,"biaoti");?></a></td>
+                                <td width="26%" class="newslist"><?php echo mysql_result($query,$i,"addtime");?></td>
                               </tr>
                               <?php
 						}
@@ -130,9 +130,9 @@ document.write('<embed src="qtimages/pixviewer.swf" wmode="opaque" FlashVars="pi
                   <tr>
                     <td width="785" height="40" background="qtimages/1_02_02_02_01.jpg"><table width="100%" height="19" border="0" cellpadding="0" cellspacing="0">
                       <tr>
-                        <td width="12%" align="center" valign="bottom"><span class="STYLE4">�Ƽ��Ƶ�</span></td>
+                        <td width="12%" align="center" valign="bottom"><span class="STYLE4">推荐酒店</span></td>
                         <td width="74%" valign="bottom">&nbsp;</td>
-                        <td width="14%" valign="bottom" ><a href="jiudianxinxilist.php"><font class="STYLE4">&gt;&gt; ����</font></a> </td>
+                        <td width="14%" valign="bottom" ><a href="jiudianxinxilist.php"><font class="STYLE4">&gt;&gt; 更多</font></a> </td>
                       </tr>
                     </table></td>
                   </tr>
@@ -148,7 +148,7 @@ document.write('<embed src="qtimages/pixviewer.swf" wmode="opaque" FlashVars="pi
   $sql=$sql." order by id desc";
   
 $query=mysqli_query($sql);
-  $rowscount=mysqli_num_rows($query);
+  $rowscount=mysql_num_rows($query);
   
 	 for($i=0;$i<$rowscount;$i++)
 {
@@ -158,10 +158,10 @@ $query=mysqli_query($sql);
   ?>
                             <td height="176" align="center"><table width="17%" height="176" border="0" cellpadding="0" cellspacing="0">
                                 <tr>
-                                  <td height="123" align="center"><a href="<?php echo mysqli_result($query,$i,"zhaopian");?>"><img src="<?php echo mysqli_result($query,$i,"zhaopian");?>" width="102" height="123" border="0"></a></td>
+                                  <td height="123" align="center"><a href="<?php echo mysql_result($query,$i,"zhaopian");?>"><img src="<?php echo mysql_result($query,$i,"zhaopian");?>" width="102" height="123" border="0"></a></td>
                                 </tr>
                                 <tr>
-                                  <td height="25" align="center"><?php echo mysqli_result($query,$i,"jiudianmingcheng");?></td>
+                                  <td height="25" align="center"><?php echo mysql_result($query,$i,"jiudianmingcheng");?></td>
                                 </tr>
                             </table></td>
                             <?php
@@ -184,7 +184,7 @@ $query=mysqli_query($sql);
                   <tr>
                     <td width="785" height="40" background="qtimages/1_02_02_02_01.jpg"><table width="100%" height="19" border="0" cellpadding="0" cellspacing="0">
                         <tr>
-                          <td width="12%" align="center" valign="bottom"><span class="STYLE4">ϵͳ���</span></td>
+                          <td width="12%" align="center" valign="bottom"><span class="STYLE4">系统简介</span></td>
                           <td width="74%" valign="bottom">&nbsp;</td>
                           <td width="14%" valign="bottom" ><a href="jiudianxinxilist.php"></a> </td>
                         </tr>
@@ -197,15 +197,15 @@ $query=mysqli_query($sql);
                           <td width="737" height="176"><table width="96%" height="100%" border="0" cellpadding="0" cellspacing="0">
                               <tr>
                        <td height="176" align="left"><?php 
-					$sql="select * from dx where leibie='ϵͳ���'";
+					$sql="select * from dx where leibie='系统简介'";
 					$query=mysqli_query($sql);
-					 $rowscount=mysqli_num_rows($query);
+					 $rowscount=mysql_num_rows($query);
 					  if($rowscount==0)
 					  {}
 					  else
 					  {
 					?>
-                         <p><?php echo mysqli_result($query,0,"content");?>
+                         <p><?php echo mysql_result($query,0,"content");?>
                              <?php
 					}
 					?>

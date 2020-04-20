@@ -1,7 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
-<title>â��������վ</title>
+<title>芒果旅游网站</title>
 <style type="text/css">
 <!--
 body {
@@ -19,9 +19,9 @@ body {
   <tr>
     <td background="images/main_40.gif" style="width:3px;">&nbsp;</td>
     <td width="177"  style="border-right:solid 1px #9ad452;"><iframe name="I2" height="100%" width="177" border="0" frameborder="0" src="mygo.php">
-		�������֧��Ƕ��ʽ��ܣ�������Ϊ����ʾǶ��ʽ��ܡ�</iframe></td>
+		浏览器不支持嵌入式框架，或被配置为不显示嵌入式框架。</iframe></td>
     <td><iframe name="main" src="sy.php" height="100%" width="100%" border="0" frameborder="0">
-		�������֧��Ƕ��ʽ��ܣ�������Ϊ����ʾǶ��ʽ��ܡ�</iframe></td>
+		浏览器不支持嵌入式框架，或被配置为不显示嵌入式框架。</iframe></td>
     <td background="images/main_42.gif" style="width:3px;">&nbsp;</td>
   </tr>
 </table>

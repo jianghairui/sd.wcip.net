@@ -5,7 +5,7 @@ $lb=$_GET["lb"];
 ?>
 <html>
 <head>
-<title>â��������վ</title>
+<title>芒果旅游网站</title>
 <LINK href="qtimages/style.css" type=text/css rel=stylesheet>
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312">
 <style type="text/css">
@@ -49,7 +49,7 @@ $lb=$_GET["lb"];
                           <?php 
 					$sql="select * from dx where leibie='".$lb."'";
 					$query=mysqli_query($sql);
-					 $rowscount=mysqli_num_rows($query);
+					 $rowscount=mysql_num_rows($query);
 					  if($rowscount==0)
 					  {}
 					  else
@@ -58,10 +58,10 @@ $lb=$_GET["lb"];
 </p>                          
                           <table width="97%" border="1" align="center" cellpadding="3" cellspacing="1" bordercolor="#67B41A" style="border-collapse:collapse">
                             <tr>
-                              <td height="104"><?php echo mysqli_result($query,0,"content");?></td>
+                              <td height="104"><?php echo mysql_result($query,0,"content");?></td>
                             </tr>
                             <tr>
-                              <td align="right"><a href="#" onClick="javascript:history.back();">����</a></td>
+                              <td align="right"><a href="#" onClick="javascript:history.back();">返回</a></td>
                             </tr>
                           </table>
                           <?php

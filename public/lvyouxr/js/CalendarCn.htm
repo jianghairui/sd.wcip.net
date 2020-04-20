@@ -101,9 +101,9 @@
 var defaultFormat = "yyyy-mm-dd";
 //var defaultFormat = "mm/dd/yyyy";
 var dateFormat = defaultFormat;
-var days = new Array("ĞÇÆÚÈÕ","ĞÇÆÚÒ»","ĞÇÆÚ¶ş","ĞÇÆÚÈı","ĞÇÆÚËÄ","ĞÇÆÚÎå","ĞÇÆÚÁù");
+var days = new Array("æ˜ŸæœŸæ—¥","æ˜ŸæœŸä¸€","æ˜ŸæœŸäºŒ","æ˜ŸæœŸä¸‰","æ˜ŸæœŸå››","æ˜ŸæœŸäº”","æ˜ŸæœŸå…­");
 //var specialDay=new Array("1977/5/27","2000/9/11","2004/5/27");
-//var months = new Array( "Ò»ÔÂ", "¶şÔÂ", "ÈıÔÂ", "ËÄÔÂ", "ÎåÔÂ", "ÁùÔÂ", "ÆßÔÂ", "°ËÔÂ", "¾ÅÔÂ", "Ê®ÔÂ", "Ê®Ò»ÔÂ", "Ê®¶şÔÂ" );
+//var months = new Array( "ä¸€æœˆ", "äºŒæœˆ", "ä¸‰æœˆ", "å››æœˆ", "äº”æœˆ", "å…­æœˆ", "ä¸ƒæœˆ", "å…«æœˆ", "ä¹æœˆ", "åæœˆ", "åä¸€æœˆ", "åäºŒæœˆ" );
 //var days = new Array("SUN","MON","TUE","WED","THU","FRI","SAT");
 var specialDay=new Array("1977/5/27","2000/9/11","2004/5/27");
 var months = new Array( "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" );
@@ -200,7 +200,7 @@ function showCalendar( currMonth ) {
 	var nextMonth = getRelativeMonth( currMonth, 1 );
 	var strHtml="";
 	strHtml= strHtml + "<TABLE border=0 cellspacing=1 width=400><TR class=TABLEHEAD align=center>";
-	strHtml= strHtml + "<TD colspan=2 ><A class=TABLEHEAD id=p  tabindex=0  style='cursor:hand;'  onFocus='document.form1.hidFlag.value=\"p\";' onKeyPress='prevMonth()' onclick='prevMonth()'" + ">ÉÏ¸öÔÂ</A></TD>";
+	strHtml= strHtml + "<TD colspan=2 ><A class=TABLEHEAD id=p  tabindex=0  style='cursor:hand;'  onFocus='document.form1.hidFlag.value=\"p\";' onKeyPress='prevMonth()' onclick='prevMonth()'" + ">ä¸Šä¸ªæœˆ</A></TD>";
 //	strHtml= strHtml + "<TD colspan=5 class=TABLEHEAD>";
 	//strHtml= strHtml + "<TD colspan=2 ><A class=TABLEHEAD id=p  tabindex=0  style='cursor:hand;'  onFocus='document.form1.hidFlag.value=\"p\";' onKeyPress='prevMonth()' onclick='prevMonth()'" + ">Previous Month</A></TD>";
 	strHtml= strHtml + "<TD colspan=3 class=TABLEHEAD>";
@@ -218,7 +218,7 @@ function showCalendar( currMonth ) {
 	strHtml= strHtml +  "<INPUT type=hidden name=hidYear value=" + currMonth.year + ">" ;
 	strHtml= strHtml +  "</TD>" ;
 
-	strHtml= strHtml + "<TD colspan=2><A  tabindex=3 id=n class=TABLEHEAD style='cursor:hand;'  onFocus='document.form1.hidFlag.value=\"n\";'  onKeyPress='nextMonth()'  onclick='nextMonth()'" + ">ÏÂ¸öÔÂ</a></td>";
+	strHtml= strHtml + "<TD colspan=2><A  tabindex=3 id=n class=TABLEHEAD style='cursor:hand;'  onFocus='document.form1.hidFlag.value=\"n\";'  onKeyPress='nextMonth()'  onclick='nextMonth()'" + ">ä¸‹ä¸ªæœˆ</a></td>";
 	//strHtml= strHtml + "<TD colspan=2><A  tabindex=3 id=n class=TABLEHEAD style='cursor:hand;'  onFocus='document.form1.hidFlag.value=\"n\";'  onKeyPress='nextMonth()'  onclick='nextMonth()'" + ">Next Month</a></td>";
 	strHtml= strHtml + "</TR>";
 

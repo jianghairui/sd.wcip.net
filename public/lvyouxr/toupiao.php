@@ -8,12 +8,12 @@ if ($tp=="1" )
   $xxa=$_POST["xxa"];
   $sql="insert into toupiaojilu(xx,addby) values('$xxa','".$_SESSION['username']."') ";
   mysqli_query($sql);
-  echo "<script>javascript:alert('ͶƱ�ɹ�!');location.href='toupiao.php';</script>";
+  echo "<script>javascript:alert('投票成功!');location.href='toupiao.php';</script>";
 }
 ?>
 <html>
 <head>
-<title>â��������վ</title>
+<title>芒果旅游网站</title>
 <LINK href="qtimages/style.css" type=text/css rel=stylesheet>
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312">
 <style type="text/css">
@@ -38,7 +38,7 @@ if ($tp=="1" )
                   <tr>
                     <td width="785" height="40" background="qtimages/1_02_02_02_01.jpg"><table width="100%" height="19" border="0" cellpadding="0" cellspacing="0">
                       <tr>
-                        <td width="12%" align="center" valign="bottom"><span class="STYLE4">����ͶƱ</span></td>
+                        <td width="12%" align="center" valign="bottom"><span class="STYLE4">在线投票</span></td>
                         <td width="74%" valign="bottom">&nbsp;</td>
                         <td width="14%" valign="bottom" class="STYLE4"></td>
                       </tr>
@@ -52,15 +52,15 @@ if ($tp=="1" )
                           
                             <table width="97%" border="1" align="center" cellpadding="3" cellspacing="1" bordercolor="#67B41A" style="border-collapse:collapse">
                               <tr>
-                                <td height="33" align="center"><strong>Ϊ��ϲ������·ͶһƱ��</strong></td>
+                                <td height="33" align="center"><strong>为您喜欢的线路投一票吧</strong></td>
                               </tr>
                               <tr>
                                 <td height="175"><table width="84%" border="1" align="center" cellpadding="3" cellspacing="1" bordercolor="#00FFFF" style="border-collapse:collapse">
                                     <tr bgcolor="#CCFFFF">
                                       <td>ID</td>
-                                      <td>��·���</td>
-                                      <td>��·����</td>
-                                      <td>�۸�</td>
+                                      <td>线路编号</td>
+                                      <td>线路名称</td>
+                                      <td>价格</td>
                                       <td></td>
                                     
                                     </tr>
@@ -68,14 +68,14 @@ if ($tp=="1" )
 $sql = "SELECT l.id,l.bianhao,l.mingcheng,l.jiage,IFNULL(t.nums,0) AS num FROM lvyouxianlu l LEFT JOIN (SELECT *,COUNT(lid) AS nums FROM toupiaojilu GROUP BY lid) t ON l.id=t.lid;";
 //mysqli_query("set names utf8");
 $result = mysqli_query($sql);
-while(list($id,$bianhao,$name,$price,$nums) = mysqli_fetch_row($result)){
+while(list($id,$bianhao,$name,$price,$nums) = mysql_fetch_row($result)){
   echo "<tr>";
   echo "
   <td class='numid'>$id</td>
   <td>$bianhao</td>
   <td>$name</td>
   <td>$price</td>
-  <td><button class='toupiao'>ͶƱ</button>&nbsp;&nbsp;&nbsp;&nbsp;<span>$nums<span></td>";
+  <td><button class='toupiao'>投票</button>&nbsp;&nbsp;&nbsp;&nbsp;<span>$nums<span></td>";
   echo "</tr>";
 }                                   ?>
 <script src="js/jquery.js"></script>
@@ -87,7 +87,7 @@ while(list($id,$bianhao,$name,$price,$nums) = mysqli_fetch_row($result)){
       var mythis = $(this);
       $.post('toupiaojs.php',{username:username,id:id},function(data){
           alert(data);        
-          if(data=='ͶƱ�ɹ�') {
+          if(data=='投票成功') {
             val = mythis.parent().parent().find('span').text();
             val = parseInt(val);
             mythis.parent().parent().find('span').text(val+1);
@@ -99,7 +99,7 @@ while(list($id,$bianhao,$name,$price,$nums) = mysqli_fetch_row($result)){
                                 </table></td>
                               </tr>
                               <tr>
-                                <td align="right"><a href="#" onClick="javascript:history.back();">����</a></td>
+                                <td align="right"><a href="#" onClick="javascript:history.back();">返回</a></td>
                               </tr>
                             </table>
                         

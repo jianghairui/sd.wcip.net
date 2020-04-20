@@ -8,7 +8,7 @@ if ($addnew=="1" )
 	$jiudianmingcheng=$_POST["jiudianmingcheng"];$xingji=$_POST["xingji"];$dianhua=$_POST["dianhua"];$dizhi=$_POST["dizhi"];$zhaopian=$_POST["zhaopian"];$beizhu=$_POST["beizhu"];
 	$sql="insert into jiudianxinxi(jiudianmingcheng,xingji,dianhua,dizhi,zhaopian,beizhu) values('$jiudianmingcheng','$xingji','$dianhua','$dizhi','$zhaopian','$beizhu') ";
 	mysqli_query($sql);
-	echo "<script>javascript:alert('��ӳɹ�!');location.href='jiudianxinxi_add.php';</script>";
+	echo "<script>javascript:alert('添加成功!');location.href='jiudianxinxi_add.php';</script>";
 }
 ?>
 
@@ -16,7 +16,7 @@ if ($addnew=="1" )
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
-<title>�Ƶ���Ϣ</title><script language="javascript" src="js/Calendar.js"></script><link rel="stylesheet" href="css.css" type="text/css">
+<title>酒店信息</title><script language="javascript" src="js/Calendar.js"></script><link rel="stylesheet" href="css.css" type="text/css">
 </head>
 <script language="javascript">
 	
@@ -32,11 +32,11 @@ if ($addnew=="1" )
 }
 </script>
 <body>
-<p>��ӾƵ���Ϣ�� ��ǰ���ڣ� <?php echo $ndate; ?></p>
+<p>添加酒店信息： 当前日期： <?php echo $ndate; ?></p>
 <script language="javascript">
 	function check()
 {
-	if(document.form1.jiudianmingcheng.value==""){alert("������Ƶ�����");document.form1.jiudianmingcheng.focus();return false;}if(document.form1.dianhua.value==""){alert("������绰");document.form1.dianhua.focus();return false;}
+	if(document.form1.jiudianmingcheng.value==""){alert("请输入酒店名称");document.form1.jiudianmingcheng.focus();return false;}if(document.form1.dianhua.value==""){alert("请输入电话");document.form1.dianhua.focus();return false;}
 }
 	function gow()
 	{
@@ -45,18 +45,18 @@ if ($addnew=="1" )
 </script>
 <form id="form1" name="form1" method="post" action="">
 <table width="100%" border="1" align="center" cellpadding="3" cellspacing="1" bordercolor="#00FFFF" style="border-collapse:collapse">    
-	<tr><td>�Ƶ����ƣ�</td><td><input name='jiudianmingcheng' type='text' id='jiudianmingcheng' value='' size='50'  />&nbsp;*</td></tr><tr><td>�Ǽ���</td><td><select name='xingji' id='xingji'>
-	  <option value="���Ǽ�">���Ǽ�</option>
-	  <option value="���Ǽ�">���Ǽ�</option>
-	  <option value="���Ǽ�">���Ǽ�</option>
-	  <option value="���Ǽ�">���Ǽ�</option>
-	</select></td></tr><tr><td>�绰��</td><td><input name='dianhua' type='text' id='dianhua' value='' />&nbsp;*</td></tr><tr><td>��ַ��</td><td><input name='dizhi' type='text' id='dizhi' value='' size='50'  /></td></tr><tr><td>��Ƭ��</td><td><input name='zhaopian' type='text' id='zhaopian' value='' size='50'  />&nbsp;<a href="javaScript:OpenScript('upfile.php?Result=zhaopian',460,180)"><img src="Images/Upload.gif" width="30" height="16" border="0" align="absmiddle" /></a></td></tr><tr><td>��ע��</td><td><textarea name='beizhu' cols='50' rows='8' id='beizhu'></textarea></td></tr>
+	<tr><td>酒店名称：</td><td><input name='jiudianmingcheng' type='text' id='jiudianmingcheng' value='' size='50'  />&nbsp;*</td></tr><tr><td>星级：</td><td><select name='xingji' id='xingji'>
+	  <option value="五星级">五星级</option>
+	  <option value="四星级">四星级</option>
+	  <option value="三星级">三星级</option>
+	  <option value="二星级">二星级</option>
+	</select></td></tr><tr><td>电话：</td><td><input name='dianhua' type='text' id='dianhua' value='' />&nbsp;*</td></tr><tr><td>地址：</td><td><input name='dizhi' type='text' id='dizhi' value='' size='50'  /></td></tr><tr><td>照片：</td><td><input name='zhaopian' type='text' id='zhaopian' value='' size='50'  />&nbsp;<a href="javaScript:OpenScript('upfile.php?Result=zhaopian',460,180)"><img src="Images/Upload.gif" width="30" height="16" border="0" align="absmiddle" /></a></td></tr><tr><td>备注：</td><td><textarea name='beizhu' cols='50' rows='8' id='beizhu'></textarea></td></tr>
 
     <tr>
       <td>&nbsp;</td>
       <td><input type="hidden" name="addnew" value="1" />
-        <input type="submit" name="Submit" value="���" onclick="return check();" />
-      <input type="reset" name="Submit2" value="����" /></td>
+        <input type="submit" name="Submit" value="添加" onclick="return check();" />
+      <input type="reset" name="Submit2" value="重置" /></td>
     </tr>
   </table>
 </form>

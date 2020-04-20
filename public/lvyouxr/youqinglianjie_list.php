@@ -6,25 +6,25 @@ include_once 'conn.php';
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
-<title>��������</title><link rel="stylesheet" href="css.css" type="text/css">
+<title>友情连接</title><link rel="stylesheet" href="css.css" type="text/css">
 </head>
 
 <body>
 
-<p>�������������б�</p>
+<p>已有友情连接列表：</p>
 <form id="form1" name="form1" method="post" action="">
-  ����:��վ����:
+  搜索:网站名称:
   <input name="bh" type="text" id="bh" />
-  ��ַ:
+  网址:
   <input name="mc" type="text" id="mc" />
-  <input type="submit" name="Submit" value="����" />
+  <input type="submit" name="Submit" value="查找" />
 </form>
 <table width="100%" border="1" align="center" cellpadding="3" cellspacing="1" bordercolor="#00FFFF" style="border-collapse:collapse">  
   <tr>
-    <td width="25" bgcolor="#EBE2FE">���</td>
-    <td bgcolor='#EBE2FE'>��վ����</td><td bgcolor='#EBE2FE'>��ַ</td>
-    <td width="120" align="center" bgcolor="#EBE2FE">���ʱ��</td>
-    <td width="70" align="center" bgcolor="#EBE2FE">����</td>
+    <td width="25" bgcolor="#EBE2FE">序号</td>
+    <td bgcolor='#EBE2FE'>网站名称</td><td bgcolor='#EBE2FE'>网址</td>
+    <td width="120" align="center" bgcolor="#EBE2FE">添加时间</td>
+    <td width="70" align="center" bgcolor="#EBE2FE">操作</td>
   </tr>
   <?php 
     $sql="select * from youqinglianjie where 1=1";
@@ -41,12 +41,12 @@ include_once 'conn.php';
   $sql=$sql." order by id desc";
   
 $query=mysqli_query($sql);
-  $rowscount=mysqli_num_rows($query);
+  $rowscount=mysql_num_rows($query);
   if($rowscount==0)
   {}
   else
   {
-  $pagelarge=10;//ÿҳ������
+  $pagelarge=10;//每页行数；
   $pagecurrent=$_GET["pagecurrent"];
   if($rowscount%$pagelarge==0)
   {
@@ -85,27 +85,27 @@ if($pagecurrent>$pagecount)
     <td width="25"><?php
 	echo $i+1;
 ?></td>
-    <td><?php echo mysqli_result($query,$i,wangzhanmingcheng);?></td><td><?php echo mysqli_result($query,$i,wangzhi);?></td>
+    <td><?php echo mysql_result($query,$i,wangzhanmingcheng);?></td><td><?php echo mysql_result($query,$i,wangzhi);?></td>
     <td width="120" align="center"><?php
-echo mysqli_result($query,$i,"addtime");
+echo mysql_result($query,$i,"addtime");
 ?></td>
     <td width="70" align="center"><a href="del.php?id=<?php
-		echo mysqli_result($query,$i,"id");
-	?>&tablename=youqinglianjie" onclick="return confirm('���Ҫɾ����')">ɾ��</a> <a href="youqinglianjie_updt.php?id=<?php
-		echo mysqli_result($query,$i,"id");
-	?>">�޸�</a></td>
+		echo mysql_result($query,$i,"id");
+	?>&tablename=youqinglianjie" onclick="return confirm('真的要删除？')">删除</a> <a href="youqinglianjie_updt.php?id=<?php
+		echo mysql_result($query,$i,"id");
+	?>">修改</a></td>
   </tr>
   	<?php
 	}
 }
 ?>
 </table>
-<p>�������ݹ�<?php
+<p>以上数据共<?php
 		echo $rowscount;
-	?>��,
-  <input type="button" name="Submit2" onclick="javascript:window.print();" value="��ӡ��ҳ" />
+	?>条,
+  <input type="button" name="Submit2" onclick="javascript:window.print();" value="打印本页" />
 </p>
-<p align="center"><a href="youqinglianjie_list.php?pagecurrent=1">��ҳ</a>, <a href="youqinglianjie_list.php?pagecurrent=<?php echo $pagecurrent-1;?>">ǰһҳ</a> ,<a href="youqinglianjie_list.php?pagecurrent=<?php echo $pagecurrent+1;?>">��һҳ</a>, <a href="youqinglianjie_list.php?pagecurrent=<?php echo $pagecount;?>">ĩҳ</a>, ��ǰ��<?php echo $pagecurrent;?>ҳ,��<?php echo $pagecount;?>ҳ </p>
+<p align="center"><a href="youqinglianjie_list.php?pagecurrent=1">首页</a>, <a href="youqinglianjie_list.php?pagecurrent=<?php echo $pagecurrent-1;?>">前一页</a> ,<a href="youqinglianjie_list.php?pagecurrent=<?php echo $pagecurrent+1;?>">后一页</a>, <a href="youqinglianjie_list.php?pagecurrent=<?php echo $pagecount;?>">末页</a>, 当前第<?php echo $pagecurrent;?>页,共<?php echo $pagecount;?>页 </p>
 
 <p>&nbsp; </p>
 

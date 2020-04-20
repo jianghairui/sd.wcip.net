@@ -18,24 +18,24 @@ include_once 'conn.php';
 	$sql="select * from allusers where username='".$_SESSION['username']."'";
 		
 		$query=mysqli_query($sql);
-		$rowscount=mysqli_num_rows($query);
+		$rowscount=mysql_num_rows($query);
 		if($rowscount>0)
 			{
-					if(mysqli_result($query,0,"pwd")==$pwdy)
+					if(mysql_result($query,0,"pwd")==$pwdy)
 					{
 					$sql="update allusers set pwd='$pwd' where username='".$_SESSION['username']."'";
 					$query=mysqli_query($sql);
-					echo "<script language='javascript'>alert('�޸ĳɹ���');history.back();</script>";
+					echo "<script language='javascript'>alert('修改成功！');history.back();</script>";
 					}
 					else
 					{
-					echo "<script language='javascript'>alert('�Բ���,ԭ���벻��ȷ��');history.back();</script>";
+					echo "<script language='javascript'>alert('对不起,原密码不正确！');history.back();</script>";
 					}
 			}
 			else
 			{
 		
-					echo "<script language='javascript'>alert('�Բ���,ԭ���벻��ȷ��');history.back();</script>";
+					echo "<script language='javascript'>alert('对不起,原密码不正确！');history.back();</script>";
 			}
 	 }
 	 
@@ -44,32 +44,32 @@ include_once 'conn.php';
 ?>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
-<title>�޸�����</title>
+<title>修改密码</title>
 </head>
 <script>
 function check()
 {
 	if(document.form1.ymm.value=="")
 	{
-		alert("������ԭ����");
+		alert("请输入原密码");
 		document.form1.ymm.focus();
 		return false;
 	}
 	if(document.form1.xmm1.value=="")
 	{
-		alert("������������");
+		alert("请输入新密码");
 		document.form1.xmm1.focus();
 		return false;
 	}
 	if(document.form1.xmm2.value=="")
 	{
-		alert("������ȷ������");
+		alert("请输入确认密码");
 		document.form1.xmm2.focus();
 		return false;
 	}
 	if (document.form1.xmm1.value!=document.form1.xmm2.value)
 	{
-		alert("�Բ����������벻һ��������������");
+		alert("对不起，两次密码不一至，请重新输入");
 		document.form1.xmm1.value="";
 		document.form1.xmm2.value="";
 		document.form1.xmm1.focus();
@@ -83,24 +83,24 @@ function check()
 <form id="form1" name="form1" method="post" action="mod.php">
   <table width="41%" height="126" border="1" align="center" cellpadding="0" cellspacing="0" bordercolor="9DC9FF" style="border-collapse:collapse">
     <tr>
-      <td colspan="2"><div align="center">�޸�����</div></td>
+      <td colspan="2"><div align="center">修改密码</div></td>
     </tr>
     <tr>
-      <td>ԭ���룺</td>
+      <td>原密码：</td>
       <td><input name="ymm" type="text" id="ymm" />
       <input name="addnew" type="hidden" id="addnew" value="1"></td>
     </tr>
     <tr>
-      <td>�����룺</td>
+      <td>新密码：</td>
       <td><input name="xmm1" type="password" id="xmm1" /></td>
     </tr>
     <tr>
-      <td>ȷ�����룺</td>
+      <td>确认密码：</td>
       <td><input name="xmm2" type="password" id="xmm2" /></td>
     </tr>
     <tr>
-      <td><input type="submit" name="Submit" value="ȷ��" onClick="return check()" /></td>
-      <td><input type="reset" name="Submit2" value="����" /></td>
+      <td><input type="submit" name="Submit" value="确定" onClick="return check()" /></td>
+      <td><input type="reset" name="Submit2" value="重置" /></td>
     </tr>
   </table>
 </form>

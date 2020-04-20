@@ -5,11 +5,11 @@ if($_SESSION['username']!="")
 ?>
 <table width="94%" height="103" border="0" align="center" cellpadding="0" cellspacing="0">
                     <tr>
-                      <td>”√ªß√˚:</td>
+                      <td>Áî®Êà∑Âêç:</td>
                       <td><?php echo $_SESSION["username"];?></td>
                     </tr>
                     <tr>
-                      <td>»®œﬁ:</td>
+                      <td>ÊùÉÈôê:</td>
                       <td><?php echo $_SESSION["cx"];?></td>
                     </tr>
                     <tr>
@@ -24,11 +24,11 @@ else
 ?>
 <table width="94%" height="103" border="0" align="center" cellpadding="0" cellspacing="0"><form name="form_log" method="post" action="userlog_post.php">
                     <tr>
-                      <td>”√ªß√˚:</td>
+                      <td>Áî®Êà∑Âêç:</td>
                       <td><input name="username" type="text" id="username" size="18"></td>
                     </tr>
                     <tr>
-                      <td>√‹¬Î:</td>
+                      <td>ÂØÜÁ†Å:</td>
                       <td><input name="pwd1" type="password" id="pwd1" size="18"></td>
                     </tr>
                     <tr>

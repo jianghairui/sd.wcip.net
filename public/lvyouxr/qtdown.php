@@ -7,15 +7,15 @@
                   <TD height=8></TD>
                 </TR>
                 <TR>
-                  <TD align="center">â��������վ ��Ȩ���� 
-                    ��ַ��xxxxxxxxxxxxxxx �ʱ�:xxxxx
+                  <TD align="center">芒果旅游网站 版权所有 
+                    地址：xxxxxxxxxxxxxxx 邮编:xxxxx
                     xxxxxxxx </TD>
                 </TR>
                 <TR>
                   <TD><TABLE cellSpacing=0 cellPadding=0 align=center border=0>
                       <TBODY>
                         <TR>
-                          <TD align="center">����ʱ�䣺<?php echo date("Y-m-d");?> ���ߣ�xxxxxxxxxx ָ����ʦ��xxxxxxxxxxxx </TD>
+                          <TD align="center">开发时间：<?php echo date("Y-m-d");?> 作者：xxxxxxxxxx 指导老师：xxxxxxxxxxxx </TD>
                           <TD><TABLE cellSpacing=0 cellPadding=0 width=0 border=0>
                               <TBODY>
                                 <TR>

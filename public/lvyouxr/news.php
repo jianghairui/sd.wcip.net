@@ -6,7 +6,7 @@ $biaoti=$_POST["biaoti"];
 ?>
 <html>
 <head>
-<title>â��������վ</title>
+<title>芒果旅游网站</title>
 <LINK href="qtimages/style.css" type=text/css rel=stylesheet>
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312">
 <style type="text/css">
@@ -35,7 +35,7 @@ $biaoti=$_POST["biaoti"];
                   <tr>
                     <td width="785" height="40" background="qtimages/1_02_02_02_01.jpg"><table width="100%" height="19" border="0" cellpadding="0" cellspacing="0">
                       <tr>
-                        <td width="12%" align="center" valign="bottom"><span class="STYLE4">վ������</span></td>
+                        <td width="12%" align="center" valign="bottom"><span class="STYLE4">站内新闻</span></td>
                         <td width="74%" valign="bottom">&nbsp;</td>
                         <td width="14%" valign="bottom" class="STYLE4"></td>
                       </tr>
@@ -54,12 +54,12 @@ if($lb!=""){$sql=$sql." and leibie='$lb'";}
   $sql=$sql." order by id desc";
   
 $query=mysqli_query($sql);
-  $rowscount=mysqli_num_rows($query);
+  $rowscount=mysql_num_rows($query);
   if($rowscount==0)
   {}
   else
   {
-  $pagelarge=20;//ÿҳ������
+  $pagelarge=20;//每页行数；
   $pagecurrent=$_GET["pagecurrent"];
   if($rowscount%$pagelarge==0)
   {
@@ -95,22 +95,22 @@ if($pagecurrent>$pagecount)
 {
   ?>
                           <tr height="25">
-                            <td width="2%" align="right" class="newsline">��</td>
-                            <td width="65%" class="newsline"><a href="gg_detail.php?id=<?php echo mysqli_result($query,$i,"id");?>"><?php echo mysqli_result($query,$i,"biaoti");?></a></td>
-                            <td width="11%" class="newsline">�����<?php echo mysqli_result($query,$i,"dianjilv");?>��</td>
-                            <td width="22%" class="newsline"><?php echo mysqli_result($query,$i,"addtime");?></td>
+                            <td width="2%" align="right" class="newsline">·</td>
+                            <td width="65%" class="newsline"><a href="gg_detail.php?id=<?php echo mysql_result($query,$i,"id");?>"><?php echo mysql_result($query,$i,"biaoti");?></a></td>
+                            <td width="11%" class="newsline">被点击<?php echo mysql_result($query,$i,"dianjilv");?>次</td>
+                            <td width="22%" class="newsline"><?php echo mysql_result($query,$i,"addtime");?></td>
                           </tr>
                           <?php
 						}
 					  }
 					  ?>
                         </table>
-                          <p align="center"><a href="news.php?pagecurrent=1&lb=<?php echo $lb;?>">��ҳ</a>, <a href="news.php?pagecurrent=<?php echo $pagecurrent-1;?>&lb=<?php echo $lb;?>">ǰһҳ</a> ,<a href="news.php?pagecurrent=<?php echo $pagecurrent+1;?>&lb=<?php echo $lb;?>">��һҳ</a>, <a href="news.php?pagecurrent=<?php echo $pagecount;?>&lb=<?php echo $lb;?>">ĩҳ</a>, ��ǰ��<?php echo $pagecurrent;?>ҳ,��<?php echo $pagecount;?>ҳ �������ݹ�
+                          <p align="center"><a href="news.php?pagecurrent=1&lb=<?php echo $lb;?>">首页</a>, <a href="news.php?pagecurrent=<?php echo $pagecurrent-1;?>&lb=<?php echo $lb;?>">前一页</a> ,<a href="news.php?pagecurrent=<?php echo $pagecurrent+1;?>&lb=<?php echo $lb;?>">后一页</a>, <a href="news.php?pagecurrent=<?php echo $pagecount;?>&lb=<?php echo $lb;?>">末页</a>, 当前第<?php echo $pagecurrent;?>页,共<?php echo $pagecount;?>页 以上数据共
                             <?php
 		echo $rowscount;
 	?>
-                            ��,
-  <input type="button" name="Submit22" onClick="javascript:window.print();" value="��ӡ��ҳ" style=" height:19px; border:solid 1px #000000; color:#666666" />
+                            条,
+  <input type="button" name="Submit22" onClick="javascript:window.print();" value="打印本页" style=" height:19px; border:solid 1px #000000; color:#666666" />
                           </p>                          <p align="center">&nbsp;</p>
                           </td>
                         <td width="29" background="qtimages/1_02_02_02_02_03.jpg">&nbsp;</td>

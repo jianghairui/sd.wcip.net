@@ -1,13 +1,13 @@
 function formcheck(){
   if (document.NextPage.Page.value == "" )
         {
-        alert("ÇëÊäÈëÄãÏëÒªµÄÒ³Êý!");
+        alert("è¯·è¾“å…¥ä½ æƒ³è¦çš„é¡µæ•°!");
         document.NextPage.Page.focus();
         return false;
         }
 	 if (!numericCheck(document.NextPage.Page.value))
         {  
-        alert('ÇëÊäÈëÊý×Ö£¡');
+        alert('è¯·è¾“å…¥æ•°å­—ï¼');
         document.NextPage.Page.value = "";
         document.NextPage.Page.focus();
         return false;
@@ -33,13 +33,13 @@ else{arw+="_";}
 }
 if (flg!=0){
 if (spc.indexOf(" ")>-1) {
-str+="ºÍ¿Õ¸ñ";
+str+="å’Œç©ºæ ¼";
 }
 validity=false;
 }
 return validity;
 }
-//----------------------------------------È¥¿Õ¸ñ-----------------------------------------------------------
+//----------------------------------------åŽ»ç©ºæ ¼-----------------------------------------------------------
 function jtrim(sstr)
 {
 var astr="";
@@ -63,7 +63,7 @@ for (i=astr.length-1;i>=0;i--) dstr+=astr.charAt(i);
 return dstr;
 }
 
-//-------------------------------------------ÕÒµ±Ç°¶ÔÏó--------------------------------------------- 
+//-------------------------------------------æ‰¾å½“å‰å¯¹è±¡--------------------------------------------- 
 function findObj(n, d) { //v4.0
 var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
 d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
@@ -72,7 +72,7 @@ for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document
    if(!x && document.getElementById) x=document.getElementById(n); return x;
 }//findObj~~~
  
-//-------------------------------------------ÏìÓ¦É¾³ýÑ¡Ôñ¿òÊÂ¼þ----------------------------------------          
+//-------------------------------------------å“åº”åˆ é™¤é€‰æ‹©æ¡†äº‹ä»¶----------------------------------------          
 function EnableBtns(frm,btn,chk)
 {
     //
@@ -109,7 +109,7 @@ function EnableBtns(frm,btn,chk)
  }//EnableBtns~~
  
  
-//----------------------------------------------É¾³ýÌáÐÑ------------------------------------------------------
+//----------------------------------------------åˆ é™¤æé†’------------------------------------------------------
  
  function DelConfirm(msg)
 {
@@ -120,7 +120,7 @@ function EnableBtns(frm,btn,chk)
  
  }//~~
  
-//-----------------------------------------------´ò¿ª×Ó´°¿Ú----------------------------------------------------------
+//-----------------------------------------------æ‰“å¼€å­çª—å£----------------------------------------------------------
  function OpenWin(url,w,h)
  {
      var win,winstyle;
@@ -133,7 +133,7 @@ function winopenx(id,namex)
 window.open(id,namex,'resizable=yes,scrollbars=yes,toolbar=no,menubar=no,status=no,location=no,width=600,height=420');
 }
 
-//-----------------------------------------------¹Ø±Õ×Ó´°¿Ú---------------------------------------------------------------
+//-----------------------------------------------å…³é—­å­çª—å£---------------------------------------------------------------
 function CloseWin(rf)
 {
    if  (rf==1) self.opener.location.reload();
@@ -202,7 +202,7 @@ function CancelCheckAll(f,n)
 	}
 } 
  
-//------------------------ÊäÈë¿ò---------------------------------------------
+//------------------------è¾“å…¥æ¡†---------------------------------------------
 var Objbox=-1
 function AutoChangeboxColor(obj,defaultClass,changeClass)
 {

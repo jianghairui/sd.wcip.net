@@ -6,22 +6,22 @@ $lb=$_POST["lb"];
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
-<title>����֪ͨ</title><link rel="stylesheet" href="css.css" type="text/css">
+<title>新闻通知</title><link rel="stylesheet" href="css.css" type="text/css">
 </head>
 
 <body>
 
-<p>��������֪ͨ�б�</p>
+<p>已有新闻通知列表：</p>
 <form id="form1" name="form1" method="post" action="">
-  ����: ���⣺<input name="biaoti" type="text" id="biaoti" />
-  <input type="submit" name="Submit" value="����" />
+  搜索: 标题：<input name="biaoti" type="text" id="biaoti" />
+  <input type="submit" name="Submit" value="查找" />
 </form>
 <table width="100%" border="1" align="center" cellpadding="3" cellspacing="1" bordercolor="#00FFFF" style="border-collapse:collapse">  
   <tr>
-    <td width="25" bgcolor="#CCFFFF">���</td>
-    <td bgcolor='#CCFFFF'>����</td><td bgcolor='#CCFFFF'>���</td><td bgcolor='#CCFFFF'>��ҳͼƬ</td><td bgcolor='#CCFFFF'>�����</td><td bgcolor='#CCFFFF'>�����</td>
-    <td width="120" align="center" bgcolor="#CCFFFF">���ʱ��</td>
-    <td width="70" align="center" bgcolor="#CCFFFF">����</td>
+    <td width="25" bgcolor="#CCFFFF">序号</td>
+    <td bgcolor='#CCFFFF'>标题</td><td bgcolor='#CCFFFF'>类别</td><td bgcolor='#CCFFFF'>首页图片</td><td bgcolor='#CCFFFF'>点击率</td><td bgcolor='#CCFFFF'>添加人</td>
+    <td width="120" align="center" bgcolor="#CCFFFF">添加时间</td>
+    <td width="70" align="center" bgcolor="#CCFFFF">操作</td>
   </tr>
   <?php 
     $sql="select * from xinwentongzhi where 1=1";
@@ -30,12 +30,12 @@ if ($_POST["biaoti"]!=""){$nreqbiaoti=$_POST["biaoti"];$sql=$sql." and biaoti li
 if($lb!=""){$sql=$sql." and leibie='$lb'";}
   $sql=$sql." order by id desc";
 $query=mysqli_query($sql);
-  $rowscount=mysqli_num_rows($query);
+  $rowscount=mysql_num_rows($query);
   if($rowscount==0)
   {}
   else
   {
-  $pagelarge=10;//ÿҳ������
+  $pagelarge=10;//每页行数；
   $pagecurrent=$_GET["pagecurrent"];
   if($rowscount%$pagelarge==0)
   {
@@ -74,27 +74,27 @@ if($pagecurrent>$pagecount)
     <td width="25"><?php
 	echo $i+1;
 ?></td>
-    <td><?php echo mysqli_result($query,$i,biaoti);?></td><td><?php echo mysqli_result($query,$i,leibie);?></td><td width='80'><a href="<?php echo mysqli_result($query,$i,shouyetupian) ?>" target='_blank'><img src='<?php echo mysqli_result($query,$i,shouyetupian) ?>' width='80' height='88' border='0'></a></td><td><?php echo mysqli_result($query,$i,dianjilv);?></td><td><?php echo mysqli_result($query,$i,tianjiaren);?></td>
+    <td><?php echo mysql_result($query,$i,biaoti);?></td><td><?php echo mysql_result($query,$i,leibie);?></td><td width='80'><a href="<?php echo mysql_result($query,$i,shouyetupian) ?>" target='_blank'><img src='<?php echo mysql_result($query,$i,shouyetupian) ?>' width='80' height='88' border='0'></a></td><td><?php echo mysql_result($query,$i,dianjilv);?></td><td><?php echo mysql_result($query,$i,tianjiaren);?></td>
     <td width="120" align="center"><?php
-echo mysqli_result($query,$i,"addtime");
+echo mysql_result($query,$i,"addtime");
 ?></td>
     <td width="70" align="center"><a href="del.php?id=<?php
-		echo mysqli_result($query,$i,"id");
-	?>&tablename=xinwentongzhi" onclick="return confirm('���Ҫɾ����')">ɾ��</a> <a href="xinwentongzhi_updt.php?id=<?php
-		echo mysqli_result($query,$i,"id");
-	?>">�޸�</a></td>
+		echo mysql_result($query,$i,"id");
+	?>&tablename=xinwentongzhi" onclick="return confirm('真的要删除？')">删除</a> <a href="xinwentongzhi_updt.php?id=<?php
+		echo mysql_result($query,$i,"id");
+	?>">修改</a></td>
   </tr>
   	<?php
 	}
 }
 ?>
 </table>
-<p>�������ݹ�<?php
+<p>以上数据共<?php
 		echo $rowscount;
-	?>��,
-  <input type="button" name="Submit2" onclick="javascript:window.print();" value="��ӡ��ҳ" />
+	?>条,
+  <input type="button" name="Submit2" onclick="javascript:window.print();" value="打印本页" />
 </p>
-<p align="center"><a href="xinwentongzhi_list.php?pagecurrent=1">��ҳ</a>, <a href="xinwentongzhi_list.php?pagecurrent=<?php echo $pagecurrent-1;?>">ǰһҳ</a> ,<a href="xinwentongzhi_list.php?pagecurrent=<?php echo $pagecurrent+1;?>">��һҳ</a>, <a href="xinwentongzhi_list.php?pagecurrent=<?php echo $pagecount;?>">ĩҳ</a>, ��ǰ��<?php echo $pagecurrent;?>ҳ,��<?php echo $pagecount;?>ҳ </p>
+<p align="center"><a href="xinwentongzhi_list.php?pagecurrent=1">首页</a>, <a href="xinwentongzhi_list.php?pagecurrent=<?php echo $pagecurrent-1;?>">前一页</a> ,<a href="xinwentongzhi_list.php?pagecurrent=<?php echo $pagecurrent+1;?>">后一页</a>, <a href="xinwentongzhi_list.php?pagecurrent=<?php echo $pagecount;?>">末页</a>, 当前第<?php echo $pagecurrent;?>页,共<?php echo $pagecount;?>页 </p>
 
 <p>&nbsp; </p>
 

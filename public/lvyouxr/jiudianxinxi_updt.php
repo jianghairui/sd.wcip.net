@@ -9,7 +9,7 @@ if ($addnew=="1" )
 	$jiudianmingcheng=$_POST["jiudianmingcheng"];$xingji=$_POST["xingji"];$dianhua=$_POST["dianhua"];$dizhi=$_POST["dizhi"];$zhaopian=$_POST["zhaopian"];$beizhu=$_POST["beizhu"];
 	$sql="update jiudianxinxi set jiudianmingcheng='$jiudianmingcheng',xingji='$xingji',dianhua='$dianhua',dizhi='$dizhi',zhaopian='$zhaopian',beizhu='$beizhu' where id= ".$id;
 	mysqli_query($sql);
-	echo "<script>javascript:alert('�޸ĳɹ�!');location.href='jiudianxinxi_list.php';</script>";
+	echo "<script>javascript:alert('修改成功!');location.href='jiudianxinxi_list.php';</script>";
 }
 ?>
 
@@ -17,7 +17,7 @@ if ($addnew=="1" )
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
-<title>�޸ľƵ���Ϣ</title><link rel="stylesheet" href="css.css" type="text/css"><script language="javascript" src="js/Calendar.js"></script>
+<title>修改酒店信息</title><link rel="stylesheet" href="css.css" type="text/css"><script language="javascript" src="js/Calendar.js"></script>
 </head>
 <script language="javascript">
 	
@@ -33,31 +33,31 @@ if ($addnew=="1" )
 }
 </script>
 <body>
-<p>�޸ľƵ���Ϣ�� ��ǰ���ڣ� <?php echo $ndate; ?></p>
+<p>修改酒店信息： 当前日期： <?php echo $ndate; ?></p>
 <?php
 $sql="select * from jiudianxinxi where id=".$id;
 $query=mysqli_query($sql);
-$rowscount=mysqli_num_rows($query);
+$rowscount=mysql_num_rows($query);
 if($rowscount>0)
 {
 ?>
 <form id="form1" name="form1" method="post" action="">
 <table width="100%" border="1" align="center" cellpadding="3" cellspacing="1" bordercolor="#00FFFF" style="border-collapse:collapse"> 
 
-      <tr><td>�Ƶ����ƣ�</td><td><input name='jiudianmingcheng' type='text' id='jiudianmingcheng' size='50' value='<?php echo mysqli_result($query,$i,jiudianmingcheng);?>' /></td></tr><tr><td>�Ǽ���</td><td><select name='xingji' id='xingji'>
-        <option value="���Ǽ�">���Ǽ�</option>
-        <option value="���Ǽ�">���Ǽ�</option>
-        <option value="���Ǽ�">���Ǽ�</option>
-        <option value="���Ǽ�">���Ǽ�</option>
+      <tr><td>酒店名称：</td><td><input name='jiudianmingcheng' type='text' id='jiudianmingcheng' size='50' value='<?php echo mysql_result($query,$i,jiudianmingcheng);?>' /></td></tr><tr><td>星级：</td><td><select name='xingji' id='xingji'>
+        <option value="五星级">五星级</option>
+        <option value="四星级">四星级</option>
+        <option value="三星级">三星级</option>
+        <option value="二星级">二星级</option>
       </select></td></tr>
-	  <script language="javascript">document.form1.xingji.value='<?php echo mysqli_result($query,$i,xingji);?>';</script><tr><td>�绰��</td><td><input name='dianhua' type='text' id='dianhua' value='<?php echo mysqli_result($query,$i,dianhua);?>' /></td></tr><tr><td>��ַ��</td><td><input name='dizhi' type='text' id='dizhi' size='50' value='<?php echo mysqli_result($query,$i,dizhi);?>' /></td></tr><tr><td>��Ƭ��</td><td><input name='zhaopian' type='text' id='zhaopian' size='50'  value='<?php echo mysqli_result($query,$i,zhaopian);?>' /> &nbsp;<a href="javaScript:OpenScript('upfile.php?Result=zhaopian',460,180)"><img src="Images/Upload.gif" width="30" height="16" border="0" align="absmiddle" /></a></td></tr><tr><td>��ע��</td><td><textarea name='beizhu' cols='50' rows='8' id='beizhu'><?php echo mysqli_result($query,$i,beizhu);?></textarea></td></tr>
+	  <script language="javascript">document.form1.xingji.value='<?php echo mysql_result($query,$i,xingji);?>';</script><tr><td>电话：</td><td><input name='dianhua' type='text' id='dianhua' value='<?php echo mysql_result($query,$i,dianhua);?>' /></td></tr><tr><td>地址：</td><td><input name='dizhi' type='text' id='dizhi' size='50' value='<?php echo mysql_result($query,$i,dizhi);?>' /></td></tr><tr><td>照片：</td><td><input name='zhaopian' type='text' id='zhaopian' size='50'  value='<?php echo mysql_result($query,$i,zhaopian);?>' /> &nbsp;<a href="javaScript:OpenScript('upfile.php?Result=zhaopian',460,180)"><img src="Images/Upload.gif" width="30" height="16" border="0" align="absmiddle" /></a></td></tr><tr><td>备注：</td><td><textarea name='beizhu' cols='50' rows='8' id='beizhu'><?php echo mysql_result($query,$i,beizhu);?></textarea></td></tr>
    
    
     <tr>
       <td>&nbsp;</td>
       <td><input name="addnew" type="hidden" id="addnew" value="1" />
-      <input type="submit" name="Submit" value="�޸�" />
-      <input type="reset" name="Submit2" value="����" /></td>
+      <input type="submit" name="Submit" value="修改" />
+      <input type="reset" name="Submit2" value="重置" /></td>
     </tr>
   </table>
 </form>

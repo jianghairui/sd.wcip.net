@@ -5,7 +5,7 @@ $id=$_GET["id"];
 ?>
 <html>
 <head>
-<title>â��������վ</title>
+<title>芒果旅游网站</title>
 <LINK href="qtimages/style.css" type=text/css rel=stylesheet>
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312">
 <style type="text/css">
@@ -35,7 +35,7 @@ $id=$_GET["id"];
                   <tr>
                     <td width="785" height="40" background="qtimages/1_02_02_02_01.jpg"><table width="100%" height="19" border="0" cellpadding="0" cellspacing="0">
                       <tr>
-                        <td width="12%" align="center" valign="bottom"><span class="STYLE4">������·</span></td>
+                        <td width="12%" align="center" valign="bottom"><span class="STYLE4">旅游线路</span></td>
                         <td width="74%" valign="bottom">&nbsp;</td>
                         <td width="14%" valign="bottom" class="STYLE4"></td>
                       </tr>
@@ -49,39 +49,39 @@ $id=$_GET["id"];
                           <?php
 $sql="select * from lvyouxianlu where id=".$id;
 $query=mysqli_query($sql);
-$rowscount=mysqli_num_rows($query);
+$rowscount=mysql_num_rows($query);
 if($rowscount>0)
 {
 ?>
 </p>                          
                           <table width="100%" border="1" align="center" cellpadding="3" cellspacing="1" bordercolor="#00FFFF" style="border-collapse:collapse">
-  <td width='11%'>��ţ�</td>
-      <td width='39%'><?php echo mysqli_result($query,0,bianhao);?></td>
-    <td width='11%'>���ƣ�</td>
-    <td width='39%'><?php echo mysqli_result($query,0,mingcheng);?></td>
+  <td width='11%'>编号：</td>
+      <td width='39%'><?php echo mysql_result($query,0,bianhao);?></td>
+    <td width='11%'>名称：</td>
+    <td width='39%'><?php echo mysql_result($query,0,mingcheng);?></td>
   </tr><tr>
-    <td width='11%'>�����أ�</td>
-    <td width='39%'><?php echo mysqli_result($query,0,chufadi);?></td>
-    <td width='11%'>Ŀ�ĵأ�</td>
-    <td width='39%'><?php echo mysqli_result($query,0,mudedi);?></td>
+    <td width='11%'>出发地：</td>
+    <td width='39%'><?php echo mysql_result($query,0,chufadi);?></td>
+    <td width='11%'>目的地：</td>
+    <td width='39%'><?php echo mysql_result($query,0,mudedi);?></td>
   </tr>
   <tr>
-    <td width='11%'>����ʱ�䣺</td>
-    <td width='39%'><?php echo mysqli_result($query,0,chuxingshijian);?></td>
-    <td width='11%'>�۸�</td>
-    <td width='39%'><?php echo mysqli_result($query,0,jiage);?></td>
+    <td width='11%'>出行时间：</td>
+    <td width='39%'><?php echo mysql_result($query,0,chuxingshijian);?></td>
+    <td width='11%'>价格：</td>
+    <td width='39%'><?php echo mysql_result($query,0,jiage);?></td>
   </tr>
   <tr>
-    <td width='11%'>����ʱ����</td>
-    <td width='39%'><?php echo mysqli_result($query,0,chuxingshichang);?></td>
-    <td width='11%'>��ͨ���ߣ�</td>
-    <td width='39%'><?php echo mysqli_result($query,0,jiaotonggongju);?></td>
+    <td width='11%'>出行时长：</td>
+    <td width='39%'><?php echo mysql_result($query,0,chuxingshichang);?></td>
+    <td width='11%'>交通工具：</td>
+    <td width='39%'><?php echo mysql_result($query,0,jiaotonggongju);?></td>
   </tr>
   <tr>
-    <td width='11%' height="60">��ע��</td>
-    <td colspan="3"><?php echo mysqli_result($query,0,beizhu);?></td>
+    <td width='11%' height="60">备注：</td>
+    <td colspan="3"><?php echo mysql_result($query,0,beizhu);?></td>
     <tr>
-    <td colspan="4" align="center"><input type="button" name="Submit" value="����" onclick="javascript:history.back()" /></td>
+    <td colspan="4" align="center"><input type="button" name="Submit" value="返回" onclick="javascript:history.back()" /></td>
   </tr>
                           </table>
                           <?php

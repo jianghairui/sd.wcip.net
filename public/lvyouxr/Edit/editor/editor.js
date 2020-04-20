@@ -69,9 +69,9 @@ EDiaryEditor = {
 		var _toolbarStr = "\
 			<div id='EDiaryEditor'style='width: 621px;'>\
 				<div id='EDiaryEditorToolBar' style='position: relative; width: 621px; height: 69px; background-image: url(images/editor/toolbar_bg.gif);'>\
-					<div id='EDiaryEditorFontFamilyMenu' title='×ÖÌå' style='position: absolute; left: 80px; top: 12px; width: 92px; height: 18px; line-height: 20px; padding-left: 4px; cursor: pointer;' action='Family' unselectable='on'>×ÖÌå</div>\
-					<div id='EDiaryEditorFontSizeMenu' title='×ÖºÅ' style='position: absolute; left: 177px; top: 12px; width: 66px; height: 18px; line-height: 20px; padding-left: 4px; cursor: pointer;' action='Size' unselectable='on'>×ÖºÅ</div>\
-					<div id='EDiaryEditorFontStyleMenu' title='¶ÎÂä' style='position: absolute; left: 245px; top: 12px; width: 66px; height: 18px; line-height: 20px; padding-left: 4px; cursor: pointer;' action='Style' unselectable='on'>¶ÎÂä</div>\
+					<div id='EDiaryEditorFontFamilyMenu' title='å­—ä½“' style='position: absolute; left: 80px; top: 12px; width: 92px; height: 18px; line-height: 20px; padding-left: 4px; cursor: pointer;' action='Family' unselectable='on'>å­—ä½“</div>\
+					<div id='EDiaryEditorFontSizeMenu' title='å­—å·' style='position: absolute; left: 177px; top: 12px; width: 66px; height: 18px; line-height: 20px; padding-left: 4px; cursor: pointer;' action='Size' unselectable='on'>å­—å·</div>\
+					<div id='EDiaryEditorFontStyleMenu' title='æ®µè½' style='position: absolute; left: 245px; top: 12px; width: 66px; height: 18px; line-height: 20px; padding-left: 4px; cursor: pointer;' action='Style' unselectable='on'>æ®µè½</div>\
 				</div>\
 				<div style='width: 621px; height: 25px; background-image: url(images/editor/title_bg.gif);'>\
 				</div>\
@@ -81,41 +81,41 @@ EDiaryEditor = {
 					<input type='hidden' name='char_count' value='-1' id='EDiaryEditorStrLen'>\
 				</div>\
 				<div style='width: 621px; height: 59px; background-image: url(images/editor/editor_foot.gif)'>\
-					<div style='float: left; padding-top: 18px; margin-left: 18px; margin-top: 16px;'><input type='checkbox' id='ModeCheck'><label for='ModeCheck'>ÏÔÊ¾Ô´´úÂë</label></div>\
+					<div style='float: left; padding-top: 18px; margin-left: 18px; margin-top: 16px;'><input type='checkbox' id='ModeCheck'><label for='ModeCheck'>æ˜¾ç¤ºæºä»£ç </label></div>\
 				</div>\
 			</div>\
 		";
 		this.addHTML($(sParentID), _toolbarStr);
 
 		var _toolBarInfo = [
-			{l: 11, t: 12, w: 35, h: 51, a: "Õ³Ìù", n: "paste"},
-			{l: 46, t: 12, w: 21, h: 24, a: "¼ôÇĞ", n: "cut"},
-			{l: 46, t: 36, w: 21, h: 27, a: "¸´ÖÆ", n: "copy"},
-			{l: 77, t: 41, w: 23, h: 23, a: "³·Ïú", n: "undo"},
-			{l: 102, t: 41, w: 23, h: 23, a: "ÖØ×ö", n: "redo"},
-			{l: 133, t: 41, w: 23, h: 23, a: "´ÖÌå", n: "bold"},
-			{l: 158, t: 41, w: 24, h: 23, a: "Ğ±Ìå", n: "italic"},
-			{l: 184, t: 41, w: 24, h: 23, a: "ÏÂ»®Ïß", n: "underline"},
-			{l: 210, t: 41, w: 24, h: 23, a: "ÎÄ×ÖÑÕÉ«", n: "forecolor", c: "FColor"},
-			{l: 236, t: 41, w: 24, h: 23, a: "±³¾°ÑÕÉ«", n: "hilitecolor", c: "HColor"},
-			{l: 262, t: 41, w: 24, h: 23, a: "ºáÏß", n: "inserthorizontalrule"},
-			{l: 288, t: 41, w: 24, h: 23, a: "²åÈë±íÇé", n: "face", c: "FaceBG"},
-			{l: 320, t: 41, w: 23, h: 23, a: "×ó¶ÔÆë", n: "justifyleft"},
-			{l: 345, t: 41, w: 24, h: 23, a: "¾ÓÖĞ¶ÔÆë", n: "justifycenter"},
-			{l: 371, t: 41, w: 24, h: 23, a: "ÓÒ¶ÔÆë", n: "justifyright"},
-			{l: 397, t: 41, w: 24, h: 23, a: "Á½¶Ë¶ÔÆë", n: "justifyfull"},
-			{l: 429, t: 41, w: 59, h: 23, a: "Í¼Æ¬ÅÅ°æ", n: "justifyformat", c: "Justify"},
-			{l: 320, t: 10, w: 23, h: 23, a: "±àºÅ", n: "insertorderedlist"},
-			{l: 345, t: 10, w: 24, h: 23, a: "ÏîÄ¿·ûºÅ", n: "insertunorderedlist"},
-			{l: 371, t: 10, w: 24, h: 23, a: "¼õÉÙËõ½ø", n: "outdent"},
-			{l: 397, t: 10, w: 24, h: 23, a: "Ôö¼ÓËõ½ø", n: "indent"},
-			{l: 429, t: 10, w: 23, h: 23, a: "²åÈëÍ¼Æ¬", n: "img"},
-			{l: 454, t: 10, w: 24, h: 23, a: "²åÈëÁ´½Ó", n: "link"},
-			{l: 480, t: 10, w: 24, h: 23, a: "²åÈë±í¸ñ", n: "table"},
-			{l: 531, t: 10, w: 24, h: 23, a: "²åÈëËÑË÷", n: "iask"},
-			{l: 506, t: 10, w: 23, h: 23, a: "²åÈëÎÄ±¾¿ò", n: "textarea"},
-			{l: 496, t: 41, w: 59, h: 23, a: "Ô¤ÀÀÎÄÕÂ", n: "view"},
-			{l: 563, t: 10, w: 48, h: 54, a: "¶ÎÂä»¯", n: "ParaFormatting"},
+			{l: 11, t: 12, w: 35, h: 51, a: "ç²˜è´´", n: "paste"},
+			{l: 46, t: 12, w: 21, h: 24, a: "å‰ªåˆ‡", n: "cut"},
+			{l: 46, t: 36, w: 21, h: 27, a: "å¤åˆ¶", n: "copy"},
+			{l: 77, t: 41, w: 23, h: 23, a: "æ’¤é”€", n: "undo"},
+			{l: 102, t: 41, w: 23, h: 23, a: "é‡åš", n: "redo"},
+			{l: 133, t: 41, w: 23, h: 23, a: "ç²—ä½“", n: "bold"},
+			{l: 158, t: 41, w: 24, h: 23, a: "æ–œä½“", n: "italic"},
+			{l: 184, t: 41, w: 24, h: 23, a: "ä¸‹åˆ’çº¿", n: "underline"},
+			{l: 210, t: 41, w: 24, h: 23, a: "æ–‡å­—é¢œè‰²", n: "forecolor", c: "FColor"},
+			{l: 236, t: 41, w: 24, h: 23, a: "èƒŒæ™¯é¢œè‰²", n: "hilitecolor", c: "HColor"},
+			{l: 262, t: 41, w: 24, h: 23, a: "æ¨ªçº¿", n: "inserthorizontalrule"},
+			{l: 288, t: 41, w: 24, h: 23, a: "æ’å…¥è¡¨æƒ…", n: "face", c: "FaceBG"},
+			{l: 320, t: 41, w: 23, h: 23, a: "å·¦å¯¹é½", n: "justifyleft"},
+			{l: 345, t: 41, w: 24, h: 23, a: "å±…ä¸­å¯¹é½", n: "justifycenter"},
+			{l: 371, t: 41, w: 24, h: 23, a: "å³å¯¹é½", n: "justifyright"},
+			{l: 397, t: 41, w: 24, h: 23, a: "ä¸¤ç«¯å¯¹é½", n: "justifyfull"},
+			{l: 429, t: 41, w: 59, h: 23, a: "å›¾ç‰‡æ’ç‰ˆ", n: "justifyformat", c: "Justify"},
+			{l: 320, t: 10, w: 23, h: 23, a: "ç¼–å·", n: "insertorderedlist"},
+			{l: 345, t: 10, w: 24, h: 23, a: "é¡¹ç›®ç¬¦å·", n: "insertunorderedlist"},
+			{l: 371, t: 10, w: 24, h: 23, a: "å‡å°‘ç¼©è¿›", n: "outdent"},
+			{l: 397, t: 10, w: 24, h: 23, a: "å¢åŠ ç¼©è¿›", n: "indent"},
+			{l: 429, t: 10, w: 23, h: 23, a: "æ’å…¥å›¾ç‰‡", n: "img"},
+			{l: 454, t: 10, w: 24, h: 23, a: "æ’å…¥é“¾æ¥", n: "link"},
+			{l: 480, t: 10, w: 24, h: 23, a: "æ’å…¥è¡¨æ ¼", n: "table"},
+			{l: 531, t: 10, w: 24, h: 23, a: "æ’å…¥æœç´¢", n: "iask"},
+			{l: 506, t: 10, w: 23, h: 23, a: "æ’å…¥æ–‡æœ¬æ¡†", n: "textarea"},
+			{l: 496, t: 41, w: 59, h: 23, a: "é¢„è§ˆæ–‡ç« ", n: "view"},
+			{l: 563, t: 10, w: 48, h: 54, a: "æ®µè½åŒ–", n: "ParaFormatting"},
 		];
 		_this.config.toolbarinfo = _toolBarInfo;
 		var _toolbarStr2 = new String;
@@ -126,11 +126,11 @@ EDiaryEditor = {
 		
 		var _toolMenuInfo = {
 			Family: [
-				{t: "ËÎÌå"},
-				{t: "ºÚÌå"},
-				{t: "Á¥Êé"},
-				{t: "¿¬Ìå"},
-				{t: "Ó×Ô²"},
+				{t: "å®‹ä½“"},
+				{t: "é»‘ä½“"},
+				{t: "éš¶ä¹¦"},
+				{t: "æ¥·ä½“"},
+				{t: "å¹¼åœ†"},
 				{t: "Arial"},
 				{t: "Impact"},
 				{t: "Georgia"},
@@ -139,25 +139,25 @@ EDiaryEditor = {
 				{t: "Times New Roman"}
 			],
 			Size: [
-		    	{t: "10px",n:"(ÁùºÅ)"},
-				{t: "12px",n:"(Ğ¡Îå)"},
-				{t: "14px",n:"(ÎåºÅ)"},
-				{t: "16px",n:"(Ğ¡ËÄ)"},
+		    	{t: "10px",n:"(å…­å·)"},
+				{t: "12px",n:"(å°äº”)"},
+				{t: "14px",n:"(äº”å·)"},
+				{t: "16px",n:"(å°å››)"},
 				{t: "18px",n:""},
-				{t: "20px",n:"(Ğ¡Èı)"},
+				{t: "20px",n:"(å°ä¸‰)"},
 				{t: "22px",n:""},
-				{t: "24px",n:"(Ğ¡¶ş)"},
-				{t: "32px",n:"(Ğ¡Ò»)"},
-				{t: "56px",n:"(³õºÅ)"}
+				{t: "24px",n:"(å°äºŒ)"},
+				{t: "32px",n:"(å°ä¸€)"},
+				{t: "56px",n:"(åˆå·)"}
 			],
 			Style: [
-                {t: "div",n:"È¡Ïû¶ÎÂä", s: "14"},     
-                {t: "H1",n:"¶ÎÂä1", s: "32"},
-				{t: "H2",n:"¶ÎÂä2", s: "24"},
-				{t: "H3",n:"¶ÎÂä3", s: "18"},
-				{t: "H4",n:"¶ÎÂä4", s: "16"},
-				{t: "H5",n:"¶ÎÂä5", s: "12"},
-				{t: "H6",n:"¶ÎÂä6", s: "10"}
+                {t: "div",n:"å–æ¶ˆæ®µè½", s: "14"},     
+                {t: "H1",n:"æ®µè½1", s: "32"},
+				{t: "H2",n:"æ®µè½2", s: "24"},
+				{t: "H3",n:"æ®µè½3", s: "18"},
+				{t: "H4",n:"æ®µè½4", s: "16"},
+				{t: "H5",n:"æ®µè½5", s: "12"},
+				{t: "H6",n:"æ®µè½6", s: "10"}
 			]
 		};
 
@@ -172,7 +172,7 @@ EDiaryEditor = {
 						_toolbarStr3 += "\
 							<!-- Font Family Menu -->\
 							<div style='cursor: default; position: absolute; width: 163px; top: 32px; left: 78px; display: none;' id='EDiaryEditorFontFamilyItem'>\
-								<div style='text-align: center; height: 20px; background-image: url(images/editor/menu_title.gif); padding-top: 6px; padding-left: 6px;'><b>×ÖÌå</b></div>\
+								<div style='text-align: center; height: 20px; background-image: url(images/editor/menu_title.gif); padding-top: 6px; padding-left: 6px;'><b>å­—ä½“</b></div>\
 									<div style=' height: 296px!important ;height: 290px; background-image: url(images/editor/menu_bg.gif);' id='EDiaryEditorFontFamilyBox'>\
 						";
 					}
@@ -195,7 +195,7 @@ EDiaryEditor = {
 						_toolbarStr3 += "\
 							<!-- Font Size Menu -->\
 							<div style='cursor: default; position: absolute; width: 163px; top: 32px; left: 175px; display: none;' id='EDiaryEditorFontSizeItem'>\
-								<div style='text-align: center; height: 20px; background-image: url(images/editor/menu_title.gif); padding-top: 6px; padding-left: 6px;'><b>×ÖºÅ</b></div>\
+								<div style='text-align: center; height: 20px; background-image: url(images/editor/menu_title.gif); padding-top: 6px; padding-left: 6px;'><b>å­—å·</b></div>\
 									<div style='height: 388px!important ;height: 306px; background-image: url(images/editor/menu_bg.gif);' id='EDiaryEditorFontSizeBox'>\
 						";
 					}
@@ -216,7 +216,7 @@ EDiaryEditor = {
 						_toolbarStr3 += "\
 							<!-- Font Style Menu -->\
 							<div style='cursor: default; position: absolute; width: 163px; top: 32px; left: 243px; display: none;' id='EDiaryEditorFontStyleItem'>\
-								<div style='text-align: center; height: 20px; background-image: url(images/editor/menu_title.gif); padding-top: 6px; padding-left: 6px;'><b>¶ÎÂä</b></div>\
+								<div style='text-align: center; height: 20px; background-image: url(images/editor/menu_title.gif); padding-top: 6px; padding-left: 6px;'><b>æ®µè½</b></div>\
 									<div style='height: 231px!important ;height: 187px; background-image: url(images/editor/menu_bg.gif);' id='EDiaryEditorFontStyleBox'>\
 						";
 					}
@@ -323,7 +323,7 @@ EDiaryEditor = {
 
 		this.addHTML($("EDiaryEditorToolBar"), _toolbarStr9);	
 
-		var _toolbarStr9 = "<div style='position: absolute; left: 483px; top: 41px; display: none;' id='EDiaryEditorRsave' title='»Ö¸´ÉÏÒ»´ÎÎ´³É¹¦·¢±íÄÚÈİ'><img src='images/editor/rsave.gif' csrc='/images/rsave.gif' bsrc='/images/rsave_over.gif' onmouseover='this.src=this.bsrc' onmouseout='this.src=this.csrc'></div>";
+		var _toolbarStr9 = "<div style='position: absolute; left: 483px; top: 41px; display: none;' id='EDiaryEditorRsave' title='æ¢å¤ä¸Šä¸€æ¬¡æœªæˆåŠŸå‘è¡¨å†…å®¹'><img src='images/editor/rsave.gif' csrc='/images/rsave.gif' bsrc='/images/rsave_over.gif' onmouseover='this.src=this.bsrc' onmouseout='this.src=this.csrc'></div>";
 		this.addHTML($("EDiaryEditorToolBar"), _toolbarStr9);
 		
 		
@@ -343,7 +343,7 @@ EDiaryEditor = {
 		this.iframe = $("editor_body_area");
 		if(window._isIE) {
 			this.iframe.addBehavior("#default#userData");
-			// »Ö¸´ÎÄÕÂÄÚÈİ¹¦ÄÜÄ£¿é 
+			// æ¢å¤æ–‡ç« å†…å®¹åŠŸèƒ½æ¨¡å— 
 			function EDiaryEditorRsave() {
 				try{
 					if(readCookie("EDiaryEditor_RSave") == "false")return;
@@ -351,8 +351,8 @@ EDiaryEditor = {
 					oPersist.load("EDiaryEditorRsave");
 					var oData = oPersist.getAttribute("Edit");
 					if(oData != null && oData != "" && Request("ReadCookie")==1) {
-						if(confirm("ÄúÓĞÒ»ÆªÎ´Íê³ÉµÄÄÚÈİ£¬ÊÇ·ñÈ·ÈÏ»Ö¸´£¿")) {
-							if(_this.iframe.style.display != "none") {// Éè¼ÆÄ£Ê½
+						if(confirm("æ‚¨æœ‰ä¸€ç¯‡æœªå®Œæˆçš„å†…å®¹ï¼Œæ˜¯å¦ç¡®è®¤æ¢å¤ï¼Ÿ")) {
+							if(_this.iframe.style.display != "none") {// è®¾è®¡æ¨¡å¼
 								_this.iframe.contentWindow.document.body.innerHTML = oData;
 							}
 							else {
@@ -367,7 +367,7 @@ EDiaryEditor = {
 				}catch(e) {};
 			}
 			this.EDiaryEditorRsave = EDiaryEditorRsave;
-			// ³É¹¦£¬É¾³ı±£´æµÄÄÚÈİ
+			// æˆåŠŸï¼Œåˆ é™¤ä¿å­˜çš„å†…å®¹
 			this.delEditorRsave = function () {
 				writeCookie("EDiaryEditor_RSave", "false", 1);
 				var oPersist = _this.iframe;
@@ -382,13 +382,13 @@ EDiaryEditor = {
 				writeCookie("EDiaryEditor_RUser", "null", 1000);
 				delEditorRsave();
 			}
-			// ¶¨Ê±±£´æÎÄÕÂÕıÎÄÄÚÈİ
+			// å®šæ—¶ä¿å­˜æ–‡ç« æ­£æ–‡å†…å®¹
 			this.iframe.addBehavior("#default#userData");
 			setInterval(function () {
 				if(readCookie("EDiaryEditor_RSave") == "false")return;
 				if(_this.iframe.contentWindow.document.body.innerHTML.length > 5000) return;
 				if(sState != "iframe")return;
-				if(_this.iframe.style.display != "none") {// Éè¼ÆÄ£Ê½
+				if(_this.iframe.style.display != "none") {// è®¾è®¡æ¨¡å¼
 					if(_this.iframe.contentWindow.document.body.innerHTML.toLowerCase() == "<div>&nbsp;</div>") return;
 					if(_this.iframe.contentWindow.document.body.innerHTML.toLowerCase() == "<div></div>") return;
 					if(_this.iframe.contentWindow.document.body.innerHTML.toLowerCase() == "<p>&nbsp;</p>") return;
@@ -397,7 +397,7 @@ EDiaryEditor = {
 					oPersist.setAttribute("Edit",_this.iframe.contentWindow.document.body.innerHTML);
 					oPersist.save("EDiaryEditorRsave");
 				}
-				else {// ´úÂëÄ£Ê½
+				else {// ä»£ç æ¨¡å¼
 					if($("editor_body_textarea").value.toLowerCase() == "<div>&nbsp;</div>") return;
 					if($("editor_body_textarea").value.toLowerCase() == "<div></div>") return;
 					if($("editor_body_textarea").value.toLowerCase() == "<p>&nbsp;</p>") return;
@@ -441,7 +441,7 @@ EDiaryEditor = {
 							}
 							var sRangeType = _this.getElement();
 							if (sRangeType.tagName.toLowerCase() != "img"){
-								alert('ÇëÑ¡ÖĞÍ¼Æ¬ºó²Ù×÷!')
+								alert('è¯·é€‰ä¸­å›¾ç‰‡åæ“ä½œ!')
 							return;
 							}
 						}
@@ -518,10 +518,10 @@ EDiaryEditor = {
 		}
 
 		////////////////////////////////////////////////////////////
-		// ĞèÒªÓÅ»¯
+		// éœ€è¦ä¼˜åŒ–
         function eventObserver(){
             var es =_this.iframe.contentWindow.document.body.keyupEvents;
-				/* ×ÖÌåÔ¤Éè
+				/* å­—ä½“é¢„è®¾
                 if(es.fontsize){
                     reaplceFontName("fontsize",es.fontsize)
                 }
@@ -534,8 +534,8 @@ EDiaryEditor = {
             var idocument= _this.iframe.contentWindow.document;
 
             if(window._isIE) {
-				if(v == "¿¬Ìå" && !window._isVista) {
-					v = "¿¬Ìå_GB2312";
+				if(v == "æ¥·ä½“" && !window._isVista) {
+					v = "æ¥·ä½“_GB2312";
 				}
                 idocument.execCommand("fontname", "", "EDiaryEditor_Temp_FontName");
                  if(!idocument.body.keyupEvents)
@@ -672,7 +672,7 @@ EDiaryEditor = {
 				_this.iframe.contentWindow.document.body.innerHTML = _this.iframe.contentWindow.document.body.innerHTML;
 			}
 			else {
-				alert("ÇëÑ¡ÖĞÍ¼Æ¬ºó²Ù×÷!");
+				alert("è¯·é€‰ä¸­å›¾ç‰‡åæ“ä½œ!");
 			}
 		}
 		function swapMode(event, Act) {
@@ -779,7 +779,7 @@ EDiaryEditor = {
 			scrollbar-track-color: #f4f4f0;\
 			scrollbar-darkshadow-color: #ebebe4;\
 			word-wrap: break-word;\
-			font-family: 'ËÎÌå', 'Courier New';\
+			font-family: 'å®‹ä½“', 'Courier New';\
 		}\
 		p {\
 			margin: 0px;\
@@ -814,13 +814,13 @@ EDiaryEditor = {
 		_this.iframeWindow = _this.iframe.contentWindow;
 		_this.iframeDocument = _this.iframeWindow.document;
 
-		// ³õÊ¼»¯IFRAMEÖĞµÄÊÂ¼ş 
+		// åˆå§‹åŒ–IFRAMEä¸­çš„äº‹ä»¶ 
 		this.iframeEventCore.init(this);
 		_this.iframe.contentWindow.document.onclick = document.onclick = function (event) {
 			event = event || window.event;
 			FontMenuFuncHash.hide(event, FontMenuFuncHash);
 		}
-		// zly, moz ÏÂµã»÷±à¼­ÇøÇå³ı²Ëµ¥ÎŞĞ§, try ½â¾öµ¥´¿ÅĞ¶Ïä¯ÀÀÆ÷ÒıÆğµÄÎó²î¡£
+		// zly, moz ä¸‹ç‚¹å‡»ç¼–è¾‘åŒºæ¸…é™¤èœå•æ— æ•ˆ, try è§£å†³å•çº¯åˆ¤æ–­æµè§ˆå™¨å¼•èµ·çš„è¯¯å·®ã€‚
 		try{
 			_this.iframe.contentWindow.document.addEventListener('click', function (event) {
 				event = event || window.event;
@@ -860,7 +860,7 @@ EDiaryEditor = {
 				if(pasteData && pasteData.length > 0) {
 					var wordPattern = /<\w[^>]* class="?MsoNormal"?/gi;
 					if(wordPattern.test(pasteData)) {
-						if(confirm("ÎÄÕÂÓĞ¶àÓà´úÂë£¬¿ÉÄÜÓ°ÏìË³Àû·¢±í£¬ÊÇ·ñÈ·ÈÏÇå³ı£¿\r\n\r\nÌáÊ¾£ºÄúµÄÎÄ×Ö½«ÍêÕû±£Áô¡£")) {
+						if(confirm("æ–‡ç« æœ‰å¤šä½™ä»£ç ï¼Œå¯èƒ½å½±å“é¡ºåˆ©å‘è¡¨ï¼Œæ˜¯å¦ç¡®è®¤æ¸…é™¤ï¼Ÿ\r\n\r\næç¤ºï¼šæ‚¨çš„æ–‡å­—å°†å®Œæ•´ä¿ç•™ã€‚")) {
 							pasteData = clearFromWord(pasteData);
 						} 
 						else {	
@@ -957,178 +957,5 @@ EDiaryEditor = {
 			for(var i = 0; i < oChild.length; i++){
 				if(oChild[i].tagName){
 					
-					// È¥µôÊ×Î²¿Õ¸ñ
-					oChild[i].innerHTML	= oChild[i].innerHTML.split('&nbsp;').join('¨¼');
-					oChild[i].innerHTML	= oChild[i].innerHTML.replace(/(^[ |¡¡|¨¼]*)|([ |¡¡|¨¼]*$)/g, "");
-					oChild[i].innerHTML	= oChild[i].innerHTML.split('¨¼').join('&nbsp;');
-					
-					// ÊÇ·ñÒÑ¾­ÅÅ¹ı°æ,Ê¹ÓÃ 2em »áÊ¹¶ÎÂäÅÅ°æ»ìÂÒ£Ûh1,h2»ì£İ,¿ÉÉè¼ÆÄ¬ÈÏ 28 ÏñËØ¡£Í¨¹ı¼ÆËã×Ó½Úµã fontSize ·½Ê½Í¬ÑùÓĞ´ËÎÊÌâ
-					if(!oChild[i].style.textIndent){
-						oChild[i].style.textIndent	= '2em';
-					// Ä¬ÈÏÅÅ°æÇ°
-					}else{
-						oChild[i].style.textIndent	= '';
-					}
-				// ´¿ÎÄ±¾
-				}else{
-					oBody.innerHTML = '<div style="text-indent:2em;">' + oBody.innerHTML.replace(/(^[ |¡¡]*)|([ |¡¡]*$)/g, ""); + '</div>';
-				}
-			}
-		}
-		else if(CMD == "justifyformat" || CMD == "img" || CMD == "link" || CMD == "table" || CMD == "face") {
-			
-		}
-		else if(CMD == "forecolor") {
-			_this.iframe.contentWindow.document.execCommand("forecolor", false, sValue);
-		}
-		else if(CMD == "hilitecolor") {
-			_this.iframe.contentWindow.document.execCommand("backcolor", false, sValue);
-		}
-		else if(CMD == "iask") {
-			var oRTE = _this.iframe.contentWindow;
-			var rng;
-			if(window._isIE) {
-				var selection = oRTE.document.selection; 
-				if (selection != null) {
-					rng = selection.createRange();
-				}
-			}
-			else {
-				var selection = oRTE.getSelection();
-				rng = selection.getRangeAt(selection.rangeCount - 1).cloneRange();
-				rng.text = rng.toString();
-			}
-			var html = "<a href='http://www.baidu.com/s?cl=3&wd=" + rng.text + "' target='_blank'>" + rng.text  + "</a>";
-			if(window._isIE) {
-				var oSelection = oRTE.document.selection.createRange();
-				var sRangeType = oRTE.document.selection.type;
-				if (sRangeType == "Text") {
-					try{
-						oRTE.focus();
-						var oRng = oRTE.document.selection.createRange();
-						oRng.pasteHTML(html);
-						oRng.collapse(false);
-						oRng.select();
-					}
-					catch(e){}
-				}
-				else {
-					alert("ÇëÑ¡ÔñÒ»¶ÎÎÄ×Öºó²Ù×÷!");
-				}
-			}
-			else {
-				if(rng.text == "") {
-					alert("ÇëÑ¡ÔñÒ»¶ÎÎÄ×Öºó²Ù×÷!");
-				}
-				else {
-					_this.iframe.contentWindow.document.execCommand("insertHTML", false, html);
-				}
-			}
-		}
-		else if(CMD == "cleartype") {
-			if(window._isIE) {
-				for(var i = 0; i < _this.iframe.contentWindow.document.all.length; i ++) {
-					var node = _this.iframe.contentWindow.document.all[i];
-					if(node.tagName == "IMG") {
-						_this.addHTML2(node, "&lt;Sina_Temp_IMG_Editor src='" + node.src + "' width='" + node.width + "' height='" + node.height + "' border='0'&gt;");
-					}
-				}
-				var str = _this.iframe.contentWindow.document.body.innerText;
-				str = str.replace(/<Sina_Temp_IMG_Editor/g, "<img");
-				_this.iframe.contentWindow.document.body.innerHTML = str;
-			}
-			else {
-				alert("´Ë¹¦ÄÜÔİÊ±²»Ö§³ÖÄúÏÖÔÚµÄä¯ÀÀÆ÷£¬ÇëÊ¹ÓÃIEä¯ÀÀ");
-			}
-		}
-		else if(CMD == "textarea") {
-			var _sVal;
-			var frameWin = _this.iframe.contentWindow;
-			var rng = {};
-			if (window._isIE) {
-				var selection = frameWin.document.selection; 
-				if (selection != null) {
-					rng = selection.createRange();
-				}
-			} else {
-				var selection = frameWin.getSelection();
-				
-				rng = selection.getRangeAt(selection.rangeCount - 1).cloneRange();
-				rng.text = rng.toString();
-			}
-			_sVal = rng.text == "" ? "ÇëÔÚÎÄ±¾¿òÊäÈëÎÄ×Ö" : rng.text;
-			var html = "<table style='border:1px solid #999;width:80%;font-size:12px;' align='center'><tr><td>"+ _sVal +"</td></tr></table>";
-		
-			frameWin.focus();
-			if(window._isIE) {
-				var oSelection = _this.iframe.contentWindow.document.selection.createRange();
-				var sRangeType = _this.iframe.contentWindow.document.selection.type;
-				
-					oSelection.pasteHTML(html);
-					oSelection.collapse(false);
-					oSelection.select();
-			}
-			else {
-				 _this.iframe.contentWindow.document.execCommand('insertHTML', false, html);
-			}
-		}
-		else if (CMD == "hilitecolor") {
-			if(window._isIE) this.iframe.contentWindow.document.execCommand("BackColor",sValue);
-			else this.iframe.contentWindow.document.execCommand("hilitecolor",sValue);
-		}
-		else if (CMD == "undo" || CMD == "redo" || CMD == "cut" || CMD == "copy" || CMD == "paste") {
-			if(window._isIE == true) {
-				this.iframe.contentWindow.focus();
-				this.iframe.contentWindow.document.execCommand(CMD, false, sValue);
-				this.iframe.contentWindow.focus();
-			}
-			else {
-				alert("¸Ãä¯ÀÀÆ÷²»Ö§³Ö±¾¹¦ÄÜ");
-			}
-		}
-		else {
-			this.iframe.contentWindow.focus();
-			this.iframe.contentWindow.document.execCommand(CMD, false, sValue);
-			this.iframe.contentWindow.focus();
-		}
-	},
-	addHTML: function (oParentNode, sHTML) {
-		if(window.addEventListener) {// for MOZ
-			var oRange = oParentNode.ownerDocument.createRange();
-			oRange.setStartBefore(oParentNode);
-			var oFrag = oRange.createContextualFragment(sHTML);
-			oParentNode.appendChild(oFrag);
-		}
-		else {// for IE5+
-			oParentNode.insertAdjacentHTML("BeforeEnd", sHTML);
-		}
-	},
-	addHTML2: function (oParentNode, sHTML) {
-		oParentNode.insertAdjacentHTML("afterEnd", sHTML);
-	},
-	insertFace: function (nFaceNum) {
-		var FacePath = "face/";
-		this.iframe.contentWindow.focus();
-		this.iframe.contentWindow.document.execCommand("InsertImage", false, FacePath + nFaceNum + ".gif");
-		this.iframe.contentWindow.focus();
-	},
-	save: function () {
-		var _this = this;
-		if($("ModeCheck").checked == true) {
-			_this.iframeEventCore.imgsize(_this);
-			_this.iframe.contentWindow.document.body.innerHTML = $("editor_body_textarea").value;
-			$("editor_body_textarea").value = _this.iframe.contentWindow.document.body.innerHTML;
-		}
-		else {
-			$("editor_body_textarea").value = _this.iframe.contentWindow.document.body.innerHTML;
-		}
-	}
-};
-
-
-function Request(name) {//»ñÈ¡Ò³ÃæID²ÎÊı
-var reg = new RegExp("(^|\\?|&)"+ name +"=([^&]*)(\\s|&|$)", "i");
-if (reg.test(location.href))
-return unescape(RegExp.$2.replace(/\+/g, " "));
-return "";
-}
+					// å»æ‰é¦–å°¾ç©ºæ ¼
+					oChild[i].innerHTML	= oChild[i].innerHTML.split('&nbsp;').join('

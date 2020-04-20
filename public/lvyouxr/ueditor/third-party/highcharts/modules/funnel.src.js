@@ -2,7 +2,7 @@
  * @license 
  * Highcharts funnel module, Beta
  *
- * (c) 2010-2012 Torstein Hønsi
+ * (c) 2010-2012 Torstein H酶nsi
  *
  * License: www.highcharts.com/license
  */

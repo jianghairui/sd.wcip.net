@@ -6,8 +6,8 @@ if(isset($_FILES['upfile']['name'])){
   $uploadfile = getname($exname);
   $result = move_uploaded_file($_FILES['upfile']['tmp_name'], $uploadfile);
   if($result){
-    echo "<font color=#ff0000>文件上传成功！</font>"; 
-    echo "<input name='CopyPath' type='button' class='button' value='拷贝文件路径'  onclick=CopyPath('".$uploadfile."','".$_GET['Result']."')>";
+    echo "<font color=#ff0000>鏂囦欢涓婁紶鎴愬姛锛�</font>"; 
+    echo "<input name='CopyPath' type='button' class='button' value='鎷疯礉鏂囦欢璺緞'  onclick=CopyPath('".$uploadfile."','".$_GET['Result']."')>";
   }
 }
 
@@ -28,7 +28,7 @@ if(isset($_FILES['upfile']['name'])){
 <html> 
 <head> 
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312"> 
-<title>文件上传</title>
+<title>鏂囦欢涓婁紶</title>
 <link rel="stylesheet" href="Images/CssAdmin.css">
 </head> 
 <body> 
@@ -39,7 +39,7 @@ if(isset($_FILES['upfile']['name'])){
 
 <input name='upfile' type='file' class="button"> 
 
-<input type='submit' class="button" value='上传文件'>  
+<input type='submit' class="button" value='涓婁紶鏂囦欢'>  
 
 </form>  
 

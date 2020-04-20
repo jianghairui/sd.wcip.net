@@ -2,7 +2,7 @@
 session_start();
 
 	//echo $_SESSION['cx'];
-	if($_SESSION['cx']=="×¢²áÓÃ»§")
+	if($_SESSION['cx']=="æ³¨å†Œç”¨æˆ·")
 	{
 		echo "<script>javascript:location.href='left2.html';</script>";
 	}

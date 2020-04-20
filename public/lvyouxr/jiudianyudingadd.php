@@ -3,7 +3,7 @@ error_reporting(E_ALL &~ E_NOTICE);
 session_start();
 if($_SESSION["username"]=="")
 {
-	echo "<script>javascript:alert('�Բ��������ȵ�½��');location.href='index.php';</script>";
+	echo "<script>javascript:alert('对不起，请您先登陆！');location.href='index.php';</script>";
 	exit;
 }
 include_once 'conn.php';
@@ -15,12 +15,12 @@ if ($addnew=="1" )
 	$jiudianmingcheng=$_POST["jiudianmingcheng"];$xingji=$_POST["xingji"];$dianhua=$_POST["dianhua"];$dizhi=$_POST["dizhi"];$yudingren=$_POST["yudingren"];$yudingshijian=$_POST["yudingshijian"];$yudingrenshu=$_POST["yudingrenshu"];$beizhu=$_POST["beizhu"];
 	$sql="insert into jiudianyuding(jiudianmingcheng,xingji,dianhua,dizhi,yudingren,yudingshijian,yudingrenshu,beizhu) values('$jiudianmingcheng','$xingji','$dianhua','$dizhi','$yudingren','$yudingshijian','$yudingrenshu','$beizhu') ";
 	mysqli_query($sql);
-	echo "<script>javascript:alert('�����ɹ�!');location.href='jiudianyudingadd.php?id=$id';</script>";
+	echo "<script>javascript:alert('操作成功!');location.href='jiudianyudingadd.php?id=$id';</script>";
 }
 ?>
 <html>
 <head>
-<title>â��������վ</title><script language="javascript" src="js/Calendar.js"></script>
+<title>芒果旅游网站</title><script language="javascript" src="js/Calendar.js"></script>
 <link rel="stylesheet" type="text/css" href="css/jquery-ui.css">
 <link rel="stylesheet" media="all" type="text/css" href="css/jquery-ui-timepicker-addon.css" />
 <LINK href="qtimages/style.css" type=text/css rel=stylesheet>
@@ -52,7 +52,7 @@ if ($addnew=="1" )
 <script language="javascript">
 	function check()
 {
-	if(document.form1.jiudianmingcheng.value==""){alert("������Ƶ�����");document.form1.jiudianmingcheng.focus();return false;}if(document.form1.xingji.value==""){alert("�������Ǽ�");document.form1.xingji.focus();return false;}if(document.form1.yudingren.value==""){alert("������Ԥ����");document.form1.yudingren.focus();return false;}if(document.form1.yudingshijian.value==""){alert("������Ԥ��ʱ��");document.form1.yudingshijian.focus();return false;}
+	if(document.form1.jiudianmingcheng.value==""){alert("请输入酒店名称");document.form1.jiudianmingcheng.focus();return false;}if(document.form1.xingji.value==""){alert("请输入星级");document.form1.xingji.focus();return false;}if(document.form1.yudingren.value==""){alert("请输入预订人");document.form1.yudingren.focus();return false;}if(document.form1.yudingshijian.value==""){alert("请输入预订时间");document.form1.yudingshijian.focus();return false;}
 }
 	function gow()
 	{
@@ -75,7 +75,7 @@ if ($addnew=="1" )
                   <tr>
                     <td width="785" height="40" background="qtimages/1_02_02_02_01.jpg"><table width="100%" height="19" border="0" cellpadding="0" cellspacing="0">
                       <tr>
-                        <td width="12%" align="center" valign="bottom"><span class="STYLE4">�Ƶ�Ԥ��</span></td>
+                        <td width="12%" align="center" valign="bottom"><span class="STYLE4">酒店预订</span></td>
                         <td width="74%" valign="bottom">&nbsp;</td>
                         <td width="14%" valign="bottom" class="STYLE4"></td>
                       </tr>
@@ -89,52 +89,52 @@ if ($addnew=="1" )
 						<?php
 $sql="select * from jiudianxinxi where id=".$id;
 $query=mysqli_query($sql);
-$rowscount=mysqli_num_rows($query);
+$rowscount=mysql_num_rows($query);
 if($rowscount>0)
 {
 $i=0;
 ?>
                           <table width="100%" border="1" align="center" cellpadding="3" cellspacing="1" bordercolor="#00FFFF" style="border-collapse:collapse">
                             <tr>
-                              <td>�Ƶ����ƣ�</td>
-                              <td><input name='jiudianmingcheng' type='text' id='jiudianmingcheng' size='50' value='<?php echo mysqli_result($query,$i,jiudianmingcheng);?>' />                                &nbsp;*</td>
+                              <td>酒店名称：</td>
+                              <td><input name='jiudianmingcheng' type='text' id='jiudianmingcheng' size='50' value='<?php echo mysql_result($query,$i,jiudianmingcheng);?>' />                                &nbsp;*</td>
                             </tr>
                             <tr>
-                              <td>�Ǽ���</td>
-                              <td><input name='xingji' type='text' id='xingji' value='<?php echo mysqli_result($query,$i,xingji);?>' />
+                              <td>星级：</td>
+                              <td><input name='xingji' type='text' id='xingji' value='<?php echo mysql_result($query,$i,xingji);?>' />
                                 &nbsp;*</td>
                             </tr>
                             <tr>
-                              <td>�绰��</td>
-                              <td><input name='dianhua' type='text' id='dianhua' value='<?php echo mysqli_result($query,$i,dianhua);?>' /></td>
+                              <td>电话：</td>
+                              <td><input name='dianhua' type='text' id='dianhua' value='<?php echo mysql_result($query,$i,dianhua);?>' /></td>
                             </tr>
                             <tr>
-                              <td>��ַ��</td>
-                              <td><input name='dizhi' type='text' id='dizhi' value='<?php echo mysqli_result($query,$i,dizhi);?>' size='50'  /></td>
+                              <td>地址：</td>
+                              <td><input name='dizhi' type='text' id='dizhi' value='<?php echo mysql_result($query,$i,dizhi);?>' size='50'  /></td>
                             </tr>
                             <tr>
-                              <td>Ԥ���ˣ�</td>
+                              <td>预订人：</td>
                               <td><input name='yudingren' type='text' id='yudingren' value='<?php echo $_SESSION['username'];?>' />
                                 &nbsp;*</td>
                             </tr>
                             <tr>
-                              <td>Ԥ��ʱ�䣺</td>
+                              <td>预订时间：</td>
                               <td><input name='yudingshijian' type='text' id='yudingshijian' value=''/>
                                 &nbsp;*</td>
                             </tr>
                             <tr>
-                              <td>Ԥ��������</td>
+                              <td>预订人数：</td>
                               <td><input name='yudingrenshu' type='text' id='yudingrenshu' value='' /></td>
                             </tr>
                             <tr>
-                              <td>��ע��</td>
+                              <td>备注：</td>
                               <td><textarea name='beizhu' cols='50' rows='8' id='beizhu'></textarea></td>
                             </tr>
                             <tr>
                               <td>&nbsp;</td>
                               <td><input type="hidden" name="addnew" value="1" />
-                                  <input type="submit" name="Submit" value="���" onclick="return check();" />
-                                  <input type="reset" name="Submit2" value="����" /></td>
+                                  <input type="submit" name="Submit" value="添加" onclick="return check();" />
+                                  <input type="reset" name="Submit2" value="重置" /></td>
                             </tr>
                           </table><?php
 	}

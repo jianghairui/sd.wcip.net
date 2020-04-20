@@ -4,7 +4,7 @@
             <table align="center" border="0" cellspacing="0" width="88%">
                 <tr>
                     <td width="71%">
-                        <span class="unnamed2_14 STYLE2" style="font-size: 10pt; color: #ffffff"><strong>ÏµÍ³¹«¸æ</strong></span></td>
+                        <span class="unnamed2_14 STYLE2" style="font-size: 10pt; color: #ffffff"><strong>ç³»ç»Ÿå…¬å‘Š</strong></span></td>
                     <td style="font-weight: bold; font-size: 10pt; color: #ffffff" width="29%">&nbsp;</td>
                 </tr>
             </table>
@@ -15,7 +15,7 @@
             <marquee border="0" direction="up" height="130" onMouseOut="start()" onMouseOver="stop()"
                 scrollamount="1" scrolldelay="50"><TABLE cellSpacing=5 
       cellPadding=0 width="92%" align=center 
-            border=0><TBODY><TR><TD><P>&nbsp;&nbsp;&nbsp;&nbsp;¸öÈË¸ñÑÔ:×ÔÁ¦¸üÉú¡¢¼è¿à·Ü¶·¡¢°×ÊÖÆð¼Ò¡¢ÓëÊ±¾ã½ø¡¢ÆäËû»°Óï¡¢×Ô¼ºÌí¼Ó¡£</P><P>&nbsp;&nbsp;&nbsp;&nbsp;¸öÈË¸ñÑÔ:×ÔÁ¦¸üÉú¡¢¼è¿à·Ü¶·¡¢°×ÊÖÆð¼Ò¡¢ÓëÊ±¾ã½ø¡¢ÆäËû»°Óï¡¢×Ô¼ºÌí¼Ó¡£</P></TD></TR></TBODY></TABLE></marquee>
+            border=0><TBODY><TR><TD><P>&nbsp;&nbsp;&nbsp;&nbsp;ä¸ªäººæ ¼è¨€:è‡ªåŠ›æ›´ç”Ÿã€è‰°è‹¦å¥‹æ–—ã€ç™½æ‰‹èµ·å®¶ã€ä¸Žæ—¶ä¿±è¿›ã€å…¶ä»–è¯è¯­ã€è‡ªå·±æ·»åŠ ã€‚</P><P>&nbsp;&nbsp;&nbsp;&nbsp;ä¸ªäººæ ¼è¨€:è‡ªåŠ›æ›´ç”Ÿã€è‰°è‹¦å¥‹æ–—ã€ç™½æ‰‹èµ·å®¶ã€ä¸Žæ—¶ä¿±è¿›ã€å…¶ä»–è¯è¯­ã€è‡ªå·±æ·»åŠ ã€‚</P></TD></TR></TBODY></TABLE></marquee>
         </td>
     </tr>
 </table>
