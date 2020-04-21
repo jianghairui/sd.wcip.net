@@ -340,7 +340,7 @@ class My extends Base {
         $val['uid'] = $this->myinfo['uid'];
         checkPost($val);
         try {
-            $val['price'] = 0.03;
+            $val['price'] = 199;
             $val['days'] = 365;
             $val['create_time'] = time();
             $val['desc'] = '充值年度会员';
