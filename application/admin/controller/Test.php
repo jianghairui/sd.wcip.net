@@ -11,15 +11,12 @@ use think\Controller;
 use think\Db;
 class Test extends Base {
 
-
 //    public function index() {
 //        try {
-//            $ids = Db::table('mp_user')->column('id');
+//            $ids = Db::table('mp_user_mp')->column('id');
 //            foreach ($ids as $v) {
-//                if(!in_array($v,[1,2,3,5,13,14])) {
-//                    $res = Db::table('mp_user')->where('id','=',$v)->update(['nickname'=>randomkeys(10)]);
-//                    echo $v . '-' . $res . ' success<br>';
-//                }
+//                $res = Db::table('mp_user_mp')->where('id','=',$v)->update(['nickname'=>randomkeys(10)]);
+//                echo $v . '-' . $res . ' success<br>';
 //            }
 //        } catch (\Exception $e) {
 //            return ajax($e->getMessage(), -1);
