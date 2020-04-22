@@ -150,7 +150,7 @@ class Note extends Base {
                 ->join('mp_user u','n.uid=u.id','left')
                 ->join('mp_goods g','n.goods_id=g.id','left')
                 ->where('n.id','=',$val['note_id'])
-                ->field('n.id,n.uid,n.content,n.pics,n.like,n.status,n.reason,n.goods_id,n.comment_num,g.poster,g.name AS goods_name,u.nickname,u.avatar')
+                ->field('n.id,n.uid,n.content,n.pics,n.like,n.status,n.reason,n.goods_id,n.comment_num,n.create_time,g.poster,g.name AS goods_name,u.nickname,u.avatar')
                 ->find();
             if(!$info) {
                 return ajax('invalid id',-4);

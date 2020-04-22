@@ -58,6 +58,7 @@ class Base extends Controller {
             'Email',
             'Login/login',
             'Pay/vipnotify',
+            'Pay/rolevipnotify',
             'Pay/ordernotify',
             'Pay/fundingnotify',
 
@@ -129,6 +130,7 @@ class Base extends Controller {
             'My/modsex',
             'My/moddesc',
             'My/recharge',
+            'My/roleviprecharge',
             'My/applyinfo',
             'My/roleapply',
 
@@ -168,7 +170,7 @@ class Base extends Controller {
 
     protected function getUserInfo() {
         if(!$this->myinfo['uid']) {
-            return [];
+            throw new HttpResponseException(ajax('请绑定手机号',-7));
         }else {
             $whereUser = [
                 ['id','=',$this->myinfo['uid']]

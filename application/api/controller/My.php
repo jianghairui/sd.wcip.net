@@ -21,7 +21,7 @@ class My extends Base {
                 ->join('mp_user u','m.uid=u.id','left')
                 ->join('mp_user_role r','u.id=r.uid','left')
                 ->where($whereUser)
-                ->field('m.uid,m.openid,m.unionid,m.last_login_time,m.create_time,m.bind_time,u.nickname,u.avatar,u.realname,u.age,u.sex,u.avatar,u.tel,u.score,u.focus,u.subscribe,u.vip,u.vip_time,u.desc,IFNULL(u.role,0) AS role,u.org,r.busine')
+                ->field('m.uid,m.openid,m.unionid,m.last_login_time,m.create_time,m.bind_time,u.nickname,u.avatar,u.realname,u.age,u.sex,u.avatar,u.tel,u.score,u.focus,u.subscribe,u.vip,u.vip_time,u.role_vip,u.role_vip_time,u.desc,IFNULL(u.role,0) AS role,u.org,r.busine')
                 ->find();
             if($info['uid']) {
                 $whereNote = [
@@ -351,6 +351,85 @@ class My extends Base {
         }
         return ajax($val);
 
+    }
+
+    public function roleVipList() {
+//        $userinfo = $this->getUserInfo();
+        try {
+//            if($userinfo['role_vip']) {
+//                $whereVip = [
+//                    ['id','=',$userinfo['role_vip_id']]
+//                ];
+//                $vip_exist = Db::table('mp_role_vip')->where($whereVip)->find();
+//                $map = [
+//                    ['id','>=',$userinfo['role_vip_id']]
+//                ];
+//            }else {
+                $map = [];
+//            }
+            $list = Db::table('mp_role_vip')->where($map)->field('id,title,price,pic')->select();
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+//        if($userinfo['role_vip']) {
+//            $last_days = floor(($userinfo['role_vip_time'] - time())/3600/24);
+//            foreach ($list as &$v) {
+//                $diff_price = ceil(($v['price']-$vip_exist['price'])*100)/100;
+//                if($diff_price > 0) {
+//                    $v['price'] = $diff_price;
+//                }else {
+//                    $v['price'] = 0.01;
+//                }
+//            }
+//        }
+        return ajax($list);
+    }
+
+    public function roleVipRecharge() {
+        $param['vip_id'] = input('post.vip_id');
+        checkPost($param);
+        $userinfo = $this->getUserInfo();
+        try {
+            if($userinfo['role'] == 0) {
+                return ajax('此角色无法充值',64);
+            }
+            $whereVip = [
+                ['id','=',$param['vip_id']]
+            ];
+            $vip_exist = Db::table('mp_role_vip')->where($whereVip)->find();
+            if(!$vip_exist) {
+                return ajax('invalid vip_id',-4);
+            }
+            $val['uid'] = $userinfo['id'];
+            $val['vip_id'] = $param['vip_id'];
+            $val['price'] = $vip_exist['price'];
+            $val['days'] = $vip_exist['days'];
+            $val['desc'] = '角色会员';
+            $val['order_sn'] = create_unique_number('v');
+            $val['create_time'] = time();
+
+            if($vip_exist['price'] == 0) {
+                if($userinfo['role_vip']) {
+                    return ajax('免费会员无法续费',65);
+                }
+                $val['status'] = 1;
+                $val['pay_time'] = time();
+                Db::table('mp_role_vip_order')->insert($val);
+                $update_user = [
+                    'role_vip' => $param['vip_id'],
+                    'role_vip_time' => time() + $val['days']*3600*24
+                ];
+                $whereUser = [
+                    ['id','=',$val['uid']]
+                ];
+                Db::table('mp_user')->where($whereUser)->update($update_user);
+            }else {
+                Db::table('mp_role_vip_order')->insert($val);
+            }
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax($val);
     }
 
     /*------ 申请角色 START ------*/
