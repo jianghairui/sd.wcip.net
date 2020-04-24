@@ -123,8 +123,8 @@ class Pay extends Base {
             $result = $app->order->unify([
                 'body' => '角色会员充值',
                 'out_trade_no' => $val['order_sn'],
-                'total_fee' => 1,
-//                'total_fee' => floatval($order_exist['price'])*100,
+//                'total_fee' => 1,
+                'total_fee' => floatval($order_exist['price'])*100,
                 'notify_url' => $this->weburl . 'api/pay/roleVipNotify',
                 'trade_type' => 'JSAPI',
                 'openid' => $this->myinfo['openid'],
@@ -178,7 +178,7 @@ class Pay extends Base {
                         if($user['role_vip']) {
                             $update_user = [
                                 'role_vip' => $order_exist['vip_id'],
-                                'role_vip_time' => $user['vip_time'] + $order_exist['days']*3600*24
+                                'role_vip_time' => $user['role_vip_time'] + $order_exist['days']*3600*24
                             ];
                         }else {
                             $update_user = [
