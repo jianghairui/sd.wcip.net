@@ -70,16 +70,18 @@ class Test extends Base {
     public function test() {
 
         $start = microtime(true);
-        try {
-//            $note_ids = Db::table('mp_note')->column('id');
+//        try {
+            $note_ids = Db::table('mp_note')->column('id');
 //            foreach ($note_ids as $v) {
 //                Db::table('mp_note')->where('id','=',$v)->update(['uid'=>mt_rand(1,7)]);
 //            }
-        } catch (\Exception $e) {
-            return ajax($e->getMessage(), -1);
-        }
+//        } catch (\Exception $e) {
+//            return ajax($e->getMessage(), -1);
+//        }
         $end = microtime(true);
-        echo bcsub($end,$start,6);
+        dump($_SERVER);
+
+
     }
 
 
