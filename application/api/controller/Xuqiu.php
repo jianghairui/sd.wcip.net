@@ -36,6 +36,7 @@ class Xuqiu extends Base {
         try {
             $list = Db::table('mp_user_role')->where($whereRole)
                 ->field('uid,role,org,cover AS logo')
+                ->order(['id'=>'DESC'])
                 ->limit(0,9)
                 ->select();
         } catch (\Exception $e) {
