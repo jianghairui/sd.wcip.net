@@ -68,7 +68,9 @@
                 </td>
             </tr>
             {/foreach}
-
+            <tr class="text-r">
+                <td colspan="12" id="page"></td>
+            </tr>
             </tbody>
         </table>
     </div>
@@ -103,6 +105,7 @@
     $(function () {
 
         $("#search-btn").click(function () {
+            // alert('OKOK');
             var type = $("#formAjax").find("#type").val();
             var str = '';
             if(type.length != '') {

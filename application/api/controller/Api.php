@@ -84,7 +84,7 @@ class Api extends Base
             default:;
         }
         if($val['search']) {
-            $where[] = ['g.name','like',"%{$val['search']}%"];
+            $where[] = ['g.name|u.org','like',"%{$val['search']}%"];
         }
         if($pcate_id) {
             $where[] = ['g.pcate_id','=',$pcate_id];

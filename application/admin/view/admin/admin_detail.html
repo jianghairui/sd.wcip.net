@@ -32,7 +32,7 @@
                     <label for="sex-1">男</label>
                 </div>
                 <div class="radio-box">
-                    <input name="gender" type="radio" id="sex-2" value="2" {if $info['gender'] === 2}checked{/if}>
+                    <input name="gender" type="radio" id="sex-2" value="2" {if $info['gender'] !== 2}checked{/if}>
                     <label for="sex-2">女</label>
                 </div>
             </div>
@@ -121,7 +121,7 @@
                     isclick = false
                     $(form).ajaxSubmit({
                         type: 'post',
-                        url: "{:url('Admin/adminmod_post')}" ,
+                        url: "{:url('Admin/adminMod')}" ,
                         success: function(data){
                             console.log(data)
                             if(data.code == 1) {

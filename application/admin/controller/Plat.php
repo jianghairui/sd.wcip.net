@@ -11,7 +11,7 @@ use think\Db;
 class Plat extends Base {
     //轮播图列表
     public function slideList() {
-        $param['type'] = input('param.type');
+        $param['type'] = input('param.type','');
         $page['query'] = http_build_query(input('param.'));
         $curr_page = input('param.page',1);
         $perpage = input('param.perpage',10);
