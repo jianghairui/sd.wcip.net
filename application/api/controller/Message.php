@@ -98,17 +98,6 @@ class Message extends Base {
         exit('SUCCESS');
     }
 
-
-    //作品未通过审核时给设计师发送消息
-    public function worksReject() {
-
-    }
-
-    //笔记未通过审核时给发布人发送消息
-    public function noteReject() {
-
-    }
-
     //商城订单支付成功给用户发送消息
     public function goodsOrder() {
         $order_id = input('param.order_id','');
@@ -294,10 +283,6 @@ class Message extends Base {
         }
         exit('SUCCESS');
     }
-
-
-
-
 
 
 

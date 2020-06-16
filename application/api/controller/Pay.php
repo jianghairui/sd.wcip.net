@@ -536,6 +536,22 @@ class Pay extends Base {
         }
     }
 
+    protected function asyn_sms_send($data) {
+        $param = http_build_query($data);
+        $fp = @fsockopen('ssl://' . $this->domain, 443, $errno, $errstr, 20);
+        if (!$fp){
+            $this->msglog($this->cmd,'error fsockopen');
+        }else{
+            stream_set_blocking($fp,0);
+            $http = "GET /api/notifysms/goodsOrder?".$param." HTTP/1.1\r\n";
+            $http .= "Host: ".$this->domain."\r\n";
+            $http .= "Connection: Close\r\n\r\n";
+            fwrite($fp,$http);
+            usleep(1000);
+            fclose($fp);
+        }
+    }
+
 
 
 

@@ -467,9 +467,9 @@ class My extends Base {
         if(!in_array($val['role'],[1,2])) {
             return ajax('invalid role',-4);
         }
-        if (!isCreditNo_simple($val['identity'])) {
-            return ajax('无效的身份证号', 13);
-        }
+//        if (!isCreditNo_simple($val['identity'])) {
+//            return ajax('无效的身份证号', 13);
+//        }
         if(!$tmp['id_front'] || !$tmp['id_back']) {
             return ajax('上传身份证正反面',44);
         }
