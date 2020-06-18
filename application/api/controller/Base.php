@@ -53,7 +53,7 @@ class Base extends Controller {
     private function checkSession() {
         $noneed = [
             'Notifysms',
-//            'Test',
+            'Uni',
             'Plan',
             'Message',
             'Email',
