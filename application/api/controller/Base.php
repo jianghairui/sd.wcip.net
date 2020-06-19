@@ -70,13 +70,16 @@ class Base extends Controller {
             $token = input('post.token');
             if(!$token) { throw new HttpResponseException(ajax('token is empty',-6)); }
             try {
-                $token_exist = Db::table('mp_user_mp')->where('token','=',$token)->field('id,uid,nickname,sex,avatar,user_auth,session_key,token,last_login_time,openid,unionid')->find();
+                $token_exist = Db::table('mp_user_mp')->where('token','=',$token)->field('id,uid,nickname,sex,status,avatar,user_auth,session_key,token,last_login_time,openid,unionid')->find();
             }catch (\Exception $e) {
                 throw new HttpResponseException(ajax($e->getMessage(),-1));
             }
             if($token_exist) {
                 if(($token_exist['last_login_time'] + 3600*24*7) < time()) {
                     throw new HttpResponseException(ajax('invalid token',-3));
+                }
+                if($token_exist['status'] == 2) {
+                    throw new HttpResponseException(ajax('已拉黑',-8));
                 }
                 $this->myinfo = $token_exist;
                 return true;

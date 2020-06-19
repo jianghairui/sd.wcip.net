@@ -22,7 +22,9 @@ class Shop extends Base {
 
         $curr_page = input('param.page',1);
         $perpage = input('param.perpage',20);
-        $where = [];
+        $where = [
+            ['g.del','=',0]
+        ];
 
         if($param['shop_id'] !== '') {
             $where[] = ['g.shop_id','=',$param['shop_id']];
@@ -60,6 +62,7 @@ class Shop extends Base {
                 ->select();
 
             $whereShop = [
+                ['status','=',1],
                 ['role','<>',0]
             ];
             $shoplist = Db::table('mp_user')->where($whereShop)->field('id,nickname,org,role')->select();

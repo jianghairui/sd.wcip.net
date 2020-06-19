@@ -360,38 +360,48 @@ class User extends Base {
     //拉黑用户
     public function userStop() {
         $id = input('post.id');
-        $map = [
+        $whereUser = [
             ['status','=',1],
             ['id','=',$id]
         ];
+        $whereMpUser = [
+            ['status','=',1],
+            ['uid','=',$id]
+        ];
+        $whereGoods = [
+            ['shop_id','=',$id]
+        ];
         try {
-            $res = Db::table('mp_user')->where($map)->update(['status'=>2]);
+            Db::table('mp_user')->where($whereUser)->update(['status'=>2]);
+            Db::table('mp_user_mp')->where($whereMpUser)->update(['status'=>2]);
+            Db::table('mp_goods')->where($whereGoods)->update(['del'=>1]);
         }catch (\Exception $e) {
             return ajax($e->getMessage(),-1);
         }
-        if($res) {
-            return ajax([],1);
-        }else {
-            return ajax('拉黑失败',-1);
-        }
+        return ajax([],1);
     }
     //恢复用户
     public function userGetback() {
         $id = input('post.id');
-        $map = [
+        $whereUser = [
             ['status','=',2],
             ['id','=',$id]
         ];
+        $whereMpUser = [
+            ['status','=',2],
+            ['uid','=',$id]
+        ];
+        $whereGoods = [
+            ['shop_id','=',$id]
+        ];
         try {
-            $res = Db::table('mp_user')->where($map)->update(['status'=>1]);
+            Db::table('mp_user')->where($whereUser)->update(['status'=>1]);
+            Db::table('mp_user_mp')->where($whereMpUser)->update(['status'=>1]);
+            Db::table('mp_goods')->where($whereGoods)->update(['del'=>0]);
         }catch (\Exception $e) {
             return ajax($e->getMessage(),-1);
         }
-        if($res) {
-            return ajax([],1);
-        }else {
-            return ajax('恢复失败',-1);
-        }
+        return ajax([],1);
     }
 
     public function rechargeList() {

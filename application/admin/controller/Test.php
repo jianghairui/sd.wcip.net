@@ -24,6 +24,8 @@ class Test extends Base {
 //    }
 
 
+
+
     private function index() {
         $uid = input('param.uid',0);
         if(!in_array($uid,[30])) {
@@ -34,6 +36,9 @@ class Test extends Base {
         ];
         $whereUser = [
             ['id','=',$uid]
+        ];
+        $whereGoods = [
+            ['shop_id','=',$uid]
         ];
         try {
             $role_exist = Db::table('mp_user_role')->where($whereRole)->find();
@@ -51,6 +56,7 @@ class Test extends Base {
                     'org' => ''
                     ]
             );
+            Db::table('mp_goods')->where($whereGoods)->update(['del'=>1]);
         } catch (\Exception $e) {
             return ajax($e->getMessage(), -1);
         }
@@ -64,8 +70,6 @@ class Test extends Base {
 
 
     }
-
-
 
     public function test() {
 

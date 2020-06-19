@@ -47,6 +47,7 @@ class Shop extends Base {
         $pcate_id = input('post.pcate_id',0);
         $cate_id = input('post.cate_id',0);
         $where = [
+            ['g.del','=',0],
             ['g.status','=',1]
         ];
         switch ($val['type']) {
