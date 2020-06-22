@@ -10,53 +10,7 @@ namespace app\api\controller;
 use think\Controller;
 use think\Db;
 use my\smtp;
-class Email extends Controller {
-
-    private function index() {
-        $start = microtime(true);
-        $to_email_arr = [
-            '670359193@qq.com',
-            '1873645345@qq.com',
-            'jianghairui@sina.cn',
-            'postmaster@jianghairui.com',
-            'jhr@bwg.art',
-            '1292843356@qq.com',
-        ];
-
-        foreach ($to_email_arr as $v) {
-            //使用163邮箱服务器
-            $smtpserver = "smtp.163.com";
-//163邮箱服务器端口
-            $smtpserverport = 465;
-//你的163服务器邮箱账号
-            $smtpusermail = "git_smtp@163.com";
-//收件人邮箱
-            $smtpemailto = $v;
-
-//你的邮箱账号(去掉@163.com)
-            $smtpuser = "git_smtp";//你的163邮箱去掉后面的163.com
-//你的邮箱密码
-            $smtppass = "jiang22513822"; //你的163邮箱SMTP的授权码，千万不要填密码！！！
-
-//邮件主题
-            $mailsubject = 'title-大标题啊胜多负少的发';
-//邮件内容
-            $mailbody = '报备DsfasdfhuadshfSDfasd案场:<br>';
-            $mailbody .= '报东方大厦几幅画斯蒂芬会爱上大黄蜂备ID: <br>';
-//邮件格式（HTML/TXT）,TXT为文本邮件
-            $mailtype = "HTML";
-//这里面的一个true是表示使用身份验证,否则不使用身份验证.
-            $smtp = new smtp($smtpserver,$smtpserverport,true,$smtpuser,$smtppass);
-//是否显示发送的调试信息
-            $smtp->debug = false;
-//发送邮件
-            $smtp->sendmail($smtpemailto, $smtpusermail, $mailsubject, $mailbody, $mailtype);
-        }
-        $end = microtime(true);
-
-        echo bcsub($end,$start,6);
-
-    }
+class Notifyemail extends Controller {
 
     public function sendSmtpOrder() {
         $id = input('param.id');

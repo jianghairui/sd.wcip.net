@@ -6,36 +6,16 @@ use my\Sendsms;
 class Notifysms extends Base {
 
     //通知商家
-    private function index() {
-        $sms = new Sendsms();
-        $tel = config('notify_tel');
-
-        $sms_data['tpl_code'] = 'SMS_174925606';
-        $sms_data['tel'] = $tel;
-        $sms_data['param'] = [
-            'code' => 5151231
-        ];
-
-        $res = $sms->send($sms_data);
-        halt($res);
-        if($res->Code === 'OK') {
-            return ajax();
-        }else {
-            $this->msglog($this->cmd,$res->Message);
-            return ajax($res->Message,-1);
-        }
-    }
-
-    //通知商家
     public function goodsOrder() {
+        $order_id = input('param.orderid');
         $sms = new Sendsms();
         $tel = config('notify_tel');
 
-        $code = mt_rand(100000,999999);
-        $sms_data['tpl_code'] = 'SMS_174925606';
+        $sms_data['tpl_code'] = 'SMS_193247577';
         $sms_data['tel'] = $tel;
         $sms_data['param'] = [
-            'code' => $code
+            'status' => '已支付',
+            'orderid' => $order_id
         ];
         $res = $sms->send($sms_data);
         if($res->Code === 'OK') {
@@ -45,6 +25,8 @@ class Notifysms extends Base {
             return ajax($res->Message,-1);
         }
     }
+
+
     //通知用户
 
 

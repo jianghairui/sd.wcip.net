@@ -358,17 +358,6 @@ class Base extends Controller {
         }
     }
 
-    //短信通知日志
-    protected function smslog($cmd,$str) {
-        $file= LOG_PATH . '/sms.log';
-        create_dir($file);
-        $text='[Time ' . date('Y-m-d H:i:s') ."]\ncmd:" .$cmd. "\n" .$str. "\n---END---" . "\n";
-        if(false !== fopen($file,'a+')){
-            file_put_contents($file,$text,FILE_APPEND);
-        }else{
-            echo '创建失败';
-        }
-    }
 
     //小程序验证内容违规
     protected function mplog($cmd,$str) {
@@ -391,6 +380,31 @@ class Base extends Controller {
             file_put_contents($file,$text,FILE_APPEND);
         }else{
             echo '创建失败';
+        }
+    }
+
+    protected function asyn_message_send($data) {
+        $param = http_build_query($data);
+        $allow = [
+            'fundingOrder',
+            'goodsOrder',
+            'smsGoodsOrder'
+        ];
+        if(!in_array($data['action'],$allow)) {
+            $this->msglog('Pay/asyn_message_send',$data['action'] . ' not in allow actions');
+            die();
+        }
+        $fp = @fsockopen('ssl://' . $this->domain, 443, $errno, $errstr, 1);
+        if (!$fp){
+            $this->msglog('asyn_tpl_send','error fsockopen:' . $this->domain);
+        }else{
+            stream_set_blocking($fp,0);
+            $http = "GET /api/message/" . $data['action'] . "?".$param." HTTP/1.1\r\n";
+            $http .= "Host: ".$this->domain."\r\n";
+            $http .= "Connection: Close\r\n\r\n";
+            fwrite($fp,$http);
+            usleep(1000);
+            fclose($fp);
         }
     }
 

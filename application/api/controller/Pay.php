@@ -343,18 +343,6 @@ class Pay extends Base {
                         ];
                         Db::table('mp_order_unite')->where($whereUnite)->update($update_data);
                         Db::table('mp_order')->where($whereUnite)->update($update_data);
-                        //给店家发送邮件
-//                        $email_data = [
-//                            'order_id' => $unite_exist['id'],
-//                            'action' => 'goodsOrder'
-//                        ];
-//                        $this->asyn_email_send($email_data);
-                        //发送模板消息
-//                        $tpl_data = [
-//                            'order_id' => $unite_exist['id'],
-//                            'action' => 'goodsOrder'
-//                        ];
-//                        $this->asyn_tpl_send($tpl_data);
                         //变更商品销量
                         $order_ids = explode(',',$unite_exist['order_ids']);
                         $whereDetail = [
@@ -368,6 +356,13 @@ class Pay extends Base {
                             ];
                             Db::table('mp_goods')->where($whereGoods)->setInc('sales',$v['num']);
                         }
+
+                        //给店家发送短信
+                        $sms_data = [
+                            'pay_order_sn' => $data['out_trade_no'],
+                            'action' => 'smsGoodsOrder'
+                        ];
+                        $this->asyn_message_send($sms_data);
                     }
                 }catch (\Exception $e) {
                     $this->log($this->cmd,$e->getMessage());
@@ -475,7 +470,7 @@ class Pay extends Base {
                             'order_id' => $order_exist['id'],
                             'action' => 'fundingOrder'
                         ];
-                        $this->asyn_tpl_send($tpl_data);
+                        $this->asyn_message_send($tpl_data);
                     }
                 }catch (\Exception $e) {
                     $this->log($this->cmd,$e->getMessage());
@@ -487,70 +482,6 @@ class Pay extends Base {
 
 
 
-
-
-    protected function asyn_tpl_send($data) {
-        $param = http_build_query($data);
-        $allow = [
-            'fundingOrder',
-            'goodsOrder'
-        ];
-        if(!in_array($data['action'],$allow)) {
-            $this->msglog('Pay/asyn_tpl_send',$data['action'] . ' not in allow actions');
-            die();
-        }
-        $fp = @fsockopen('ssl://' . $this->domain, 443, $errno, $errstr, 1);
-        if (!$fp){
-            $this->msglog('asyn_tpl_send','error fsockopen:' . $this->domain);
-        }else{
-            stream_set_blocking($fp,0);
-            $http = "GET /api/message/" . $data['action'] . "?".$param." HTTP/1.1\r\n";
-            $http .= "Host: ".$this->domain."\r\n";
-            $http .= "Connection: Close\r\n\r\n";
-            fwrite($fp,$http);
-            usleep(1000);
-            fclose($fp);
-        }
-    }
-
-    protected function asyn_email_send($data) {
-        $param = http_build_query($data);
-        $allow = [
-            'goodsOrder'
-        ];
-        if(!in_array($data['action'],$allow)) {
-            $this->msglog('Pay/asyn_email_send',$data['action'] . ' not in allow actions');
-            die();
-        }
-        $fp = @fsockopen('ssl://' . $this->domain, 443, $errno, $errstr, 1);
-        if (!$fp){
-            $this->msglog('asyn_email_send','error fsockopen:' . $this->domain);
-        }else{
-            stream_set_blocking($fp,0);
-            $http = "GET /api/email/" . $data['action'] . "?".$param." HTTP/1.1\r\n";
-            $http .= "Host: ".$this->domain."\r\n";
-            $http .= "Connection: Close\r\n\r\n";
-            fwrite($fp,$http);
-            usleep(1000);
-            fclose($fp);
-        }
-    }
-
-    protected function asyn_sms_send($data) {
-        $param = http_build_query($data);
-        $fp = @fsockopen('ssl://' . $this->domain, 443, $errno, $errstr, 20);
-        if (!$fp){
-            $this->msglog($this->cmd,'error fsockopen');
-        }else{
-            stream_set_blocking($fp,0);
-            $http = "GET /api/notifysms/goodsOrder?".$param." HTTP/1.1\r\n";
-            $http .= "Host: ".$this->domain."\r\n";
-            $http .= "Connection: Close\r\n\r\n";
-            fwrite($fp,$http);
-            usleep(1000);
-            fclose($fp);
-        }
-    }
 
 
 

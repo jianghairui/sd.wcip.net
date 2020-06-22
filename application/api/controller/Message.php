@@ -158,7 +158,6 @@ class Message extends Base {
         exit('SUCCESS');
     }
 
-
     //申请平台角色通过,给用户发送消息
     public function rolePass() {
         $uid = input('param.uid','');
@@ -283,6 +282,66 @@ class Message extends Base {
         }
         exit('SUCCESS');
     }
+
+
+
+
+    /*------ 短信消息 ------*/
+
+    //商城订单通知商家
+    public function smsGoodsOrder() {
+        $pay_order_sn = input('param.pay_order_sn');
+        if(!$pay_order_sn) {
+            die('操作异常:1');
+        }
+        $whereOrder = [
+            ['pay_order_sn','=',$pay_order_sn],
+            ['status','=',1]
+        ];
+        $sms = new Sendsms();
+        try {
+            $order_exist = Db::table('mp_order')->where($whereOrder)->field('id,shop_id')->select();
+            if(!$order_exist) {
+                die('操作异常:2');
+            }
+            foreach ($order_exist as $v) {
+                if($v['shop_id']) {
+                    $whereUser = [
+                        ['id','=',$v['shop_id']]
+                    ];
+                    $user_exist = Db::table('mp_user')->where($whereUser)->field('id,tel,notify_tel')->find();
+                    if($user_exist) {
+                        $notify_tel = $user_exist['notify_tel'] ? $user_exist['notify_tel'] : $user_exist['tel'];
+                    }else {
+                        $notify_tel = config('notify_tel');
+                    }
+                }else {
+                    $notify_tel = config('notify_tel');
+                }
+                $sms_data['tpl_code'] = 'SMS_193247577';
+                $sms_data['tel'] = $notify_tel;
+                $sms_data['param'] = [
+                    'status' => '已支付',
+                    'orderid' => $v['id']
+                ];
+                $res = $sms->send($sms_data);
+                if($res->Code === 'OK') {
+                    $this->msglog($this->cmd,'success order_id: ' . $v['id']);
+                }else {
+                    $this->msglog($this->cmd,'failed order_id: ' . $v['id'] . $res->Message);
+                }
+            }
+        } catch (\Exception $e) {
+            $this->log($this->cmd,$e->getMessage());
+            return ajax($e->getMessage(), -1);
+        }
+
+    }
+
+
+
+
+    /*------ 邮件消息 ------*/
 
 
 
