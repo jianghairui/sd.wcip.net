@@ -5,8 +5,36 @@ use my\Sendsms;
 use think\Db;
 class Test extends Base {
 
+    //获取分类12
+    public function cateList() {
+        try {
+            $map = [
+                ['del','=',0],
+                ['status','=',1]
+            ];
+            $list = Db::table('mp_goods_cate')->where($map)->select();
+        }catch (\Exception $e) {
+            return ajax($e->getMessage(),-1);
+        }
+        $list = $this->recursion($list,0);
+        return ajax($list);
+
+    }
+
+
+    private function recursion($array,$pid=0) {
+        $to_array = [];
+        foreach ($array as $v) {
+            if($v['pid'] == $pid) {
+                $v['child'] = $this->recursion($array,$v['id']);
+                $to_array[] = $v;
+            }
+        }
+        return $to_array;
+    }
+
     //通知商家
-    public function goodsOrder() {
+    private function goodsOrder() {
         $sms = new Sendsms();
         $tel = '13102163019';
 
@@ -25,8 +53,7 @@ class Test extends Base {
         }
     }
 
-
-    public function test() {
+    private function test() {
         $start_time = microtime(true);
 
         $this->asyn_sms(['order_id'=>1]);
@@ -36,7 +63,7 @@ class Test extends Base {
         echo bcsub($end_time,$start_time,6);
     }
 
-    protected function asyn_sms($data) {
+    private function asyn_sms($data) {
         $param = http_build_query($data);
         $fp = @fsockopen('ssl://' . $this->domain, 443, $errno, $errstr, 20);
         if (!$fp){

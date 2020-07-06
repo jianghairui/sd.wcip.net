@@ -52,6 +52,7 @@ class Base extends Controller {
 
     private function checkSession() {
         $noneed = [
+            'Test',
             'Notifysms',
             'Uni',
             'Plan',
