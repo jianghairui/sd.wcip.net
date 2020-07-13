@@ -147,16 +147,16 @@ class Api extends Base
         $val['formid'] = input('post.formid');
         $val['uid'] = $this->myinfo['id'];
         checkPost($val);
-        if($val['formid'] == 'the formId is a mock one') {
-            return ajax();
-        }
-        $val['create_time'] = time();
-        try {
-            Db::table('mp_formid')->insert($val);
-        } catch (\Exception $e) {
-            $this->log($this->cmd,$e->getMessage());
-            return ajax($e->getMessage(), -1);
-        }
+//        if($val['formid'] == 'the formId is a mock one') {
+//            return ajax();
+//        }
+//        $val['create_time'] = time();
+//        try {
+//            Db::table('mp_formid')->insert($val);
+//        } catch (\Exception $e) {
+//            $this->log($this->cmd,$e->getMessage());
+//            return ajax($e->getMessage(), -1);
+//        }
         return ajax($val);
     }
 

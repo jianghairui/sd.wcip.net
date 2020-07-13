@@ -459,7 +459,6 @@ class My extends Base {
         $val['busine'] = input('post.busine');
         checkPost($val);
         $val['uid'] = $this->myinfo['uid'];
-
         $tmp['id_front'] = input('post.id_front');
         $tmp['id_back'] = input('post.id_back');
         $tmp['license'] = input('post.license');
@@ -476,7 +475,6 @@ class My extends Base {
         if(!$tmp['license']) {
             return ajax('请上传资质证明',45);
         }
-
         try {
             $whereRole = [
                 ['uid','=',$val['uid']]
@@ -1189,7 +1187,25 @@ LEFT JOIN `mp_goods` `g` ON `d`.`goods_id`=`g`.`id`
     }
     /*------收货地址管理 END------*/
 
-
+    public function sampleRecord() {
+        $page = input('post.page',1);
+        $perpage = input('post.perpage',10);
+        $whereRecord = [
+            ['r.uid','=',$this->myinfo['uid']]
+        ];
+        try {
+            $list = Db::table('mp_sample_record')->alias('r')
+                ->join('mp_sample s','r.sample_id=s.id','left')
+                ->join('mp_user u','r.uid=u.id','left')
+                ->where($whereRecord)
+                ->field('r.*,s.name,s.poster,u.org')
+                ->limit(($page-1)*$perpage, $perpage)
+                ->select();
+        } catch (\Exception $e) {
+            return ajax($e->getMessage(), -1);
+        }
+        return ajax($list);
+    }
 
 
 

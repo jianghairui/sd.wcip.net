@@ -26,9 +26,9 @@ class Test extends Base {
 
 
 
-    private function index() {
+    public function roleDelete() {
         $uid = input('param.uid',0);
-        if(!in_array($uid,[30])) {
+        if(!in_array($uid,[6])) {
             die('非法操作');
         }
         $whereRole = [

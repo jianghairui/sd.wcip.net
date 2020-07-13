@@ -161,6 +161,8 @@ class Base extends Controller {
             'My/addressdel',
             'My/getdefaultaddress',
 
+            'Sample/sampletake',
+
         ];
         if (!in_array($this->controller,$need) && !in_array($this->cmd, $need)) {
             return true;

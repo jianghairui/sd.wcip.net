@@ -1,6 +1,9 @@
 <link href="/lib/select2/select2.min.css" rel="stylesheet">
 <script src="/lib/select2/select2.min.js"></script>
 <style>
+    .userinfo>td>img {
+        width:60px;height:60px;border-radius: 50%;
+    }
 </style>
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 商城管理 <span class="c-gray en">&gt;</span> 样品列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
@@ -24,7 +27,6 @@
             </span>
             <input type="text" name="search" value="{$Think.get.search}" id="search" placeholder=" 样品名" style="width:250px;" class="input-text">
             <button name="" id="search-btn" class="btn btn-success" style="height: 28px;" type="button"><i class="Hui-iconfont">&#xe665;</i> 查找样品</button>
-
         </div>
     </section>
     <div class="cl pd-5 bg-1 bk-gray mt-20">
@@ -37,11 +39,14 @@
         <thead>
         <tr class="text-c">
             <th width="40">#</th>
-            <th width="60">排序</th>
-            <th width="80">样品图片</th>
+            <th width="60">头像</th>
+            <th width="200">领取人</th>
+            <th width="100">联系方式</th>
             <th>样品名称</th>
-            <th width="80">免费名额</th>
-            <th>操作</th>
+            <th width="80">样品图片</th>
+            <th width="200">店铺</th>
+            <th width="120">领取时间</th>
+            <th width="100">操作</th>
         </tr>
         </thead>
         <tbody>
@@ -49,16 +54,20 @@
             {foreach $list as $li}
             <tr class="text-c userinfo">
                 <td>{$li.id}</td>
-                <td><input type="text" class="input-text text-c sort" value="{$li.sort}"></td>
+                <td>
+                    <img src="{if $li['avatar']}
+                {if substr($li['avatar'],0,4) == 'http'}{$li['avatar']}{else /}{$qiniu_weburl}{$li['avatar']}{/if}{else /}/static/src/image/default.jpg{/if}" alt="">
+                </td>
+                <td>{$li.org}</td>
+                <td>{$li.tel}</td>
+                <td>{$li.sample_name}</td>
                 <td>
                     <div style="width: 80px;height: 80px;background-image: url('{$qiniu_weburl}{$li.poster}');background-position: center;background-repeat: no-repeat;background-size: 100%"></div>
                 </td>
-                <td>{$li.name}</td>
-                <td>{$li.stock}</td>
+                <td>{$li.org2}</td>
+                <td>{$li.create_time|date="Y-m-d H:i:s"}</td>
                 <td class="td-manage">
-                    <a style="text-decoration:none" onclick="pagefull('样品信息','{:url("Sample/sampleDetail",array("id"=>$li["id"]))}')" class="ml-5" href="javascript:;" title="查看样品">
-                    <i class="Hui-iconfont">&#xe6df;</i>
-                    </a>
+                    
                 </td>
             </tr>
             {/foreach}
@@ -76,7 +85,7 @@
 <script type="text/javascript" src="/lib/laypage/1.2/laypage.js"></script>
 <script type="text/javascript">
 
-    var url = '{:url("Sample/sampleList")}' + '?<?php echo $page["query"];?>';
+    var url = '{:url("Sample/sampleRecord")}' + '?<?php echo $page["query"];?>';
     var curr = '{$page.curr}',totalPage='{$page.totalPage}';
     if(totalPage > 1) {
         laypage({
@@ -109,7 +118,7 @@
         if(search.length != '') {
             str += '&search=' + search;
         }
-        window.location.href = '{:url("Sample/sampleList")}' + '?' + str;
+        window.location.href = '{:url("Sample/sampleRecord")}' + '?' + str;
     });
 
 

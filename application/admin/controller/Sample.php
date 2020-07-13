@@ -47,7 +47,7 @@ class Sample extends Base {
                 ->select();
             $whereShop = [
                 ['status','=',1],
-                ['role','<>',0]
+                ['role','=',2]
             ];
             $shoplist = Db::table('mp_user')->where($whereShop)->field('id,nickname,org,role')->select();
         }catch (\Exception $e) {
@@ -67,7 +67,7 @@ class Sample extends Base {
     public function sampleAdd() {
         try {
             $whereShop = [
-                ['role','<>',0]
+                ['role','=',2]
             ];
             $shop_list = Db::table('mp_user')->where($whereShop)->field('id,nickname,org,role')->select();
         }catch (\Exception $e) {
@@ -85,7 +85,7 @@ class Sample extends Base {
                 die('非法参数');
             }
             $whereShop = [
-                ['role','<>',0]
+                ['role','=',2]
             ];
             $shop_list = Db::table('mp_user')->where($whereShop)->field('id,nickname,org,role')->select();
         }catch (\Exception $e) {
@@ -343,7 +343,6 @@ class Sample extends Base {
         }
         return ajax($val);
     }
-
     //领取记录
     public function sampleRecord() {
         $param['shop_id'] = input('param.shop_id','');
@@ -352,45 +351,43 @@ class Sample extends Base {
         $page['query'] = http_build_query(input('param.'));
 
         $curr_page = input('param.page',1);
-        $perpage = input('param.perpage',20);
-        $where = [
-            ['s.del','=',0]
-        ];
-
+        $perpage = input('param.perpage',10);
+        $where = [];
         if($param['shop_id'] !== '') {
             $where[] = ['s.shop_id','=',$param['shop_id']];
         }
         if($param['status'] !== '') {
-            $where[] = ['s.status','=',$param['status']];
+            $where[] = ['r.status','=',$param['status']];
         }
         if($param['search']) {
             $where[] = ['s.name','like',"%{$param['search']}%"];
         }
-
-        die('TODO');
         try {
-            $count = Db::table('mp_sample')->alias('s')->where($where)->count();
+            $count = Db::table('mp_sample_record')->alias('r')
+                ->join('mp_sample s','r.sample_id=s.id','left')
+                ->join('mp_user u','r.uid=u.id','left')
+                ->join('mp_user u2','s.shop_id=u2.id','left')
+                ->where($where)->count();
             $page['count'] = $count;
             $page['curr'] = $curr_page;
             $page['totalPage'] = ceil($count/$perpage);
 
-            $list = Db::table('mp_sample')->alias('s')
-                ->join('mp_user_role r','s.shop_id=r.uid','left')
+            $list = Db::table('mp_sample_record')->alias('r')
+                ->join('mp_sample s','r.sample_id=s.id','left')
+                ->join('mp_user u','r.uid=u.id','left')
+                ->join('mp_user u2','s.shop_id=u2.id','left')
                 ->where($where)
-                ->field('s.*,r.name AS role_name,r.org,r.role')
+                ->field('r.*,s.name AS sample_name,s.poster,u.avatar,u.tel,u.org,u2.org AS org2')
                 ->limit(($curr_page - 1)*$perpage,$perpage)
-                ->order(['s.id'=>'DESC'])
+                ->order(['r.id'=>'DESC'])
                 ->select();
             $whereShop = [
                 ['status','=',1],
-                ['role','<>',0]
+                ['role','=',2]
             ];
             $shoplist = Db::table('mp_user')->where($whereShop)->field('id,nickname,org,role')->select();
         }catch (\Exception $e) {
             die('SQL错误: ' . $e->getMessage());
-        }
-        foreach ($list as &$v) {
-            $v['poster'] = unserialize($v['pics'])[0];
         }
         $this->assign('shoplist',$shoplist);
         $this->assign('list',$list);
